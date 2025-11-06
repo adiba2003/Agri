@@ -1,13 +1,14 @@
-import LoginScreen from '@/components/app/LoginScreen'
-import { Stack } from 'expo-router'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import RegisterScreen from '@/components/app/RegisterScreen';
+import { Stack } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 const index = () => {
     return (
         <>
             <Stack.Screen
                 options={{
                     headerShown: true,
-                    title: 'Login',
+                    title: 'Register',
                     headerTitleStyle: {
                         color: 'white',
                         fontSize: 16,
@@ -19,8 +20,8 @@ const index = () => {
                     headerTintColor: '#fff',
                     animation: 'slide_from_right',
                 }} />
-            <SafeAreaView >
-                <LoginScreen />
+            <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+                <RegisterScreen />
             </SafeAreaView>
         </>
     )
