@@ -7,22 +7,23 @@ import {
   Image,
   ScrollView,
 } from "react-native";
+import { router } from "expo-router";
 
 // ✅ Import all images at the top
-import backArrow from "../assets/back-arrow.png";
-import notificationIconImg from "../assets/notification.png";
-import riceImg from "../assets/rice.png";
-import tomatoImg from "../assets/tomato.png";
-import potatoImg from "../assets/potato.png";
-import orderIcon from "../assets/order.png";
-import starIcon from "../assets/star-icon.webp";
-import homeIcon from "../assets/home-icon.png";
-import productsIcon from "../assets/products-icon.png";
-import weatherIcon from "../assets/weather.png";
-import helpIcon from "../assets/help.png";
-import ordersIcon from "../assets/orders.png";
+import backArrow from "@/assets/back-arrow.png";
+import notificationIconImg from "@/assets/notification.png";
+import riceImg from "@/assets/rice.png";
+import tomatoImg from "@/assets/tomato.png";
+import potatoImg from "@/assets/potato.png";
+import orderIcon from "@/assets/order.png";
+import starIcon from "@/assets/star-icon.webp";
+import homeIcon from "@/assets/home-icon.png";
+import productsIcon from "@/assets/products-icon.png";
+import weatherIcon from "@/assets/weather.png";
+import helpIcon from "@/assets/help.png";
+import ordersIcon from "@/assets/orders.png";
 
-export default function FarmerProducts({ navigation }) {
+export default function FarmerProducts() {
   const [activeNav, setActiveNav] = useState("Products");
 
   // Dummy products data
@@ -61,29 +62,6 @@ export default function FarmerProducts({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Fixed Top Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("FarmerDashboard")}
-          style={styles.backButton}
-        >
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity>
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>A</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.appName}>AgriXpert</Text>
-          <Text style={styles.subtitle}>Smart Agriculture Platform</Text>
-        </View>
-        <View style={{ position: "relative", marginLeft: 10 }}>
-          <Image source={notificationIconImg} style={styles.notificationIcon} />
-          <View style={styles.headerNotificationBadge}>
-            <Text style={styles.headerNotificationText}>15</Text>
-          </View>
-        </View>
-      </View>
-
       {/* Scrollable Product List */}
       <ScrollView style={styles.scrollArea}>
         {/* Section Header */}
@@ -96,7 +74,7 @@ export default function FarmerProducts({ navigation }) {
           </View>
           <TouchableOpacity
             style={styles.addButton}
-            onPress={() => navigation.navigate("NewProduct")}
+            onPress={() => router.push("/NewProduct")}
           >
             <Text style={styles.addButtonText}>+ Add Product</Text>
           </TouchableOpacity>
@@ -126,6 +104,7 @@ export default function FarmerProducts({ navigation }) {
               </View>
             </View>
 
+            {/* Actions: Edit (top) + Pause (below) */}
             <View style={styles.actionButtons}>
               <TouchableOpacity style={styles.editBtn}>
                 <Text style={styles.editText}>Edit</Text>
@@ -141,11 +120,16 @@ export default function FarmerProducts({ navigation }) {
       {/* Fixed Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "FarmerDashboard" },
-          { name: "Products", image: productsIcon, route: "FarmerProducts" },
-          { name: "Weather", image: weatherIcon, route: "FarmerProducts" },
-          { name: "Help", image: helpIcon, route: "FarmerProducts" },
-          { name: "Orders", image: ordersIcon, notification: 15, route: "FarmerOrders" },
+          { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
+          { name: "Products", image: productsIcon, route: "/FarmerProducts" },
+          { name: "Weather", image: weatherIcon, route: "/Calendar" },
+          { name: "Help", image: helpIcon, route: "/FAi" },
+          {
+            name: "Orders",
+            image: ordersIcon,
+            notification: 15,
+            route: "/FarmerOrders",
+          },
         ].map((item, index) => {
           const isActive = activeNav === item.name;
           return (
@@ -154,14 +138,16 @@ export default function FarmerProducts({ navigation }) {
               style={[styles.navItem, isActive && styles.activeNavItem]}
               onPress={() => {
                 setActiveNav(item.name);
-                navigation.navigate(item.route);
+                router.push(item.route);
               }}
             >
               <View style={{ position: "relative" }}>
                 <Image source={item.image} style={styles.navIcon} />
                 {item.notification && (
                   <View style={styles.notificationBadge}>
-                    <Text style={styles.notificationText}>{item.notification}</Text>
+                    <Text style={styles.notificationText}>
+                      {item.notification}
+                    </Text>
                   </View>
                 )}
               </View>
@@ -176,9 +162,10 @@ export default function FarmerProducts({ navigation }) {
   );
 }
 
-// ✅ Styles remain the same
+// ✅ Styles remain the same (except action buttons area updated)
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f8f9fa" },
+
   header: {
     backgroundColor: "#fff",
     padding: 15,
@@ -201,6 +188,7 @@ const styles = StyleSheet.create({
   logoText: { color: "#fff", fontSize: 20, fontWeight: "bold" },
   appName: { fontSize: 16, fontWeight: "bold", color: "#000" },
   subtitle: { fontSize: 12, color: "#666" },
+
   notificationIcon: { width: 28, height: 28, resizeMode: "contain" },
   headerNotificationBadge: {
     position: "absolute",
@@ -212,6 +200,7 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   headerNotificationText: { color: "#fff", fontSize: 10, fontWeight: "bold" },
+
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -228,7 +217,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   addButtonText: { color: "#fff", fontWeight: "bold", fontSize: 13 },
+
   scrollArea: { flex: 1, padding: 15, marginBottom: 70 },
+
   productCard: {
     backgroundColor: "#fff",
     borderRadius: 12,
@@ -242,20 +233,27 @@ const styles = StyleSheet.create({
   productImage: { width: 40, height: 40, resizeMode: "contain" },
   productName: { fontSize: 15, fontWeight: "bold", color: "#000" },
   productDetails: { fontSize: 13, color: "#666" },
+
   productStats: { flexDirection: "row", marginTop: 5, alignItems: "center" },
   statRow: { flexDirection: "row", alignItems: "center", marginRight: 12 },
   statIcon: { width: 14, height: 14, resizeMode: "contain", marginRight: 4 },
   statText: { fontSize: 12, color: "#666" },
   activeStatus: { fontSize: 12, color: "green", fontWeight: "600" },
-  actionButtons: { flexDirection: "row" },
+
+  // ⬇️ UPDATED: vertical buttons (Edit on top, Pause below)
+  actionButtons: {
+    flexDirection: "column",
+    alignItems: "flex-end",
+  },
   editBtn: {
     backgroundColor: "#e6f0ff",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
-    marginRight: 8,
+    marginBottom: 8, // space before Pause
   },
   editText: { color: "#007bff", fontWeight: "bold" },
+
   pauseBtn: {
     backgroundColor: "#f5f5f5",
     paddingHorizontal: 12,
@@ -263,6 +261,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   pauseText: { color: "#555", fontWeight: "bold" },
+
   bottomNav: {
     flexDirection: "row",
     backgroundColor: "#fff",
@@ -288,6 +287,7 @@ const styles = StyleSheet.create({
   navIcon: { width: 24, height: 24, marginBottom: 3, resizeMode: "contain" },
   navText: { fontSize: 12, color: "#666", fontWeight: "500" },
   activeNavText: { color: "#4CAF50", fontWeight: "bold" },
+
   notificationBadge: {
     position: "absolute",
     top: -5,

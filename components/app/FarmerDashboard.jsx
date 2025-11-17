@@ -8,54 +8,34 @@ import {
   ScrollView,
   StatusBar,
 } from "react-native";
+import { router } from "expo-router";
 
 // ✅ Import all images at the top
-import backArrow from "../assets/back-arrow.png";
-import notificationIconImg from "../assets/notification.png";
-import orderIcon from "../assets/order.png";
-import cartIcon from "../assets/cart.png";
-import moneyIcon from "../assets/money.png";
-import calendarIcon from "../assets/calendar-icon.png";
-import robotIcon from "../assets/robot.png";
-import plusIcon from "../assets/plus.png";
-import booksIcon from "../assets/books.png";
-import riceImg from "../assets/rice.png";
-import tomatoImg from "../assets/tomato.png";
-import homeIcon from "../assets/home-icon.png";
-import productsIcon from "../assets/products-icon.png";
-import weatherIcon from "../assets/weather.png";
-import helpIcon from "../assets/help.png";
-import ordersIcon from "../assets/orders.png";
+import backArrow from "@/assets/back-arrow.png";
+import notificationIconImg from "@/assets/notification.png";
+import orderIcon from "@/assets/order.png";
+import cartIcon from "@/assets/cart.png";
+import moneyIcon from "@/assets/money.png";
+import calendarIcon from "@/assets/calendar-icon.png";
+import robotIcon from "@/assets/robot.png";
+import plusIcon from "@/assets/plus.png";
+import booksIcon from "@/assets/books.png";
+import riceImg from "@/assets/rice.png";
+import tomatoImg from "@/assets/tomato.png";
+import homeIcon from "@/assets/home-icon.png";
+import productsIcon from "@/assets/products-icon.png";
+import weatherIcon from "@/assets/weather.png";
+import helpIcon from "@/assets/help.png";
+import ordersIcon from "@/assets/orders.png";
 
-export default function FarmerDashboard({ navigation }) {
+export default function FarmerDashboard() {
   const [activeNav, setActiveNav] = useState("Home");
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#4CAF50" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Home")}
-          style={styles.backButton}
-        >
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity>
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>A</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.appName}>AgriXpert</Text>
-          <Text style={styles.subtitle}>Smart Agriculture Platform</Text>
-        </View>
-        <View style={{ position: "relative", marginLeft: 10 }}>
-          <Image source={notificationIconImg} style={styles.notificationIcon} />
-          <View style={styles.headerNotificationBadge}>
-            <Text style={styles.headerNotificationText}>15</Text>
-          </View>
-        </View>
-      </View>
+   
 
       {/* Main Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -96,7 +76,7 @@ export default function FarmerDashboard({ navigation }) {
               • Apply fertilizer to tomato plants
             </Text>
             <Text style={styles.taskDetail}>• Check weather forecast</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Calendar")}>
+            <TouchableOpacity onPress={() => router.push("/Calendar")}>
               <Text style={styles.viewFullCalendar}>View Full Calendar →</Text>
             </TouchableOpacity>
           </View>
@@ -106,7 +86,7 @@ export default function FarmerDashboard({ navigation }) {
         <View style={styles.quickActionsGrid}>
           <TouchableOpacity
             style={styles.actionCard}
-            onPress={() => navigation.navigate("FarmerProducts")}
+            onPress={() => router.push("/FarmerProducts")}
           >
             <Image source={orderIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
@@ -117,7 +97,7 @@ export default function FarmerDashboard({ navigation }) {
 
           <TouchableOpacity
             style={styles.actionCard}
-            onPress={() => navigation.navigate("FarmerOrders")}
+            onPress={() => router.push("/FarmerOrders")}
           >
             <Image source={cartIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
@@ -128,7 +108,7 @@ export default function FarmerDashboard({ navigation }) {
 
           <TouchableOpacity
             style={styles.actionCard}
-            onPress={() => navigation.navigate("Calendar")}
+            onPress={() => router.push("/Calendar")}
           >
             <Image source={calendarIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
@@ -139,7 +119,7 @@ export default function FarmerDashboard({ navigation }) {
 
           <TouchableOpacity
             style={styles.actionCard}
-            onPress={() => navigation.navigate("FAi")}
+            onPress={() => router.push("/FAi")}
           >
             <Image source={robotIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
@@ -150,7 +130,7 @@ export default function FarmerDashboard({ navigation }) {
 
           <TouchableOpacity
             style={styles.actionCard}
-            onPress={() => navigation.navigate("NewProduct")}
+            onPress={() => router.push("/NewProduct")}
           >
             <Image source={plusIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
@@ -161,7 +141,7 @@ export default function FarmerDashboard({ navigation }) {
 
           <TouchableOpacity
             style={styles.actionCard}
-            onPress={() => navigation.navigate("FLearn")}
+            onPress={() => router.push("/FLearn")}
           >
             <Image source={booksIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
@@ -175,7 +155,7 @@ export default function FarmerDashboard({ navigation }) {
         <View style={styles.recentOrders}>
           <View style={styles.recentHeader}>
             <Text style={styles.recentTitle}>Recent Orders</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("FarmerOrders")}>
+            <TouchableOpacity onPress={() => router.push("/FarmerOrders")}>
               <Text style={styles.viewAll}>View All</Text>
             </TouchableOpacity>
           </View>
@@ -209,11 +189,11 @@ export default function FarmerDashboard({ navigation }) {
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "FarmerDashboard" },
-          { name: "Products", image: productsIcon, route: "FarmerProducts" },
-          { name: "Weather", image: weatherIcon, route: "FarmerDashboard" },
-          { name: "Help", image: helpIcon, route: "FarmerDashboard" },
-          { name: "Orders", image: ordersIcon, notification: 15, route: "FarmerOrders" },
+          { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
+          { name: "Products", image: productsIcon, route: "/FarmerProducts" },
+          { name: "Weather", image: weatherIcon, route: "/Calendar" },
+          { name: "Help", image: helpIcon, route: "/FAi" },
+          { name: "Orders", image: ordersIcon, notification: 15, route: "/FarmerOrders" },
         ].map((item, index) => {
           const isActive = activeNav === item.name;
           return (
@@ -222,7 +202,7 @@ export default function FarmerDashboard({ navigation }) {
               style={[styles.navItem, isActive && styles.activeNavItem]}
               onPress={() => {
                 setActiveNav(item.name);
-                navigation.navigate(item.route);
+                router.push(item.route);
               }}
             >
               <View style={{ position: "relative" }}>

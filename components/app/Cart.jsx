@@ -1,277 +1,283 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from "react-native";
+// === Cart.jsx ===
 
-// ✅ Import all images at the top
-import backArrow from "../assets/back-arrow.png";
-import notificationIconImg from "../assets/notification.png";
-import homeIcon from "../assets/home-icon.png";
-import productsIcon from "../assets/products-icon.png";
-import cartIcon from "../assets/cart.png";
-import ordersIcon from "../assets/orders.png";
-import riceImg from "../assets/rice.png";
-import carrotImg from "../assets/carrot.png";
+import React, { useState, useEffect } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  FlatList, 
+  Image, 
+  TouchableOpacity 
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 
-export default function Cart({ navigation }) {
-  const [activeTab, setActiveTab] = useState("Cart");
+// Import your icons
+import homeIcon from '@/assets/home-icon.png';
+import productsIcon from '@/assets/products-icon.png';
+import cartIcon from '@/assets/cart.png';
+import ordersIcon from '@/assets/orders.png';
 
-  const renderCartItem = (image, title, subtitle, quantity, price) => (
-    <View style={styles.cartItem}>
-      <Image source={image} style={styles.itemImage} />
-      <View style={styles.itemDetails}>
-        <Text style={styles.itemTitle}>{title}</Text>
-        <Text style={styles.itemSubtitle}>{subtitle}</Text>
+export default function Cart() {
+  const [cartItems, setCartItems] = useState([]);
+  const [activeNav, setActiveNav] = useState('Cart');
+
+  const loadCart = async () => {
+    try {
+      const data = await AsyncStorage.getItem('cart');
+      if (data !== null) {
+        setCartItems(JSON.parse(data));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  const removeItem = async (id) => {
+    try {
+      const updated = cartItems.filter(item => item.id !== id);
+      await AsyncStorage.setItem('cart', JSON.stringify(updated));
+      setCartItems(updated);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updateQuantity = async (id, delta) => {
+    try {
+      const updated = cartItems.map(item => {
+        if (item.id === id) {
+          let newQty = item.quantity + delta;
+          if (newQty < 1) newQty = 1;
+          return { ...item, quantity: newQty };
+        }
+        return item;
+      });
+      await AsyncStorage.setItem('cart', JSON.stringify(updated));
+      setCartItems(updated);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const totalPrice = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  ).toFixed(2);
+
+  // ⭐ Save order to AsyncStorage and clear cart
+  const proceedToCheckout = async () => {
+    try {
+      const existing = await AsyncStorage.getItem('orders');
+      const orders = existing ? JSON.parse(existing) : [];
+
+      const newOrder = {
+        id: Date.now(),
+        date: new Date().toLocaleString(),
+        items: cartItems,
+        total: totalPrice
+      };
+
+      await AsyncStorage.setItem('orders', JSON.stringify([newOrder, ...orders]));
+
+      await AsyncStorage.setItem('cart', JSON.stringify([]));
+      setCartItems([]);
+
+      router.push('/BuyerOrder');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const renderItem = ({ item }) => (
+    <View style={styles.itemCard}>
+      <Image source={item.image} style={styles.image} />
+      <View style={styles.info}>
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.price}>৳{item.price} per kg</Text>
+
         <View style={styles.quantityRow}>
-          <TouchableOpacity style={styles.quantityButton}>
-            <Text style={styles.quantityText}>-</Text>
+          <TouchableOpacity onPress={() => updateQuantity(item.id, -1)} style={styles.qtyBtn}>
+            <Text style={styles.qtyBtnText}>-</Text>
           </TouchableOpacity>
-          <Text style={styles.quantityValue}>{quantity}</Text>
-          <TouchableOpacity style={styles.quantityButton}>
-            <Text style={styles.quantityText}>+</Text>
+          <Text style={styles.qtyValue}>{item.quantity} kg</Text>
+          <TouchableOpacity onPress={() => updateQuantity(item.id, 1)} style={styles.qtyBtn}>
+            <Text style={styles.qtyBtnText}>+</Text>
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.itemRight}>
-        <Text style={styles.itemPrice}>{price}</Text>
+
+      <TouchableOpacity onPress={() => removeItem(item.id)} style={styles.removeBtn}>
         <Text style={styles.removeText}>Remove</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 
-  return (
-    <View style={styles.container}>
-      {/* Fixed Top Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("BuyerDashboard")}
-          style={styles.backButton}
-        >
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity>
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>A</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.appName}>AgriXpert</Text>
-          <Text style={styles.subtitle}>Smart Agriculture Platform</Text>
-        </View>
-        <View style={{ position: "relative", marginLeft: 10 }}>
-          <Image source={notificationIconImg} style={styles.notificationIcon} />
-          <View style={styles.headerNotificationBadge}>
-            <Text style={styles.headerNotificationText}>2</Text>
-          </View>
-        </View>
+  const ListFooter = () => (
+    <View style={styles.footer}>
+      <View style={styles.totalSection}>
+        <Text style={styles.totalLabel}>Total:</Text>
+        <Text style={styles.totalValue}>৳{totalPrice}</Text>
       </View>
 
-      {/* Scrollable Content */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.cartHeader}>
-          <Text style={styles.pageTitle}>Shopping Cart</Text>
-          <Text style={styles.pageSubtitle}>5 items ready for checkout</Text>
-        </View>
-
-        {renderCartItem(
-          riceImg,
-          "Premium Basmati Rice",
-          "$85/kg • From Rice Fields",
-          "2 kg",
-          "$170"
-        )}
-        {renderCartItem(
-          carrotImg,
-          "Fresh Carrots",
-          "$45/kg • From Green Valley Farms",
-          "3 kg",
-          "$135"
-        )}
-
-        {/* Order Summary */}
-        <View style={styles.summaryBox}>
-          <Text style={styles.summaryTitle}>Order Summary</Text>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Subtotal</Text>
-            <Text style={styles.summaryValue}>$305</Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Delivery Fee</Text>
-            <Text style={styles.summaryValue}>$50</Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>$355</Text>
-          </View>
-        </View>
-      </ScrollView>
-
-      {/* Checkout Button */}
-      <TouchableOpacity style={styles.checkoutButton}>
+      <TouchableOpacity style={styles.checkoutBtn} onPress={proceedToCheckout}>
         <Text style={styles.checkoutText}>Proceed to Checkout</Text>
       </TouchableOpacity>
+    </View>
+  );
 
-      {/* Bottom Navigation */}
+  const navItems = [
+    { name: 'Home', image: homeIcon, route: 'BuyerDashboard' },
+    { name: 'Browse', image: productsIcon, route: 'BuyerBrowse' },
+    { name: 'Cart', image: cartIcon, route: 'Cart', notification: cartItems.length },
+    { name: 'Orders', image: ordersIcon, route: 'BuyerOrder' },
+  ];
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={cartItems}
+        renderItem={renderItem}
+        keyExtractor={item => item.id.toString()}
+        ListHeaderComponent={<Text style={styles.cartTitle}>Shopping Cart</Text>}
+        ListFooterComponent={ListFooter}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        ListEmptyComponent={<Text style={styles.emptyText}>Your cart is empty!</Text>}
+      />
+
       <View style={styles.bottomNav}>
-        {[
-          { key: "Home", image: homeIcon, route: "BuyerDashboard" },
-          { key: "Browse", image: productsIcon, route: "BuyerBrowse" },
-          { key: "Cart", image: cartIcon, badge: 5, route: "Cart" },
-          { key: "Orders", image: ordersIcon, route: "BuyerOrder" },
-        ].map((tab) => (
-          <TouchableOpacity
-            key={tab.key}
-            style={[styles.navItem, activeTab === tab.key && styles.activeNavItem]}
-            onPress={() => {
-              setActiveTab(tab.key);
-              navigation.navigate(tab.route);
-            }}
-          >
-            <View style={{ position: "relative" }}>
-              <Image source={tab.image} style={styles.navIcon} />
-              {tab.badge && (
-                <View style={styles.notificationBadge}>
-                  <Text style={styles.notificationText}>{tab.badge}</Text>
-                </View>
-              )}
-            </View>
-            <Text style={[styles.navText, activeTab === tab.key && styles.activeNavText]}>
-              {tab.key}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        {navItems.map((item, index) => {
+          const isActive = activeNav === item.name;
+          return (
+            <TouchableOpacity
+              key={index}
+              style={[styles.navItem, isActive && styles.activeNavItem]}
+              onPress={() => {
+                setActiveNav(item.name);
+                router.push(`/${item.route}`);
+              }}
+            >
+              <View style={{ position: 'relative' }}>
+                <Image source={item.image} style={styles.navIcon} />
+                {item.notification > 0 && (
+                  <View style={styles.notificationBadge}>
+                    <Text style={styles.notificationText}>{item.notification}</Text>
+                  </View>
+                )}
+              </View>
+              <Text style={[styles.navText, isActive && styles.activeNavText]}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </View>
   );
 }
 
-// ✅ Styles remain unchanged
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f8f9fa" },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 20,
-    paddingTop: 10,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  backButton: { marginRight: 10 },
-  backIcon: { width: 24, height: 24, resizeMode: "contain" },
-  logoBox: {
-    backgroundColor: "#28a745",
-    width: 50,
-    height: 50,
+  container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 20, paddingTop: 20 },
+  emptyText: { textAlign: 'center', marginTop: 50, fontSize: 18, color: '#666' },
+  
+  cartTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: '#2c3e50' },
+
+  itemCard: {
+    flexDirection: 'row',
+    backgroundColor: '#f8f9fa',
     borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  logoText: { color: "#fff", fontSize: 22, fontWeight: "bold" },
-  appName: { fontSize: 18, fontWeight: "bold", color: "#000" },
-  subtitle: { fontSize: 13, color: "#666" },
-  notificationIcon: { width: 28, height: 28, resizeMode: "contain" },
-  headerNotificationBadge: {
-    position: "absolute",
-    top: -5,
-    right: -5,
-    backgroundColor: "red",
-    borderRadius: 8,
-    paddingHorizontal: 4,
-    minWidth: 16,
-    height: 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerNotificationText: { color: "#fff", fontSize: 10, fontWeight: "bold" },
-  content: { flex: 1, paddingHorizontal: 15 },
-  cartHeader: { marginBottom: 15 },
-  pageTitle: { fontSize: 24, fontWeight: "bold", color: "#2c3e50" },
-  pageSubtitle: { fontSize: 14, color: "#666", marginTop: 5 },
-  cartItem: {
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 15,
+    padding: 12,
     marginBottom: 15,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    alignItems: 'center',
   },
-  itemImage: { width: 40, height: 40, marginRight: 12, resizeMode: "contain" },
-  itemDetails: { flex: 1 },
-  itemTitle: { fontSize: 16, fontWeight: "bold", color: "#333" },
-  itemSubtitle: { fontSize: 13, color: "#666", marginTop: 2 },
-  quantityRow: { flexDirection: "row", alignItems: "center", marginTop: 8 },
-  quantityButton: {
-    backgroundColor: "#eaf8ea",
+  image: { width: 80, height: 80, borderRadius: 10, marginRight: 12, resizeMode: 'contain' },
+  info: { flex: 1 },
+  name: { fontSize: 16, fontWeight: 'bold', marginBottom: 4, color: '#333' },
+  price: { fontSize: 14, color: '#4CAF50', marginBottom: 10 },
+  quantityRow: { flexDirection: 'row', alignItems: 'center' },
+  qtyBtn: {
+    width: 30,
+    height: 30,
+    backgroundColor: '#e9ecef',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 2,
   },
-  quantityText: { fontSize: 16, fontWeight: "bold", color: "#28a745" },
-  quantityValue: { marginHorizontal: 10, fontSize: 14, fontWeight: "bold" },
-  itemRight: { alignItems: "flex-end" },
-  itemPrice: { fontSize: 16, fontWeight: "bold", color: "#333" },
-  removeText: { fontSize: 12, color: "red", marginTop: 5 },
-  summaryBox: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 15,
+  qtyBtnText: { fontSize: 18, fontWeight: 'bold', color: '#333' },
+  qtyValue: { marginHorizontal: 10, fontSize: 16, fontWeight: '500', color: '#222' },
+
+  removeBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: '#ff4d4f',
+    borderRadius: 8,
+  },
+  removeText: { color: '#fff', fontWeight: 'bold', fontSize: 12 },
+
+  footer: { marginTop: 10 },
+
+  totalSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 15,
+    borderTopWidth: 1,
+    borderColor: '#ddd',
     marginBottom: 15,
   },
-  summaryTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
-  summaryRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: 4,
+  totalLabel: { fontSize: 18, fontWeight: '500', color: '#666' },
+  totalValue: { fontSize: 22, fontWeight: 'bold', color: '#4CAF50' },
+
+  checkoutBtn: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  summaryLabel: { fontSize: 14, color: "#555" },
-  summaryValue: { fontSize: 14, fontWeight: "bold", color: "#333" },
-  totalLabel: { fontSize: 16, fontWeight: "bold", color: "#000" },
-  totalValue: { fontSize: 16, fontWeight: "bold", color: "#000" },
-  checkoutButton: {
-    backgroundColor: "#28a745",
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: "center",
-    margin: 15,
-  },
-  checkoutText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
+  checkoutText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+
   bottomNav: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 10,
-    backgroundColor: "#fff",
+    flexDirection: 'row',
+    backgroundColor: '#f0f0f0',
     borderTopWidth: 1,
-    borderTopColor: "#ddd",
+    borderTopColor: '#ddd',
+    paddingVertical: 10,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
-  navItem: { alignItems: "center", padding: 8, borderRadius: 8 },
-  activeNavItem: {
-    borderWidth: 1,
-    borderColor: "#28a745",
-    backgroundColor: "#eaf8ea",
+  navItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    borderRadius: 10,
+    marginHorizontal: 5,
   },
-  navIcon: { width: 22, height: 22, marginBottom: 3, resizeMode: "contain" },
-  navText: { fontSize: 12, color: "#555" },
-  activeNavText: { color: "#28a745", fontWeight: "bold" },
+  activeNavItem: { borderColor: '#4CAF50', backgroundColor: '#eaf8ea' },
+  
+  navIcon: { width: 28, height: 28, marginBottom: 5, resizeMode: 'contain' },
+  navText: { fontSize: 12, color: '#333', fontWeight: '500', textAlign: 'center' },
+  activeNavText: { color: '#4CAF50', fontWeight: '600' },
+
   notificationBadge: {
-    position: "absolute",
+    position: 'absolute',
     top: -5,
     right: -10,
-    backgroundColor: "red",
+    backgroundColor: 'red',
     borderRadius: 8,
     paddingHorizontal: 4,
     minWidth: 16,
     height: 16,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  notificationText: { color: "#fff", fontSize: 10, fontWeight: "bold" },
+  notificationText: { color: '#fff', fontSize: 10, fontWeight: 'bold' },
 });

@@ -7,22 +7,23 @@ import {
   Image,
   ScrollView,
 } from "react-native";
+import { router } from "expo-router";
 
 // ✅ সব image import উপরে
-import backArrow from "../assets/back-arrow.png";
-import homeIcon from "../assets/home-icon.png";
-import productsIcon from "../assets/products-icon.png";
-import cartIcon from "../assets/cart.png";
-import ordersIcon from "../assets/orders.png";
-import notificationIcon from "../assets/notification.png";
-import booksIcon from "../assets/books.png";
-import riceImg from "../assets/rice.png";
-import carrotImg from "../assets/carrot.png";
-import waterIcon from "../assets/water-icon.png";
-import calendarIcon from "../assets/calendar-icon.png";
-import clockIcon from "../assets/clock.png";
+import backArrow from "@/assets/back-arrow.png";
+import homeIcon from "@/assets/home-icon.png";
+import productsIcon from "@/assets/products-icon.png";
+import cartIcon from "@/assets/cart.png";
+import ordersIcon from "@/assets/orders.png";
+import notificationIcon from "@/assets/notification.png";
+import booksIcon from "@/assets/books.png";
+import riceImg from "@/assets/rice.png";
+import carrotImg from "@/assets/carrot.png";
+import waterIcon from "@/assets/water-icon.png";
+import calendarIcon from "@/assets/calendar-icon.png";
+import clockIcon from "@/assets/clock.png";
 
-export default function BuyerLearn({ navigation }) {
+export default function BuyerLearn() {
   const [activeTab, setActiveTab] = useState("Articles");
   const [activeNav, setActiveNav] = useState("Home");
 
@@ -35,31 +36,7 @@ export default function BuyerLearn({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("BuyerDashboard")}
-          style={styles.backButton}
-        >
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity>
-
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>A</Text>
-        </View>
-
-        <View>
-          <Text style={styles.appName}>AgriXpert</Text>
-          <Text style={styles.subtitle}>Learning Center</Text>
-        </View>
-
-        <View style={{ position: "relative", marginLeft: 10 }}>
-          <Image source={notificationIcon} style={styles.notificationIcon} />
-          <View style={styles.headerNotificationBadge}>
-            <Text style={styles.headerNotificationText}>2</Text>
-          </View>
-        </View>
-      </View>
+ 
 
       {/* Scrollable Content */}
       <ScrollView style={{ flex: 1 }}>
@@ -86,7 +63,7 @@ export default function BuyerLearn({ navigation }) {
               style={[styles.tab, activeTab === tab.name && styles.activeTab]}
               onPress={() => {
                 setActiveTab(tab.name);
-                navigation.navigate(tab.route);
+                router.push(`/${tab.route}`);
               }}
             >
               <Text
@@ -157,7 +134,7 @@ export default function BuyerLearn({ navigation }) {
               style={[styles.navItem, isActive && styles.activeNavItem]}
               onPress={() => {
                 setActiveNav(item.name);
-                navigation.navigate(item.route);
+                router.push(`/${item.route}`);
               }}
             >
               <View style={{ position: "relative" }}>
@@ -183,7 +160,7 @@ export default function BuyerLearn({ navigation }) {
   );
 }
 
-// 🔽 styles আগের মতোই রাখো
+// 🔽 styles আগের মতোই
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   header: {
@@ -248,6 +225,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   articleImage: { width: 50, height: 50, borderRadius: 10, marginRight: 12 },
+  articleContent: { flex: 1 },
   articleTitle: { fontSize: 16, fontWeight: "bold", color: "#333" },
   articleDesc: { fontSize: 14, color: "#555", marginTop: 5 },
   articleFooter: {

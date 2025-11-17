@@ -8,335 +8,334 @@ import {
   TextInput,
   FlatList,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// ✅ All images imported statically (Expo safe)
-import backArrow from "../assets/back-arrow.png";
-import robot from "../assets/robot.png";
-import homeIcon from "../assets/home-icon.png";
-import productsIcon from "../assets/products-icon.png";
-import learnIcon from "../assets/learn-icon.webp";
-import chatIcon from "../assets/chat-icon.png";
+// Images
+import robot from "@/assets/robot.png";
+import homeIcon from "@/assets/home-icon.png";
+import productsIcon from "@/assets/products-icon.png";
+import learnIcon from "@/assets/learn-icon.webp";
+import chatIcon from "@/assets/chat-icon.png";
 
-export default function Ai({ navigation }) {
+export default function Ai() {
   const [activeNav, setActiveNav] = useState("AI Chat");
-  const [messages, setMessages] = useState([
-    {
-      id: "0",
-      sender: "AI",
-      text: "Hello! I am your AI agriculture assistant. Do you have any questions?",
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
-  const flatListRef = useRef();
+  const flatListRef = useRef(null);
 
+  /* ---------------- LOAD CHAT HISTORY ---------------- */
   useEffect(() => {
-    if (flatListRef.current && messages.length > 0) {
-      flatListRef.current.scrollToEnd({ animated: true });
+    const loadMessages = async () => {
+      try {
+        const saved = await AsyncStorage.getItem("chat_history");
+        if (saved !== null) {
+          setMessages(JSON.parse(saved));
+        } else {
+          setMessages([
+            {
+              id: "0",
+              sender: "AI",
+              text: "Hello! I am your AI agriculture assistant. Ask anything about farming."
+            }
+          ]);
+        }
+      } catch (e) {
+        console.log("Load Error:", e);
+      }
+    };
+
+    loadMessages();
+  }, []);
+
+  /* ---------------- SAVE CHAT HISTORY ---------------- */
+  useEffect(() => {
+    if (messages.length > 0) {
+      AsyncStorage.setItem("chat_history", JSON.stringify(messages));
     }
+
+    if (flatListRef.current)
+      flatListRef.current.scrollToEnd({ animated: true });
   }, [messages]);
 
+  /* ---------------- AI LOGIC ---------------- */
+  const getAIResponse = (q) => {
+    q = q.toLowerCase();
+
+    if (q.includes("rice") || q.includes("ধান"))
+      return "Rice diseases: Blast, Blight, Brown spot. Use neem oil + Trichoderma.";
+
+    if (q.includes("fertilizer") || q.includes("সার"))
+      return "Use NPK 20-10-10 early stage, potash during flowering.";
+
+    if (q.includes("vegetable") || q.includes("সবজি"))
+      return "Best winter vegetables: carrot, cabbage, cauliflower, spinach.";
+
+    if (q.includes("soil") || q.includes("মাটি"))
+      return "Use compost, cow dung manure, green manure, mulching to improve soil.";
+
+    if (q.includes("pesticide") || q.includes("কীটনাশক"))
+      return "Organic pesticides: Neem oil spray, garlic–chili spray.";
+
+    if (q.includes("water") || q.includes("সেচ"))
+      return "Best irrigation: drip irrigation + mulching.";
+
+    return "Please mention the crop name + problem for accurate advice.";
+  };
+
+  /* ---------------- SEND MESSAGE ---------------- */
   const sendMessage = () => {
     if (input.trim() === "") return;
-    const newMessage = {
+
+    const userMsg = {
       id: Date.now().toString(),
       sender: "You",
       text: input,
     };
-    setMessages([...messages, newMessage]);
+
+    setMessages((prev) => [...prev, userMsg]);
     setInput("");
+
+    setTimeout(() => {
+      const reply = {
+        id: (Date.now() + 1).toString(),
+        sender: "AI",
+        text: getAIResponse(userMsg.text),
+      };
+      setMessages((prev) => [...prev, reply]);
+    }, 400);
   };
 
+  /* ---------------- POPULAR QUESTIONS ---------------- */
   const popularQuestions = [
-    { title: "Rice Diseases", description: "Identify and treat common rice plant diseases" },
-    { title: "Fertilizer Usage", description: "Optimal fertilizer application for different crops" },
-    { title: "Winter Vegetables", description: "Best vegetables to grow in winter season" },
-    { title: "Soil Health", description: "Improve and maintain soil fertility" },
-    { title: "Organic Pesticides", description: "Natural pest control methods" },
-    { title: "Irrigation", description: "Efficient water management techniques" },
+    { title: "Rice Diseases", description: "Identify and treat rice diseases" },
+    { title: "Fertilizer Usage", description: "Correct fertilizer application" },
+    { title: "Winter Vegetables", description: "Best winter crops" },
+    { title: "Soil Health", description: "Improve soil fertility" },
+    { title: "Organic Pesticides", description: "Natural pest control" },
+    { title: "Irrigation", description: "Best watering methods" },
+  ];
+
+  /* ---------------- BOTTOM NAV ---------------- */
+  const bottomNavItems = [
+    { name: "Home", img: homeIcon, route: "/GuestHome" },
+    { name: "Products", img: productsIcon, route: "/browse" },
+    { name: "Learn", img: learnIcon, route: "/LearnArti" },
+    { name: "AI Chat", img: chatIcon, route: "/Ai" },
   ];
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.headerSection}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("GuestHome")}
-          style={styles.backButton}
-        >
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity>
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>A</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.appTitle}>AgriXpert</Text>
-          <Text style={styles.appSubtitle}>AI Assistant</Text>
-        </View>
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.container}>
 
-      {/* Scrollable Content */}
-      <ScrollView contentContainerStyle={{ padding: 15 }}>
-        <View style={styles.scrollHeaderRow}>
-          <Image source={robot} style={styles.robotImageHeader} />
-          <View style={{ marginLeft: 10 }}>
-            <Text style={styles.scrollHeaderTitle}>AI Agriculture Assistant</Text>
-            <Text style={styles.scrollHeaderSubtitle}>
-              Get instant answers to your farming questions
-            </Text>
+
+          {/* -------- Header -------- */}
+          <View style={styles.headerRow}>
+            <Image source={robot} style={styles.robotImage} />
+            <View>
+              <Text style={styles.headerTitle}>AI Agriculture Assistant</Text>
+              <Text style={styles.headerSubtitle}>Ask anything about farming</Text>
+            </View>
           </View>
-        </View>
 
-        {/* Chat Section */}
-        <View style={styles.chatListBox}>
-          <FlatList
-            ref={flatListRef}
-            data={messages}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View
-                style={[
-                  styles.messageWrapper,
-                  item.sender === "You" ? styles.userWrapper : styles.aiWrapper,
-                ]}
-              >
-                {item.sender === "AI" && (
-                  <View style={styles.aiProfile}>
-                    <Text style={styles.aiProfileText}>AI</Text>
-                  </View>
-                )}
+
+          {/* -------- Chat Box -------- */}
+          <View style={styles.chatContainer}>
+            <FlatList
+              ref={flatListRef}
+              data={messages}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
                 <View
                   style={[
-                    styles.messageBubble,
-                    item.sender === "You" ? styles.userBubble : styles.aiBubble,
+                    styles.msgRow,
+                    item.sender === "You" ? styles.userRow : styles.aiRow,
                   ]}
                 >
-                  <Text
+                  {item.sender === "AI" && (
+                    <View style={styles.aiAvatar}>
+                      <Text style={styles.aiAvatarText}>AI</Text>
+                    </View>
+                  )}
+
+                  <View
                     style={[
-                      styles.messageText,
-                      item.sender === "You" ? styles.userText : styles.aiText,
+                      styles.msgBubble,
+                      item.sender === "You"
+                        ? styles.userBubble
+                        : styles.aiBubble,
                     ]}
                   >
-                    {item.text}
-                  </Text>
+                    <Text style={styles.msgText}>{item.text}</Text>
+                  </View>
                 </View>
-              </View>
-            )}
-          />
-        </View>
-
-        {/* Popular Questions */}
-        <View style={styles.aiSection}>
-          <View style={styles.aiHeader}>
-            <Text style={styles.aiTitle}>Popular Questions</Text>
+              )}
+            />
           </View>
 
-          {popularQuestions.map((question, index) => (
-            <TouchableOpacity key={index} style={styles.questionItem}>
-              <View style={styles.questionContent}>
-                <Text style={styles.questionTitle}>{question.title}</Text>
-                <Text style={styles.questionDescription}>{question.description}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
 
-          {/* Input Section */}
-          <View style={styles.inputContainer}>
+          {/* -------- Popular Questions -------- */}
+          <ScrollView style={{ maxHeight: 180 }}>
+            <Text style={styles.popularTitle}>Popular Questions</Text>
+
+            {popularQuestions.map((q, i) => (
+              <TouchableOpacity
+                key={i}
+                style={styles.questionCard}
+                onPress={() => setInput(q.title)}
+              >
+                <Text style={styles.questionTitle}>{q.title}</Text>
+                <Text style={styles.questionDesc}>{q.description}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+
+          {/* -------- Input Row -------- */}
+          <View style={styles.inputRow}>
             <TextInput
-              style={styles.textInput}
-              placeholder="Type your question here..."
-              placeholderTextColor="#999"
-              multiline={true}
+              style={styles.input}
+              placeholder="Type your question..."
               value={input}
               onChangeText={setInput}
+              multiline
             />
-            <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-              <Text style={styles.sendButtonText}>Send</Text>
+
+            <TouchableOpacity style={styles.sendBtn} onPress={sendMessage}>
+              <Text style={styles.sendBtnTxt}>Send</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Note */}
-          <View style={styles.noteBox}>
-            <Text style={styles.noteText}>
-              Note: This AI assistant provides general farming guidance. For
-              specific issues, consult with local agricultural experts.
-            </Text>
+
+          {/* -------- Bottom Navigation -------- */}
+          <View style={styles.bottomNav}>
+            {bottomNavItems.map((item, idx) => {
+              const active = activeNav === item.name;
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  style={[styles.navItem, active && styles.activeNav]}
+                  onPress={() => {
+                    setActiveNav(item.name);
+                    router.push(item.route);
+                  }}
+                >
+                  <Image source={item.img} style={styles.navIcon} />
+                  <Text style={[styles.navTxt, active && styles.activeNavTxt]}>
+                    {item.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
+
         </View>
-      </ScrollView>
-
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        {[
-          { name: "Home", img: homeIcon, route: "GuestHome" },
-          { name: "Products", img: productsIcon, route: "browse" },
-          { name: "Learn", img: learnIcon, route: "LearnArti" },
-          { name: "AI Chat", img: chatIcon, route: "Ai" },
-        ].map((item, index) => {
-          const isActive = item.name === activeNav;
-          return (
-            <TouchableOpacity
-              key={index}
-              style={[styles.navItem, isActive && styles.activeNavItem]}
-              onPress={() => {
-                setActiveNav(item.name);
-                navigation.navigate(item.route);
-              }}
-            >
-              <Image source={item.img} style={styles.navIcon} />
-              <Text style={[styles.navText, isActive && styles.activeNavText]}>
-                {item.name}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
+/* ===========================================================
+                     STYLES (FULL + ERROR FREE)
+   =========================================================== */
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-  headerSection: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  backButton: { marginRight: 10 },
-  backIcon: { width: 24, height: 24, resizeMode: "contain" },
-  logoBox: {
-    backgroundColor: "#28a745",
-    width: 50,
-    height: 50,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  logoText: { color: "#fff", fontSize: 22, fontWeight: "bold" },
-  appTitle: { fontSize: 18, fontWeight: "bold", color: "#000" },
-  appSubtitle: { fontSize: 13, color: "#666" },
+  safeArea: { flex: 1, backgroundColor: "#fff" },
+  container: { flex: 1, padding: 15 },
 
-  scrollHeaderRow: { flexDirection: "row", alignItems: "center", marginBottom: 15 },
-  robotImageHeader: { width: 50, height: 50 },
-  scrollHeaderTitle: { fontSize: 18, fontWeight: "bold", color: "#000" },
-  scrollHeaderSubtitle: { fontSize: 14, color: "#666", marginTop: 2 },
+  headerRow: { flexDirection: "row", marginBottom: 10 },
+  robotImage: { width: 50, height: 50, marginRight: 10 },
+  headerTitle: { fontSize: 18, fontWeight: "bold" },
+  headerSubtitle: { color: "#666" },
 
-  chatListBox: {
-    minHeight: 250,
-    maxHeight: 500,
+  chatContainer: {
+    flex: 1,
+    backgroundColor: "#f8f9fa",
     borderWidth: 1,
     borderColor: "#e9ecef",
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 20,
-    backgroundColor: "#f8f9fa",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 15,
   },
-  messageWrapper: { flexDirection: "row", alignItems: "flex-start", marginVertical: 6 },
-  aiWrapper: { justifyContent: "flex-start" },
-  userWrapper: { justifyContent: "flex-end" },
-  messageBubble: {
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: 12,
-    maxWidth: "80%",
-  },
-  aiBubble: { backgroundColor: "#eaf8ea", marginLeft: 5 },
-  userBubble: { backgroundColor: "#d1ecf1", marginLeft: "auto" },
-  messageText: { fontSize: 15, lineHeight: 20 },
-  aiText: { color: "#155724" },
-  userText: { color: "#0c5460" },
-  aiProfile: {
-    backgroundColor: "#28a745",
+
+  msgRow: { marginVertical: 6 },
+  aiRow: { flexDirection: "row" },
+  userRow: { flexDirection: "row-reverse" },
+
+  aiAvatar: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 6,
-    marginTop: 5,
-  },
-  aiProfileText: { color: "#fff", fontWeight: "bold", fontSize: 12 },
-  aiSection: {
-    backgroundColor: "#f8f9fa",
-    borderRadius: 12,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "#e9ecef",
-    marginBottom: 15,
-  },
-  aiHeader: { alignItems: "center", marginBottom: 15 },
-  aiTitle: { fontSize: 20, fontWeight: "bold", color: "#2c3e50" },
-  questionItem: {
-    backgroundColor: "white",
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
-  },
-  questionContent: { flex: 1 },
-  questionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 4,
-  },
-  questionDescription: { fontSize: 14, color: "#666", lineHeight: 18 },
-  inputContainer: { flexDirection: "row", alignItems: "flex-end", marginTop: 15 },
-  textInput: {
-    flex: 1,
-    backgroundColor: "white",
-    borderWidth: 1,
-    borderColor: "#e9ecef",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 14,
-    color: "#333",
-    minHeight: 50,
-    textAlignVertical: "top",
-  },
-  sendButton: {
     backgroundColor: "#28a745",
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginLeft: 10,
-  },
-  sendButtonText: { color: "white", fontSize: 14, fontWeight: "bold" },
-  noteBox: {
-    backgroundColor: "#fff3cd",
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: "#ffeeba",
-  },
-  noteText: { fontSize: 12, color: "#856404", textAlign: "center" },
-  bottomNav: {
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderTopColor: "#ddd",
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-  },
-  navItem: {
-    flex: 1,
-    alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 6,
-    marginHorizontal: 5,
+    alignItems: "center",
+    marginRight: 6,
+  },
+  aiAvatarText: { color: "#fff", fontWeight: "bold" },
+
+  msgBubble: {
+    padding: 12,
+    borderRadius: 12,
+    maxWidth: "75%",
+  },
+  aiBubble: { backgroundColor: "#eaf8ea" },
+  userBubble: { backgroundColor: "#d1ecf1" },
+  msgText: { fontSize: 15 },
+
+  popularTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+
+  questionCard: {
+    backgroundColor: "white",
+    padding: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#eee",
+    marginBottom: 10,
+  },
+  questionTitle: { fontSize: 16, fontWeight: "600" },
+  questionDesc: { color: "#666" },
+
+  inputRow: { flexDirection: "row", marginTop: 10 },
+  input: {
+    flex: 1,
+    padding: 12,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 12,
-    backgroundColor: "#fff",
+    borderRadius: 10,
+    minHeight: 45,
   },
-  navIcon: { width: 22, height: 22, marginBottom: 4, resizeMode: "contain" },
-  activeNavItem: { borderColor: "#28a745", backgroundColor: "#eaf8ea" },
-  navText: { fontSize: 12, color: "#333", textAlign: "center" },
-  activeNavText: { color: "#28a745", fontWeight: "bold" },
+  sendBtn: {
+    marginLeft: 10,
+    backgroundColor: "#28a745",
+    paddingHorizontal: 18,
+    justifyContent: "center",
+    borderRadius: 10,
+  },
+  sendBtnTxt: { color: "#fff", fontWeight: "bold" },
+
+  bottomNav: {
+    flexDirection: "row",
+    borderTopWidth: 1,
+    borderColor: "#ddd",
+    paddingVertical: 10,
+    marginTop: 10,
+  },
+  navItem: { flex: 1, alignItems: "center" },
+  navIcon: { width: 22, height: 22, marginBottom: 4 },
+  navTxt: { fontSize: 12 },
+
+  activeNav: {
+    backgroundColor: "#eaf8ea",
+    borderRadius: 10,
+    paddingVertical: 5,
+  },
+  activeNavTxt: { color: "#28a745", fontWeight: "bold" },
 });

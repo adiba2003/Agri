@@ -1,66 +1,85 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from "react-native";
+import { router } from "expo-router";
 
 // ✅ Top-level image imports
-import backArrow from '../assets/back-arrow.png';
-import homeIcon from '../assets/home-icon.png';
-import productsIcon from '../assets/products-icon.png';
-import learnIcon from '../assets/learn-icon.webp';
-import chatIcon from '../assets/chat-icon.png';
-import leafImage from '../assets/leaf.jpg';
-import leaf1 from '../assets/leaf1.png';
-import chemicalIcon from '../assets/chemical.png';
-import searchIcon from '../assets/search-icon.png';
-import calendarIcon from '../assets/calendar-icon.png';
-import waterIcon from '../assets/water-icon.png';
+import backArrow from "@/assets/back-arrow.png";
+import homeIcon from "@/assets/home-icon.png";
+import productsIcon from "@/assets/products-icon.png";
+import learnIcon from "@/assets/learn-icon.webp";
+import chatIcon from "@/assets/chat-icon.png";
+import leafImage from "@/assets/leaf.jpg";
+import leaf1 from "@/assets/leaf1.png";
+import chemicalIcon from "@/assets/chemical.png";
+import searchIcon from "@/assets/search-icon.png";
+import calendarIcon from "@/assets/calendar-icon.png";
+import waterIcon from "@/assets/water-icon.png";
 
-export default function SoilGuide({ navigation }) {
+export default function SoilGuide() {
   const [activeTab, setActiveTab] = useState("Home"); // Default Home selected
 
   const tabs = [
-    { name: "Home", img: homeIcon, route: "GuestHome" },
-    { name: "Products", img: productsIcon, route: "browse" },
-    { name: "Learn", img: learnIcon, route: "LearnArti" },
-    { name: "AI Chat", img: chatIcon, route: "Ai" },
+    { name: "Home", img: homeIcon, route: "/GuestHome" },
+    { name: "Products", img: productsIcon, route: "/browse" },
+    { name: "Learn", img: learnIcon, route: "/LearnArti" },
+    { name: "AI Chat", img: chatIcon, route: "/Ai" },
   ];
 
   const soilTypes = [
-    { name: "Loamy Soil", description: "Most fertile, suitable for all types of crops", color: "#8FBC8F" },
-    { name: "Clay Soil", description: "Good water retention, ideal for rice cultivation", color: "#D2B48C" },
-    { name: "Sandy Soil", description: "Good drainage, suitable for vegetables", color: "#F4A460" }
+    {
+      name: "Loamy Soil",
+      description: "Most fertile, suitable for all types of crops",
+      color: "#8FBC8F",
+    },
+    {
+      name: "Clay Soil",
+      description: "Good water retention, ideal for rice cultivation",
+      color: "#D2B48C",
+    },
+    {
+      name: "Sandy Soil",
+      description: "Good drainage, suitable for vegetables",
+      color: "#F4A460",
+    },
   ];
 
   const fertilizers = [
     { name: "Organic Fertilizer", desc: "Animal dung, Compost", image: leaf1 },
-    { name: "Chemical Fertilizer", desc: "Urea, TSP, MP", image: chemicalIcon }
+    { name: "Chemical Fertilizer", desc: "Urea, TSP, MP", image: chemicalIcon },
   ];
 
   const cropManagement = [
-    { title: "Soil Testing", description: "Comprehensive soil analysis and recommendations", image: searchIcon },
-    { title: "Nutrient Management", description: "Optimal nutrient balance for different crops", image: leafImage },
-    { title: "Season Planning", description: "Best planting times and crop rotation", image: calendarIcon },
-    { title: "Water Management", description: "Efficient irrigation and water conservation", image: waterIcon }
+    {
+      title: "Soil Testing",
+      description: "Comprehensive soil analysis and recommendations",
+      image: searchIcon,
+    },
+    {
+      title: "Nutrient Management",
+      description: "Optimal nutrient balance for different crops",
+      image: leafImage,
+    },
+    {
+      title: "Season Planning",
+      description: "Best planting times and crop rotation",
+      image: calendarIcon,
+    },
+    {
+      title: "Water Management",
+      description: "Efficient irrigation and water conservation",
+      image: waterIcon,
+    },
   ];
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("GuestHome")}
-          style={styles.backButton}
-        >
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity>
-
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>A</Text>
-        </View>
-        <View>
-          <Text style={styles.appName}>AgriXpert</Text>
-          <Text style={styles.subtitle}>Soil & Fertilizer Guide</Text>
-        </View>
-      </View>
 
       <ScrollView style={styles.content}>
         {/* Soil Types Section */}
@@ -77,13 +96,20 @@ export default function SoilGuide({ navigation }) {
         {soilTypes.map((soil, index) => (
           <View key={index} style={styles.soilCard}>
             <View style={styles.soilHeader}>
-              <View style={[styles.soilImagePlaceholder, { backgroundColor: soil.color }]} />
+              <View
+                style={[
+                  styles.soilImagePlaceholder,
+                  { backgroundColor: soil.color },
+                ]}
+              />
               <View style={styles.soilTextContainer}>
                 <Text style={styles.soilName}>{soil.name}</Text>
                 <Text style={styles.soilDescription}>{soil.description}</Text>
               </View>
             </View>
-            <View style={[styles.colorIndicator, { backgroundColor: soil.color }]} />
+            <View
+              style={[styles.colorIndicator, { backgroundColor: soil.color }]}
+            />
           </View>
         ))}
 
@@ -95,16 +121,25 @@ export default function SoilGuide({ navigation }) {
               key={index}
               style={[
                 styles.fertilizerItem,
-                index === arr.length - 1 && { borderBottomWidth: 0, marginBottom: 0, paddingBottom: 0 }
+                index === arr.length - 1 && {
+                  borderBottomWidth: 0,
+                  marginBottom: 0,
+                  paddingBottom: 0,
+                },
               ]}
             >
               <View style={styles.fertilizerHeader}>
                 <View style={styles.fertilizerIcon}>
-                  <Image source={fertilizer.image} style={{ width: 28, height: 28, resizeMode: 'contain' }} />
+                  <Image
+                    source={fertilizer.image}
+                    style={{ width: 28, height: 28, resizeMode: "contain" }}
+                  />
                 </View>
                 <Text style={styles.fertilizerName}>{fertilizer.name}</Text>
               </View>
-              <Text style={styles.fertilizerDescription}>{fertilizer.desc}</Text>
+              <Text style={styles.fertilizerDescription}>
+                {fertilizer.desc}
+              </Text>
             </View>
           ))}
         </View>
@@ -119,7 +154,9 @@ export default function SoilGuide({ navigation }) {
               </View>
               <View style={styles.cropTextContainer}>
                 <Text style={styles.cropItemTitle}>{crop.title}</Text>
-                <Text style={styles.cropItemDescription}>{crop.description}</Text>
+                <Text style={styles.cropItemDescription}>
+                  {crop.description}
+                </Text>
               </View>
             </View>
           ))}
@@ -136,7 +173,7 @@ export default function SoilGuide({ navigation }) {
               style={[styles.navItem, isActive && styles.activeNavItem]}
               onPress={() => {
                 setActiveTab(item.name);
-                navigation.navigate(item.route);
+                router.push(item.route);
               }}
             >
               <Image source={item.img} style={styles.navIcon} />
@@ -152,7 +189,7 @@ export default function SoilGuide({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: "#fff" },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -178,40 +215,141 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 13, color: "#666" },
   content: { flex: 1, padding: 20 },
 
-  sectionHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  sectionHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   leafIcon: { width: 24, height: 24, marginRight: 8 },
-  sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#333' },
-  sectionDescription: { fontSize: 14, color: '#666', marginBottom: 20 },
-  fertilizerTitle: { fontSize: 18, fontWeight: 'bold', color: '#333', marginBottom: 15, marginTop: 10 },
+  sectionTitle: { fontSize: 20, fontWeight: "bold", color: "#333" },
+  sectionDescription: { fontSize: 14, color: "#666", marginBottom: 20 },
+  fertilizerTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 15,
+    marginTop: 10,
+  },
 
-  soilCard: { backgroundColor: '#f9f9f9', borderRadius: 10, padding: 15, marginBottom: 15, borderLeftWidth: 4, borderLeftColor: '#4CAF50' },
-  soilHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  soilImagePlaceholder: { width: 50, height: 50, borderRadius: 25, marginRight: 15 },
+  soilCard: {
+    backgroundColor: "#f9f9f9",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    borderLeftWidth: 4,
+    borderLeftColor: "#4CAF50",
+  },
+  soilHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
+  soilImagePlaceholder: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 15,
+  },
   soilTextContainer: { flex: 1 },
-  soilName: { fontSize: 16, fontWeight: 'bold', color: '#333' },
-  soilDescription: { fontSize: 14, color: '#666', marginTop: 5 },
+  soilName: { fontSize: 16, fontWeight: "bold", color: "#333" },
+  soilDescription: { fontSize: 14, color: "#666", marginTop: 5 },
   colorIndicator: { height: 4, borderRadius: 2, marginTop: 5 },
 
-  fertilizerSection: { backgroundColor: '#f8f9fa', borderRadius: 12, padding: 16, marginBottom: 20, borderLeftWidth: 4, borderLeftColor: '#4CAF50' },
-  fertilizerItem: { marginBottom: 15, paddingBottom: 12, borderBottomWidth: 5, borderBottomColor: '#e0e0e0' },
-  fertilizerHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
-  fertilizerIcon: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#e3f2fd', alignItems: 'center', justifyContent: 'center', marginRight: 10 },
-  fertilizerName: { fontSize: 16, fontWeight: '600', color: '#333' },
-  fertilizerDescription: { fontSize: 14, color: '#666', marginLeft: 46 },
+  fertilizerSection: {
+    backgroundColor: "#f8f9fa",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    borderLeftWidth: 4,
+    borderLeftColor: "#4CAF50",
+  },
+  fertilizerItem: {
+    marginBottom: 15,
+    paddingBottom: 12,
+    borderBottomWidth: 5,
+    borderBottomColor: "#e0e0e0",
+  },
+  fertilizerHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  fertilizerIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#e3f2fd",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  fertilizerName: { fontSize: 16, fontWeight: "600", color: "#333" },
+  fertilizerDescription: { fontSize: 14, color: "#666", marginLeft: 46 },
 
-  cropManagementSection: { backgroundColor: '#f0f8ff', borderRadius: 12, padding: 16, marginTop: 10, marginBottom: 20, borderLeftWidth: 4, borderLeftColor: '#2196F3' },
-  cropManagementTitle: { fontSize: 18, fontWeight: 'bold', color: '#333', marginBottom: 10, textAlign: 'left' },
-  cropItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'white', borderRadius: 8, padding: 12, marginBottom: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 },
-  cropIconContainer: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#e3f2fd', alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  cropImage: { width: 24, height: 24, resizeMode: 'contain' },
+  cropManagementSection: {
+    backgroundColor: "#f0f8ff",
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 10,
+    marginBottom: 20,
+    borderLeftWidth: 4,
+    borderLeftColor: "#2196F3",
+  },
+  cropManagementTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 10,
+    textAlign: "left",
+  },
+  cropItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  cropIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#e3f2fd",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  cropImage: { width: 24, height: 24, resizeMode: "contain" },
   cropTextContainer: { flex: 1 },
-  cropItemTitle: { fontSize: 16, fontWeight: '600', color: '#333', marginBottom: 4 },
-  cropItemDescription: { fontSize: 14, color: '#666', lineHeight: 18 },
+  cropItemTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 4,
+  },
+  cropItemDescription: { fontSize: 14, color: "#666", lineHeight: 18 },
 
-  bottomNav: { flexDirection: 'row', backgroundColor: '#f0f0f0', borderTopWidth: 1, borderTopColor: '#ddd', paddingVertical: 10 },
-  navItem: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 8, borderWidth: 2, borderColor: 'transparent', borderRadius: 10, marginHorizontal: 5 },
-  activeNavItem: { borderColor: '#4CAF50', backgroundColor: '#eaf8ea' },
-  navIcon: { width: 28, height: 28, marginBottom: 5, resizeMode: 'contain' },
-  navText: { fontSize: 12, color: '#333', fontWeight: '500', textAlign: 'center' },
-  activeNavText: { color: '#4CAF50', fontWeight: '700' },
+  bottomNav: {
+    flexDirection: "row",
+    backgroundColor: "#f0f0f0",
+    borderTopWidth: 1,
+    borderTopColor: "#ddd",
+    paddingVertical: 10,
+  },
+  navItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 8,
+    borderWidth: 2,
+    borderColor: "transparent",
+    borderRadius: 10,
+    marginHorizontal: 5,
+  },
+  activeNavItem: { borderColor: "#4CAF50", backgroundColor: "#eaf8ea" },
+  navIcon: { width: 28, height: 28, marginBottom: 5, resizeMode: "contain" },
+  navText: {
+    fontSize: 12,
+    color: "#333",
+    fontWeight: "500",
+    textAlign: "center",
+  },
+  activeNavText: { color: "#4CAF50", fontWeight: "700" },
 });

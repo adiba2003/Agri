@@ -4,9 +4,9 @@ import { ScrollView, StyleSheet } from 'react-native';
 
 export default function Home() {
     return (
-        <ScrollView style={styles.screen} contentContainerStyle={{ flexGrow: 1 }}>
+        //<ScrollView style={styles.screen} contentContainerStyle={{ flexGrow: 1 }}>
             <HomeScreen></HomeScreen>
-        </ScrollView>
+        //</ScrollView>
     );
 }
 

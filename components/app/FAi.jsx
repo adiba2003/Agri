@@ -9,18 +9,19 @@ import {
   FlatList,
   ScrollView,
 } from "react-native";
+import { router } from "expo-router";
 
 // ✅ Import all images at the top
-import backArrow from "../assets/back-arrow.png";
-import notificationIconImg from "../assets/notification.png";
-import robotImg from "../assets/robot.png";
-import homeIcon from "../assets/home-icon.png";
-import productsIcon from "../assets/products-icon.png";
-import weatherIcon from "../assets/weather.png";
-import helpIcon from "../assets/help.png";
-import ordersIcon from "../assets/orders.png";
+import backArrow from "@/assets/back-arrow.png";
+import notificationIconImg from "@/assets/notification.png";
+import robotImg from "@/assets/robot.png";
+import homeIcon from "@/assets/home-icon.png";
+import productsIcon from "@/assets/products-icon.png";
+import weatherIcon from "@/assets/weather.png";
+import helpIcon from "@/assets/help.png";
+import ordersIcon from "@/assets/orders.png";
 
-export default function FAi({ navigation }) {
+export default function FAi() {
   const [activeNav, setActiveNav] = useState("Home");
   const [messages, setMessages] = useState([
     {
@@ -30,7 +31,7 @@ export default function FAi({ navigation }) {
     },
   ]);
   const [input, setInput] = useState("");
-  const flatListRef = useRef();
+  const flatListRef = useRef(null);
 
   useEffect(() => {
     if (flatListRef.current && messages.length > 0) {
@@ -45,7 +46,7 @@ export default function FAi({ navigation }) {
       sender: "You",
       text: input,
     };
-    setMessages([...messages, newMessage]);
+    setMessages((prev) => [...prev, newMessage]);
     setInput("");
   };
 
@@ -60,28 +61,7 @@ export default function FAi({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Fixed Header */}
-      <View style={styles.headerSection}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("FarmerDashboard")}
-          style={styles.backButton}
-        >
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity>
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>A</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.appTitle}>AgriXpert</Text>
-          <Text style={styles.appSubtitle}>AI Assistant</Text>
-        </View>
-        <View style={{ position: "relative", marginLeft: 10 }}>
-          <Image source={notificationIconImg} style={styles.notificationIcon} />
-          <View style={styles.headerNotificationBadge}>
-            <Text style={styles.headerNotificationText}>15</Text>
-          </View>
-        </View>
-      </View>
+
 
       {/* Scrollable Content */}
       <ScrollView contentContainerStyle={{ padding: 15 }}>
@@ -156,7 +136,7 @@ export default function FAi({ navigation }) {
               style={styles.textInput}
               placeholder="Type your question here..."
               placeholderTextColor="#999"
-              multiline={true}
+              multiline
               value={input}
               onChangeText={setInput}
             />
@@ -178,11 +158,11 @@ export default function FAi({ navigation }) {
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "FarmerDashboard" },
-          { name: "Products", image: productsIcon, route: "FarmerProducts" },
-          { name: "Weather", image: weatherIcon, route: "FAi" },
-          { name: "Help", image: helpIcon, route: "FAi" },
-          { name: "Orders", image: ordersIcon, notification: 15, route: "FarmerOrders" },
+          { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
+          { name: "Products", image: productsIcon, route: "/FarmerProducts" },
+          { name: "Weather", image: weatherIcon, route: "/Calendar" },
+          { name: "Help", image: helpIcon, route: "/FAi" },
+          { name: "Orders", image: ordersIcon, notification: 15, route: "/FarmerOrders" },
         ].map((item, index) => {
           const isActive = activeNav === item.name;
           return (
@@ -191,7 +171,7 @@ export default function FAi({ navigation }) {
               style={[styles.navItem, isActive && styles.activeNavItem]}
               onPress={() => {
                 setActiveNav(item.name);
-                navigation.navigate(item.route);
+                router.push(item.route);
               }}
             >
               <View style={{ position: "relative" }}>
@@ -277,27 +257,102 @@ const styles = StyleSheet.create({
   messageText: { fontSize: 15, lineHeight: 20 },
   aiText: { color: "#155724" },
   userText: { color: "#0c5460" },
-  aiProfile: { backgroundColor: "#28a745", width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center", marginRight: 6, marginTop: 5 },
+  aiProfile: {
+    backgroundColor: "#28a745",
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 6,
+    marginTop: 5,
+  },
   aiProfileText: { color: "#fff", fontWeight: "bold", fontSize: 12 },
-  aiSection: { backgroundColor: "#f8f9fa", borderRadius: 12, padding: 20, borderWidth: 1, borderColor: "#e9ecef", marginBottom: 15 },
+  aiSection: {
+    backgroundColor: "#f8f9fa",
+    borderRadius: 12,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: "#e9ecef",
+    marginBottom: 15,
+  },
   aiHeader: { alignItems: "center", marginBottom: 15 },
   aiTitle: { fontSize: 20, fontWeight: "bold", color: "#2c3e50" },
-  questionItem: { backgroundColor: "white", padding: 15, borderRadius: 8, marginBottom: 10, borderWidth: 1, borderColor: "#f0f0f0" },
+  questionItem: {
+    backgroundColor: "white",
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
+  },
   questionContent: { flex: 1 },
   questionTitle: { fontSize: 16, fontWeight: "600", color: "#333", marginBottom: 4 },
   questionDescription: { fontSize: 14, color: "#666", lineHeight: 18 },
   inputContainer: { flexDirection: "row", alignItems: "flex-end", marginTop: 15 },
-  textInput: { flex: 1, backgroundColor: "white", borderWidth: 1, borderColor: "#e9ecef", borderRadius: 8, padding: 12, fontSize: 14, color: "#333", minHeight: 50, textAlignVertical: "top" },
-  sendButton: { backgroundColor: "#28a745", paddingHorizontal: 20, paddingVertical: 12, borderRadius: 8, marginLeft: 10 },
+  textInput: {
+    flex: 1,
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#e9ecef",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 14,
+    color: "#333",
+    minHeight: 50,
+    textAlignVertical: "top",
+  },
+  sendButton: {
+    backgroundColor: "#28a745",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginLeft: 10,
+  },
   sendButtonText: { color: "white", fontSize: 14, fontWeight: "bold" },
-  noteBox: { backgroundColor: "#fff3cd", padding: 12, borderRadius: 8, marginTop: 20, borderWidth: 1, borderColor: "#ffeeba" },
+  noteBox: {
+    backgroundColor: "#fff3cd",
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#ffeeba",
+  },
   noteText: { fontSize: 12, color: "#856404", textAlign: "center" },
-  bottomNav: { flexDirection: "row", backgroundColor: "#fff", borderTopWidth: 1, borderTopColor: "#ddd", paddingVertical: 10, paddingHorizontal: 5 },
-  navItem: { flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 6, marginHorizontal: 5, borderWidth: 1, borderColor: "#ccc", borderRadius: 12, backgroundColor: "#fff" },
+  bottomNav: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    borderTopWidth: 1,
+    borderTopColor: "#ddd",
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+  navItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 6,
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 12,
+    backgroundColor: "#fff",
+  },
   navIcon: { width: 22, height: 22, marginBottom: 4, resizeMode: "contain" },
   activeNavItem: { borderColor: "#28a745", backgroundColor: "#eaf8ea" },
   navText: { fontSize: 12, color: "#333", textAlign: "center" },
   activeNavText: { color: "#28a745", fontWeight: "bold" },
-  notificationBadge: { position: "absolute", top: -5, right: -10, backgroundColor: "red", borderRadius: 8, paddingHorizontal: 4, minWidth: 16, height: 16, alignItems: "center", justifyContent: "center" },
+  notificationBadge: {
+    position: "absolute",
+    top: -5,
+    right: -10,
+    backgroundColor: "red",
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    minWidth: 16,
+    height: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   notificationText: { color: "#fff", fontSize: 10, fontWeight: "bold" },
 });

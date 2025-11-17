@@ -1,55 +1,53 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
+import { router } from "expo-router";
 
 // ✅ Top-level image imports
-import backArrow from "../assets/back-arrow.png";
-import booksIcon from "../assets/books.png";
-import leafIcon from "../assets/leaf1.png";
-import chemicalIcon from "../assets/chemical.png";
-import homeIcon from "../assets/home-icon.png";
-import productsIcon from "../assets/products-icon.png";
-import weatherIcon from "../assets/weather.png";
-import helpIcon from "../assets/help.png";
-import ordersIcon from "../assets/orders.png";
+import backArrow from "@/assets/back-arrow.png";
+import booksIcon from "@/assets/books.png";
+import leafIcon from "@/assets/leaf1.png";
+import chemicalIcon from "@/assets/chemical.png";
+import homeIcon from "@/assets/home-icon.png";
+import productsIcon from "@/assets/products-icon.png";
+import learnIcon from "@/assets/learn-icon.webp";
+import chatIcon from "@/assets/chat-icon.png";
 
-export default function LearnSoil({ navigation }) {
+export default function LearnSoil() {
   const [activeTab, setActiveTab] = useState("Soil Guide");
   const [activeNav, setActiveNav] = useState("Learn"); // Default Learn
 
   const soilTypes = [
-    { name: "Loamy Soil", description: "Most fertile, suitable for all types of crops", color: "#8FBC8F" },
-    { name: "Clay Soil", description: "Good water retention, ideal for rice cultivation", color: "#D2B48C" },
-    { name: "Sandy Soil", description: "Good drainage, suitable for vegetables", color: "#F4A460" }
+    {
+      name: "Loamy Soil",
+      description: "Most fertile, suitable for all types of crops",
+      color: "#8FBC8F",
+    },
+    {
+      name: "Clay Soil",
+      description: "Good water retention, ideal for rice cultivation",
+      color: "#D2B48C",
+    },
+    {
+      name: "Sandy Soil",
+      description: "Good drainage, suitable for vegetables",
+      color: "#F4A460",
+    },
   ];
 
   const fertilizers = [
     { name: "Organic Fertilizer", desc: "Animal dung, Compost", image: leafIcon },
-    { name: "Chemical Fertilizer", desc: "Urea, TSP, MP", image: chemicalIcon }
-  ];
-
-  const bottomNavItems = [
-    { name: "Home", image: homeIcon, route: "FarmerDashboard" },
-    { name: "Products", image: productsIcon, route: "FarmerProducts" },
-    { name: "Weather", image: weatherIcon, route: "Calendar" },
-    { name: "Help", image: helpIcon, route: "Calendar" },
-    { name: "Orders", image: ordersIcon, notification: 15, route: "FarmerOrders" },
+    { name: "Chemical Fertilizer", desc: "Urea, TSP, MP", image: chemicalIcon },
   ];
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate("GuestHome")} style={styles.backButton}>
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity>
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>A</Text>
-        </View>
-        <View>
-          <Text style={styles.appName}>AgriXpet</Text>
-          <Text style={styles.subtitle}>Learning Center</Text>
-        </View>
-      </View>
 
       {/* Scrollable Content */}
       <ScrollView style={{ flex: 1 }}>
@@ -58,26 +56,33 @@ export default function LearnSoil({ navigation }) {
           <Image source={booksIcon} style={styles.iconImage} />
           <View>
             <Text style={styles.title}>Learning Center</Text>
-            <Text style={styles.subTitleText}>Educational blogs and video tutorials in English</Text>
+            <Text style={styles.subTitleText}>
+              Educational blogs and video tutorials in English
+            </Text>
           </View>
         </View>
 
         {/* Tabs */}
         <View style={styles.tabContainer}>
           {[
-            { name: "Articles", route: "LearnArti" },
-            { name: "Videos", route: "LearnVdo" },
-            { name: "Soil Guide", route: "LearnSoil" },
+            { name: "Articles", route: "/LearnArti" },
+            { name: "Videos", route: "/LearnVdo" },
+            { name: "Soil Guide", route: "/LearnSoil" },
           ].map((tab, index) => (
             <TouchableOpacity
               key={index}
               style={[styles.tab, activeTab === tab.name && styles.activeTab]}
               onPress={() => {
                 setActiveTab(tab.name);
-                navigation.navigate(tab.route);
+                router.push(tab.route);
               }}
             >
-              <Text style={[styles.tabText, activeTab === tab.name && styles.activeTabText]}>
+              <Text
+                style={[
+                  styles.tabText,
+                  activeTab === tab.name && styles.activeTabText,
+                ]}
+              >
                 {tab.name}
               </Text>
             </TouchableOpacity>
@@ -89,13 +94,20 @@ export default function LearnSoil({ navigation }) {
         {soilTypes.map((soil, index) => (
           <View key={index} style={styles.soilCard}>
             <View style={styles.soilHeader}>
-              <View style={[styles.soilImagePlaceholder, { backgroundColor: soil.color }]} />
+              <View
+                style={[
+                  styles.soilImagePlaceholder,
+                  { backgroundColor: soil.color },
+                ]}
+              />
               <View style={styles.soilTextContainer}>
                 <Text style={styles.soilName}>{soil.name}</Text>
                 <Text style={styles.soilDescription}>{soil.description}</Text>
               </View>
             </View>
-            <View style={[styles.colorIndicator, { backgroundColor: soil.color }]} />
+            <View
+              style={[styles.colorIndicator, { backgroundColor: soil.color }]}
+            />
           </View>
         ))}
 
@@ -107,24 +119,38 @@ export default function LearnSoil({ navigation }) {
               key={index}
               style={[
                 styles.fertilizerItem,
-                index === arr.length - 1 && { borderBottomWidth: 0, marginBottom: 0, paddingBottom: 0 }
+                index === arr.length - 1 && {
+                  borderBottomWidth: 0,
+                  marginBottom: 0,
+                  paddingBottom: 0,
+                },
               ]}
             >
               <View style={styles.fertilizerHeader}>
                 <View style={styles.fertilizerIcon}>
-                  <Image source={fertilizer.image} style={{ width: 28, height: 28, resizeMode: 'contain' }} />
+                  <Image
+                    source={fertilizer.image}
+                    style={{ width: 28, height: 28, resizeMode: "contain" }}
+                  />
                 </View>
                 <Text style={styles.fertilizerName}>{fertilizer.name}</Text>
               </View>
-              <Text style={styles.fertilizerDescription}>{fertilizer.desc}</Text>
+              <Text style={styles.fertilizerDescription}>
+                {fertilizer.desc}
+              </Text>
             </View>
           ))}
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation (Guest) */}
       <View style={styles.bottomNav}>
-        {bottomNavItems.map((item, index) => {
+        {[
+          { name: "Home", image: homeIcon, route: "/GuestHome" },
+          { name: "Products", image: productsIcon, route: "/browse" },
+          { name: "Learn", image: learnIcon, route: "/LearnArti" },
+          { name: "AI Chat", image: chatIcon, route: "/Ai" },
+        ].map((item, index) => {
           const isActive = activeNav === item.name;
           return (
             <TouchableOpacity
@@ -132,18 +158,15 @@ export default function LearnSoil({ navigation }) {
               style={[styles.navItem, isActive && styles.activeNavItem]}
               onPress={() => {
                 setActiveNav(item.name);
-                navigation.navigate(item.route);
+                router.push(item.route);
               }}
             >
-              <View style={{ position: "relative" }}>
-                <Image source={item.image} style={styles.navIcon} />
-                {item.notification && (
-                  <View style={styles.notificationBadge}>
-                    <Text style={styles.notificationText}>{item.notification}</Text>
-                  </View>
-                )}
-              </View>
-              <Text style={[styles.navText, isActive && styles.activeNavText]}>{item.name}</Text>
+              <Image source={item.image} style={styles.navIcon} />
+              <Text
+                style={[styles.navText, isActive && styles.activeNavText]}
+              >
+                {item.name}
+              </Text>
             </TouchableOpacity>
           );
         })}
@@ -155,10 +178,25 @@ export default function LearnSoil({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
 
-  header: { flexDirection: "row", alignItems: "center", padding: 15, borderBottomWidth: 1, borderBottomColor: "#eee", backgroundColor: "#fff" },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    backgroundColor: "#fff",
+  },
   backButton: { marginRight: 10 },
   backIcon: { width: 24, height: 24, resizeMode: "contain" },
-  logoBox: { backgroundColor: "#28a745", width: 50, height: 50, borderRadius: 12, alignItems: "center", justifyContent: "center", marginRight: 12 },
+  logoBox: {
+    backgroundColor: "#28a745",
+    width: 50,
+    height: 50,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
   logoText: { color: "#fff", fontSize: 22, fontWeight: "bold" },
   appName: { fontSize: 18, fontWeight: "bold", color: "#000" },
   subtitle: { fontSize: 13, color: "#666" },
@@ -168,30 +206,104 @@ const styles = StyleSheet.create({
   title: { fontSize: 20, fontWeight: "bold", color: "#333" },
   subTitleText: { fontSize: 14, color: "#666" },
 
-  tabContainer: { flexDirection: "row", justifyContent: "space-around", marginHorizontal: 10, marginVertical: 10, backgroundColor: "#f5f5f5", borderRadius: 10 },
-  tab: { flex: 1, paddingVertical: 10, alignItems: "center", borderRadius: 10 },
+  tabContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginHorizontal: 10,
+    marginVertical: 10,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 10,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: "center",
+    borderRadius: 10,
+  },
   tabText: { fontSize: 14, color: "#666" },
   activeTab: { backgroundColor: "#eaf8ea" },
   activeTabText: { color: "#28a745", fontWeight: "bold" },
 
-  fertilizerTitle: { fontSize: 18, fontWeight: 'bold', color: '#333', marginBottom: 15, marginTop: 10 },
-  soilCard: { backgroundColor: '#f9f9f9', borderRadius: 10, padding: 15, marginBottom: 15, borderLeftWidth: 4, borderLeftColor: '#4CAF50' },
-  soilHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  soilImagePlaceholder: { width: 50, height: 50, borderRadius: 25, marginRight: 15 },
+  fertilizerTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 15,
+    marginTop: 10,
+    paddingHorizontal: 15,
+  },
+  soilCard: {
+    backgroundColor: "#f9f9f9",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    borderLeftWidth: 4,
+    borderLeftColor: "#4CAF50",
+    marginHorizontal: 15,
+  },
+  soilHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
+  soilImagePlaceholder: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 15,
+  },
   soilTextContainer: { flex: 1 },
-  soilName: { fontSize: 16, fontWeight: 'bold', color: '#333' },
-  soilDescription: { fontSize: 14, color: '#666', marginTop: 5 },
+  soilName: { fontSize: 16, fontWeight: "bold", color: "#333" },
+  soilDescription: { fontSize: 14, color: "#666", marginTop: 5 },
   colorIndicator: { height: 4, borderRadius: 2, marginTop: 5 },
 
-  fertilizerSection: { backgroundColor: '#f8f9fa', borderRadius: 12, padding: 16, marginBottom: 20, borderLeftWidth: 4, borderLeftColor: '#4CAF50' },
-  fertilizerItem: { marginBottom: 15, paddingBottom: 12, borderBottomWidth: 5, borderBottomColor: '#e0e0e0' },
-  fertilizerHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
-  fertilizerIcon: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#e3f2fd', alignItems: 'center', justifyContent: 'center', marginRight: 10 },
-  fertilizerName: { fontSize: 16, fontWeight: '600', color: '#333' },
-  fertilizerDescription: { fontSize: 14, color: '#666', marginLeft: 46 },
+  fertilizerSection: {
+    backgroundColor: "#f8f9fa",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    borderLeftWidth: 4,
+    borderLeftColor: "#4CAF50",
+    marginHorizontal: 15,
+  },
+  fertilizerItem: {
+    marginBottom: 15,
+    paddingBottom: 12,
+    borderBottomWidth: 5,
+    borderBottomColor: "#e0e0e0",
+  },
+  fertilizerHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  fertilizerIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#e3f2fd",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  fertilizerName: { fontSize: 16, fontWeight: "600", color: "#333" },
+  fertilizerDescription: { fontSize: 14, color: "#666", marginLeft: 46 },
 
-  bottomNav: { flexDirection: "row", backgroundColor: "#fff", borderTopWidth: 1, borderTopColor: "#ddd", paddingVertical: 10, paddingHorizontal: 5 },
-  navItem: { flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 6, marginHorizontal: 5, borderWidth: 1, borderColor: "#ccc", borderRadius: 12, backgroundColor: "#fff" },
+  bottomNav: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    borderTopWidth: 1,
+    borderTopColor: "#ddd",
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+  navItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 6,
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 12,
+    backgroundColor: "#fff",
+  },
   navIcon: { width: 22, height: 22, marginBottom: 4, resizeMode: "contain" },
   activeNavItem: { borderColor: "#28a745", backgroundColor: "#eaf8ea" },
   navText: { fontSize: 12, color: "#333", textAlign: "center" },

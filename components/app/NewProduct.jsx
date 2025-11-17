@@ -8,54 +8,31 @@ import {
   ScrollView,
   TextInput,
 } from "react-native";
+import { router } from "expo-router";
 
 // ✅ Top-level image imports
-import backArrow from "../assets/back-arrow.png";
-import notificationIcon from "../assets/notification.png";
-import cameraIcon from "../assets/camera.png";
-import homeIcon from "../assets/home-icon.png";
-import productsIcon from "../assets/products-icon.png";
-import weatherIcon from "../assets/weather.png";
-import helpIcon from "../assets/help.png";
-import ordersIcon from "../assets/orders.png";
+import backArrow from "@/assets/back-arrow.png";
+import notificationIcon from "@/assets/notification.png";
+import cameraIcon from "@/assets/camera.png";
+import homeIcon from "@/assets/home-icon.png";
+import productsIcon from "@/assets/products-icon.png";
+import weatherIcon from "@/assets/weather.png";
+import helpIcon from "@/assets/help.png";
+import ordersIcon from "@/assets/orders.png";
 
-export default function NewProduct({ navigation }) {
+export default function NewProduct() {
   const [activeNav, setActiveNav] = useState("Products");
 
   const bottomNavItems = [
-    { name: "Home", img: homeIcon, route: "FarmerDashboard" },
-    { name: "Products", img: productsIcon, route: "FarmerProducts" },
-    { name: "Weather", img: weatherIcon, route: "NewProduct" },
-    { name: "Help", img: helpIcon, route: "NewProduct" },
-    { name: "Orders", img: ordersIcon, route: "FarmerOrders", notification: 15 },
+    { name: "Home", img: homeIcon, route: "/FarmerDashboard" },
+    { name: "Products", img: productsIcon, route: "/FarmerProducts" },
+    { name: "Weather", img: weatherIcon, route: "/Calendar" },
+    { name: "Help", img: helpIcon, route: "/Calendar" },
+    { name: "Orders", img: ordersIcon, route: "/FarmerOrders", notification: 15 },
   ];
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("FarmerProducts")}
-          style={styles.backButton}
-        >
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity>
-
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>A</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.appName}>AgriXpert</Text>
-          <Text style={styles.subtitle}>Smart Agriculture Platform</Text>
-        </View>
-
-        <View style={{ position: "relative", marginLeft: 10 }}>
-          <Image source={notificationIcon} style={styles.notificationIcon} />
-          <View style={styles.headerNotificationBadge}>
-            <Text style={styles.headerNotificationText}>15</Text>
-          </View>
-        </View>
-      </View>
 
       {/* Scrollable Form */}
       <ScrollView
@@ -139,7 +116,7 @@ export default function NewProduct({ navigation }) {
               style={[styles.navItem, isActive && styles.activeNavItem]}
               onPress={() => {
                 setActiveNav(item.name);
-                navigation.navigate(item.route);
+                router.push(item.route);
               }}
             >
               <Image source={item.img} style={styles.navIcon} />
@@ -198,7 +175,12 @@ const styles = StyleSheet.create({
 
   scrollArea: { flex: 1, padding: 15 },
 
-  sectionTitle: { fontSize: 18, fontWeight: "bold", color: "#000", marginBottom: 2 },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#000",
+    marginBottom: 2,
+  },
   sectionSubtitle: { fontSize: 13, color: "#666", marginBottom: 15 },
 
   label: { fontSize: 14, fontWeight: "600", marginBottom: 5, color: "#333" },

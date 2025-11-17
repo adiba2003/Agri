@@ -1,46 +1,166 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Modal,
+} from "react-native";
+import { router } from "expo-router";
 
-// ✅ Top-level image imports
-import backArrow from "../assets/back-arrow.png";
-import booksIcon from "../assets/books.png";
-import riceIcon from "../assets/rice.png";
-import carrotIcon from "../assets/carrot.png";
-import waterIcon from "../assets/water-icon.png";
-import calendarIcon from "../assets/calendar-icon.png";
-import clockIcon from "../assets/clock.png";
-import homeIcon from "../assets/home-icon.png";
-import productsIcon from "../assets/products-icon.png";
-import learnIcon from "../assets/learn-icon.webp";
-import chatIcon from "../assets/chat-icon.png";
+// Images
+import booksIcon from "@/assets/books.png";
+import riceIcon from "@/assets/rice.png";
+import carrotIcon from "@/assets/carrot.png";
+import waterIcon from "@/assets/water-icon.png";
+import calendarIcon from "@/assets/calendar-icon.png";
+import clockIcon from "@/assets/clock.png";
 
-export default function LearnArti({ navigation }) {
+import homeIcon from "@/assets/home-icon.png";
+import productsIcon from "@/assets/products-icon.png";
+import learnIcon from "@/assets/learn-icon.webp";
+import chatIcon from "@/assets/chat-icon.png";
+
+export default function LearnArti() {
   const [activeTab, setActiveTab] = useState("Articles");
-  const [activeNav, setActiveNav] = useState("Learn"); // Default Learn
+  const [activeNav, setActiveNav] = useState("Learn");
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedArticle, setSelectedArticle] = useState(null);
+
+  // === Article Data ===
+  const articles = [
+    {
+      id: 1,
+      title: "Modern Rice Cultivation Methods",
+      desc: "Learn about scientific methods and care for high-yield rice cultivation in detail.",
+      image: riceIcon,
+      date: "Dec 10, 2024",
+      time: "5 min read",
+      fullContent: `
+Modern rice cultivation has significantly improved due to scientific farming techniques. 
+Here are some important steps:
+
+1. **Seed Selection:**  
+   Choose high-yield, disease-resistant rice varieties.
+
+2. **Seed Bed Preparation:**  
+   Use raised beds to ensure better root growth.
+
+3. **Modern Transplanting:**  
+   Mechanized transplanting reduces labor and increases uniformity.
+
+4. **Fertilizer Management:**  
+   Apply urea, TSP, and potash in the correct ratios at proper stages.
+
+5. **Water Management:**  
+   Maintain 2–3 cm standing water for best productivity.
+
+6. **Pest Control:**  
+   Use pheromone traps & organic pesticides to reduce harmful insects.
+
+Following these steps can increase rice yield by 30–40%.
+      `,
+    },
+    {
+      id: 2,
+      title: "Winter Vegetable Cultivation",
+      desc: "Skills and care for growing nutritious winter vegetables.",
+      image: carrotIcon,
+      date: "Dec 8, 2024",
+      time: "7 min read",
+      fullContent: `
+Winter vegetables grow best in cool temperatures. Popular crops include carrots, cabbage, radish, tomato, beetroot, etc.
+
+### Steps for Successful Winter Vegetable Cultivation:
+
+1. **Soil Preparation**  
+   Use soft, fertile, well-drained loamy soil enriched with compost.
+
+2. **Seed Sowing**  
+   Sow seeds in seed trays for healthier seedlings.
+
+3. **Irrigation Management**  
+   Avoid excess watering—maintain moisture only.
+
+4. **Disease Protection**  
+   Use neem oil spray every 7–10 days to prevent fungal attacks.
+
+5. **Harvesting**  
+   Vegetables remain fresh longer if picked early morning.
+
+With proper care, farmers can earn high profits in winter seasons.
+      `,
+    },
+    {
+      id: 3,
+      title: "Irrigation Management",
+      desc: "Efficient irrigation systems and use of modern technology in water management.",
+      image: waterIcon,
+      date: "Dec 5, 2024",
+      time: "6 min read",
+      fullContent: `
+Proper irrigation management saves water and increases crop yield.
+
+### Smart Irrigation Tips:
+
+1. **Drip Irrigation:**  
+   Saves 40–60% water and improves productivity.
+
+2. **Sprinkler Systems:**  
+   Best for vegetables and leafy greens.
+
+3. **Soil Moisture Monitoring:**  
+   Use soil moisture sensors or hand-testing to avoid over-watering.
+
+4. **Water Timing:**  
+   Water crops early morning or evening to reduce evaporation.
+
+5. **Rainwater Harvesting:**  
+   Collect and store rainwater for later crop use.
+
+6. **Field Leveling:**  
+   Laser leveling reduces water-use by 25%.
+
+Efficient irrigation ensures healthier crops and reduces cost for farmers.
+      `,
+    },
+  ];
+
+  const openArticle = (article) => {
+    setSelectedArticle(article);
+    setModalVisible(true);
+  };
 
   return (
     <View style={styles.container}>
-      {/* Header (Outside Scroll) */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("GuestHome")}
-          style={styles.backButton}
-        >
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity>
+      {/* ===== MODAL FOR FULL ARTICLE ===== */}
+      <Modal visible={modalVisible} animationType="slide">
+        <ScrollView style={styles.modalContainer}>
+          <Image source={selectedArticle?.image} style={styles.modalImage} />
 
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>A</Text>
-        </View>
-        <View>
-          <Text style={styles.appName}>AgriXpet</Text>
-          <Text style={styles.subtitle}>Learning Center</Text>
-        </View>
-      </View>
+          <Text style={styles.modalTitle}>{selectedArticle?.title}</Text>
 
-      {/* Scrollable Part */}
+          <View style={styles.modalMeta}>
+            <Text style={styles.modalMetaText}>{selectedArticle?.date}</Text>
+            <Text style={styles.modalMetaText}>• {selectedArticle?.time}</Text>
+          </View>
+
+          <Text style={styles.modalContent}>{selectedArticle?.fullContent}</Text>
+
+          <TouchableOpacity
+            style={styles.closeBtn}
+            onPress={() => setModalVisible(false)}
+          >
+            <Text style={styles.closeBtnText}>Close</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </Modal>
+
+      {/* ===== Scrollable Content ===== */}
       <ScrollView style={{ flex: 1 }}>
-        {/* Title Section */}
         <View style={styles.titleSection}>
           <Image source={booksIcon} style={styles.iconImage} />
           <View>
@@ -54,16 +174,16 @@ export default function LearnArti({ navigation }) {
         {/* Tabs */}
         <View style={styles.tabContainer}>
           {[
-            { name: "Articles", route: "LearnArti" },
-            { name: "Videos", route: "LearnVdo" },
-            { name: "Soil Guide", route: "LearnSoil" },
+            { name: "Articles", route: "/LearnArti" },
+            { name: "Videos", route: "/LearnVdo" },
+            { name: "Soil Guide", route: "/LearnSoil" },
           ].map((tab, index) => (
             <TouchableOpacity
               key={index}
               style={[styles.tab, activeTab === tab.name && styles.activeTab]}
               onPress={() => {
                 setActiveTab(tab.name);
-                navigation.navigate(tab.route);
+                router.push(tab.route);
               }}
             >
               <Text
@@ -78,86 +198,42 @@ export default function LearnArti({ navigation }) {
           ))}
         </View>
 
-        {/* Articles List */}
+        {/* Articles */}
         <View style={styles.articleContainer}>
-          {/* Rice Cultivation */}
-          <View style={styles.articleCard}>
-            <Image source={riceIcon} style={styles.articleImage} />
-            <View style={styles.articleContent}>
-              <Text style={styles.articleTitle}>
-                Modern Rice Cultivation Methods
-              </Text>
-              <Text style={styles.articleDesc}>
-                Learn about scientific methods and care for high-yield rice
-                cultivation in detail.
-              </Text>
-              <View style={styles.articleFooter}>
-                <View style={styles.footerItem}>
-                  <Image source={calendarIcon} style={styles.footerIcon} />
-                  <Text style={styles.articleDate}>Dec 10, 2024</Text>
-                </View>
-                <View style={styles.footerItem}>
-                  <Image source={clockIcon} style={styles.footerIcon} />
-                  <Text style={styles.articleTime}>5 min read</Text>
-                </View>
-              </View>
-            </View>
-          </View>
+          {articles.map((arti) => (
+            <TouchableOpacity
+              key={arti.id}
+              style={styles.articleCard}
+              onPress={() => openArticle(arti)}
+            >
+              <Image source={arti.image} style={styles.articleImage} />
+              <View style={styles.articleContent}>
+                <Text style={styles.articleTitle}>{arti.title}</Text>
+                <Text style={styles.articleDesc}>{arti.desc}</Text>
 
-          {/* Winter Vegetable Cultivation */}
-          <View style={styles.articleCard}>
-            <Image source={carrotIcon} style={styles.articleImage} />
-            <View style={styles.articleContent}>
-              <Text style={styles.articleTitle}>
-                Winter Vegetable Cultivation
-              </Text>
-              <Text style={styles.articleDesc}>
-                Skills and care for growing nutritious winter vegetables.
-              </Text>
-              <View style={styles.articleFooter}>
-                <View style={styles.footerItem}>
-                  <Image source={calendarIcon} style={styles.footerIcon} />
-                  <Text style={styles.articleDate}>Dec 8, 2024</Text>
-                </View>
-                <View style={styles.footerItem}>
-                  <Image source={clockIcon} style={styles.footerIcon} />
-                  <Text style={styles.articleTime}>7 min read</Text>
+                <View style={styles.articleFooter}>
+                  <View style={styles.footerItem}>
+                    <Image source={calendarIcon} style={styles.footerIcon} />
+                    <Text style={styles.articleDate}>{arti.date}</Text>
+                  </View>
+                  <View style={styles.footerItem}>
+                    <Image source={clockIcon} style={styles.footerIcon} />
+                    <Text style={styles.articleTime}>{arti.time}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          </View>
-
-          {/* Irrigation Management */}
-          <View style={styles.articleCard}>
-            <Image source={waterIcon} style={styles.articleImage} />
-            <View style={styles.articleContent}>
-              <Text style={styles.articleTitle}>Irrigation Management</Text>
-              <Text style={styles.articleDesc}>
-                Efficient irrigation systems and the use of modern technology in
-                water management.
-              </Text>
-              <View style={styles.articleFooter}>
-                <View style={styles.footerItem}>
-                  <Image source={calendarIcon} style={styles.footerIcon} />
-                  <Text style={styles.articleDate}>Dec 5, 2024</Text>
-                </View>
-                <View style={styles.footerItem}>
-                  <Image source={clockIcon} style={styles.footerIcon} />
-                  <Text style={styles.articleTime}>6 min read</Text>
-                </View>
-              </View>
-            </View>
-          </View>
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "GuestHome" },
-          { name: "Products", image: productsIcon, route: "browse" },
-          { name: "Learn", image: learnIcon, route: "LearnArti" },
-          { name: "AI Chat", image: chatIcon, route: "Ai" },
+          { name: "Home", image: homeIcon, route: "/GuestHome" },
+          { name: "Products", image: productsIcon, route: "/browse" },
+          { name: "Learn", image: learnIcon, route: "/LearnArti" },
+          { name: "AI Chat", image: chatIcon, route: "/Ai" },
         ].map((item, index) => {
           const isActive = item.name === activeNav;
           return (
@@ -166,7 +242,7 @@ export default function LearnArti({ navigation }) {
               style={[styles.navItem, isActive && styles.activeNavItem]}
               onPress={() => {
                 setActiveNav(item.name);
-                navigation.navigate(item.route);
+                router.push(item.route);
               }}
             >
               <Image source={item.image} style={styles.navIcon} />
@@ -181,32 +257,12 @@ export default function LearnArti({ navigation }) {
   );
 }
 
+//////////////////////////////////////////////////
+//                STYLES
+//////////////////////////////////////////////////
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
-
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-    backgroundColor: "#fff",
-  },
-  backButton: { marginRight: 10 },
-  backIcon: { width: 24, height: 24, resizeMode: "contain" },
-
-  logoBox: {
-    backgroundColor: "#28a745",
-    width: 50,
-    height: 50,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  logoText: { color: "#fff", fontSize: 22, fontWeight: "bold" },
-  appName: { fontSize: 18, fontWeight: "bold", color: "#000" },
-  subtitle: { fontSize: 13, color: "#666" },
 
   titleSection: {
     flexDirection: "row",
@@ -244,12 +300,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderLeftWidth: 4,
     borderLeftColor: "#4CAF50",
-    alignItems: "center",
   },
-  articleImage: { width: 50, height: 50, borderRadius: 10, marginRight: 12 },
+
+  articleImage: { width: 60, height: 60, borderRadius: 10, marginRight: 12 },
   articleContent: { flex: 1 },
+
   articleTitle: { fontSize: 16, fontWeight: "bold", color: "#333" },
   articleDesc: { fontSize: 14, color: "#555", marginTop: 5 },
+
   articleFooter: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -281,6 +339,42 @@ const styles = StyleSheet.create({
   },
   navIcon: { width: 22, height: 22, marginBottom: 4, resizeMode: "contain" },
   activeNavItem: { borderColor: "#28a745", backgroundColor: "#eaf8ea" },
-  navText: { fontSize: 12, color: "#333", textAlign: "center" },
+  navText: { fontSize: 12, color: "#333" },
   activeNavText: { color: "#28a745", fontWeight: "bold" },
+
+  // MODAL STYLES
+  modalContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#fff",
+  },
+  modalImage: {
+    width: "100%",
+    height: 160,
+    resizeMode: "contain",
+    marginBottom: 10,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  modalMeta: { flexDirection: "row", marginBottom: 10 },
+  modalMetaText: { color: "#777", marginRight: 10 },
+
+  modalContent: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: "#444",
+    marginBottom: 20,
+  },
+
+  closeBtn: {
+    backgroundColor: "#28a745",
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  closeBtnText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
 });

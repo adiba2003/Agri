@@ -8,47 +8,27 @@ import {
   ScrollView,
   StatusBar,
 } from "react-native";
+import { router } from "expo-router";
 
 // ✅ Import all images at the top
-import backArrow from "../assets/back-arrow.png";
-import notificationIconImg from "../assets/notification.png";
-import riceImg from "../assets/rice.png";
-import tomatoImg from "../assets/tomato.png";
-import homeIcon from "../assets/home-icon.png";
-import productsIcon from "../assets/products-icon.png";
-import weatherIcon from "../assets/weather.png";
-import helpIcon from "../assets/help.png";
-import ordersIcon from "../assets/orders.png";
+import backArrow from "@/assets/back-arrow.png";
+import notificationIconImg from "@/assets/notification.png";
+import riceImg from "@/assets/rice.png";
+import tomatoImg from "@/assets/tomato.png";
+import homeIcon from "@/assets/home-icon.png";
+import productsIcon from "@/assets/products-icon.png";
+import weatherIcon from "@/assets/weather.png";
+import helpIcon from "@/assets/help.png";
+import ordersIcon from "@/assets/orders.png";
 
-export default function FarmerOrders({ navigation }) {
+export default function FarmerOrders() {
   const [activeNav, setActiveNav] = useState("Orders");
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#4CAF50" />
 
-      {/* Fixed Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("FarmerDashboard")}
-          style={styles.backButton}
-        >
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity>
-        <View style={styles.logoBox}>
-          <Text style={styles.logoText}>A</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.appName}>AgriXpert</Text>
-          <Text style={styles.subtitle}>Smart Agriculture Platform</Text>
-        </View>
-        <View style={{ position: "relative", marginLeft: 10 }}>
-          <Image source={notificationIconImg} style={styles.notificationIcon} />
-          <View style={styles.headerNotificationBadge}>
-            <Text style={styles.headerNotificationText}>15</Text>
-          </View>
-        </View>
-      </View>
+  
 
       {/* Scrollable Orders Section */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -61,12 +41,18 @@ export default function FarmerOrders({ navigation }) {
         <View style={styles.orderCard}>
           <View style={{ flex: 1 }}>
             <Text style={styles.orderId}>Order #1236</Text>
-            <Text style={styles.orderFrom}>From: Ahmed Rahman • Oct 6, 2025</Text>
+            <Text style={styles.orderFrom}>
+              From: Ahmed Rahman • Oct 6, 2025
+            </Text>
             <View style={styles.orderProductRow}>
               <Image source={riceImg} style={styles.orderIcon} />
               <View>
-                <Text style={styles.orderName}>Premium Basmati Rice - 10kg</Text>
-                <Text style={styles.orderDetails}>$850 • Delivery: Dhaka</Text>
+                <Text style={styles.orderName}>
+                  Premium Basmati Rice - 10kg
+                </Text>
+                <Text style={styles.orderDetails}>
+                  $850 • Delivery: Dhaka
+                </Text>
               </View>
             </View>
           </View>
@@ -89,12 +75,16 @@ export default function FarmerOrders({ navigation }) {
         <View style={styles.orderCard}>
           <View style={{ flex: 1 }}>
             <Text style={styles.orderId}>Order #1237</Text>
-            <Text style={styles.orderFrom}>From: Fatima Khatun • Oct 5, 2025</Text>
+            <Text style={styles.orderFrom}>
+              From: Fatima Khatun • Oct 5, 2025
+            </Text>
             <View style={styles.orderProductRow}>
               <Image source={tomatoImg} style={styles.orderIcon} />
               <View>
                 <Text style={styles.orderName}>Fresh Tomatoes - 5kg</Text>
-                <Text style={styles.orderDetails}>$300 • Delivery: Chittagong</Text>
+                <Text style={styles.orderDetails}>
+                  $300 • Delivery: Chittagong
+                </Text>
               </View>
             </View>
           </View>
@@ -112,11 +102,11 @@ export default function FarmerOrders({ navigation }) {
       {/* Fixed Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "FarmerDashboard" },
-          { name: "Products", image: productsIcon, route: "FarmerProducts" },
-          { name: "Weather", image: weatherIcon, route: "FarmerOrders" },
-          { name: "Help", image: helpIcon, route: "FarmerOrders" },
-          { name: "Orders", image: ordersIcon, notification: 15, route: "FarmerOrders" },
+          { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
+          { name: "Products", image: productsIcon, route: "/FarmerProducts" },
+          { name: "Weather", image: weatherIcon, route: "/Calendar" },
+          { name: "Help", image: helpIcon, route: "/FAi" },
+          { name: "Orders", image: ordersIcon, notification: 15, route: "/FarmerOrders" },
         ].map((item, index) => {
           const isActive = activeNav === item.name;
           return (
@@ -125,7 +115,7 @@ export default function FarmerOrders({ navigation }) {
               style={[styles.navItem, isActive && styles.activeNavItem]}
               onPress={() => {
                 setActiveNav(item.name);
-                navigation.navigate(item.route);
+                router.push(item.route);
               }}
             >
               <View style={{ position: "relative" }}>
