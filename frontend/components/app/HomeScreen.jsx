@@ -4,8 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // ✅ Feature icon imports
 import riceIcon from "@/assets/rice.png";
-import handIcon from "@/assets/hand.webp";      // ধরে নিচ্ছি আছে
-import robotIcon from "@/assets/robot.png";    // ধরে নিচ্ছি আছে
+import handIcon from "@/assets/hand.webp";     
+import robotIcon from "@/assets/robot.png";    
 
 export default function HomeScreen() {
   return (

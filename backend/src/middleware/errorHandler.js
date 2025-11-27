@@ -7,6 +7,4 @@
 // error: err.message || "Server Error",
 // });
 // };
-
-
 // export default errorHandler;

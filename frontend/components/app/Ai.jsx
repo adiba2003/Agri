@@ -23,7 +23,7 @@ import learnIcon from "@/assets/learn-icon.webp";
 import chatIcon from "@/assets/chat-icon.png";
 
 export default function Ai() {
-  const [activeNav, setActiveNav] = useState("AI Chat");
+  const [activeNav, setActiveNav] = useState("এআই চ্যাট");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
@@ -41,7 +41,7 @@ export default function Ai() {
             {
               id: "0",
               sender: "AI",
-              text: "Hello! I am your AI agriculture assistant. Ask anything about farming."
+              text: "হ্যালো! আমি আপনার AI কৃষি সহকারী। কৃষিকাজ সম্পর্কে যেকোনো প্রশ্ন জিজ্ঞাসা করুন।"
             }
           ]);
         }
@@ -68,24 +68,24 @@ export default function Ai() {
     q = q.toLowerCase();
 
     if (q.includes("rice") || q.includes("ধান"))
-      return "Rice diseases: Blast, Blight, Brown spot. Use neem oil + Trichoderma.";
+      return "ধানের রোগ: ব্লাস্ট, ব্লাইট, বাদামী দাগ। নিরাময়ের জন্য নিম তেল + ট্রাইকোডার্মা ব্যবহার করুন।";
 
     if (q.includes("fertilizer") || q.includes("সার"))
-      return "Use NPK 20-10-10 early stage, potash during flowering.";
+      return "ফুল ফোটার সময় ও বৃদ্ধির প্রাথমিক পর্যায়ে NPK ২০-১০-১০ এবং অতিরিক্ত পটাশ ব্যবহার করুন।";
 
     if (q.includes("vegetable") || q.includes("সবজি"))
-      return "Best winter vegetables: carrot, cabbage, cauliflower, spinach.";
+      return "শীতের জনপ্রিয় সবজি: গাজর, বাঁধাকপি, ফুলকপি, মুলা, পালং শাক।";
 
     if (q.includes("soil") || q.includes("মাটি"))
-      return "Use compost, cow dung manure, green manure, mulching to improve soil.";
+      return "মাটির উর্বরতা বাড়াতে কম্পোস্ট, গোবর সার, সবুজ সার ও মালচিং ব্যবহার করুন।";
 
     if (q.includes("pesticide") || q.includes("কীটনাশক"))
-      return "Organic pesticides: Neem oil spray, garlic–chili spray.";
+      return "জৈব কীটনাশক: নিম তেল স্প্রে, রসুন-মরিচ স্প্রে, সাবান পানি স্প্রে।";
 
     if (q.includes("water") || q.includes("সেচ"))
-      return "Best irrigation: drip irrigation + mulching.";
+      return "সেচের সেরা পদ্ধতি: ড্রিপ সেচ + মালচিং প্রয়োগ করা।";
 
-    return "Please mention the crop name + problem for accurate advice.";
+    return "দয়া করে ফসলের নাম + সমস্যা লিখলে আমি আরও সঠিক পরামর্শ দিতে পারব।";
   };
 
   /* ---------------- SEND MESSAGE ---------------- */
@@ -113,20 +113,20 @@ export default function Ai() {
 
   /* ---------------- POPULAR QUESTIONS ---------------- */
   const popularQuestions = [
-    { title: "Rice Diseases", description: "Identify and treat rice diseases" },
-    { title: "Fertilizer Usage", description: "Correct fertilizer application" },
-    { title: "Winter Vegetables", description: "Best winter crops" },
-    { title: "Soil Health", description: "Improve soil fertility" },
-    { title: "Organic Pesticides", description: "Natural pest control" },
-    { title: "Irrigation", description: "Best watering methods" },
+    { title: "ধানের রোগ", description: "ধানের রোগ সনাক্তকরণ ও চিকিৎসা" },
+    { title: "সার ব্যবহার", description: "সঠিক সার প্রয়োগ নির্দেশনা" },
+    { title: "শীতকালীন সবজি", description: "শীতের জনপ্রিয় সবজি" },
+    { title: "মাটির স্বাস্থ্য", description: "মাটি উন্নয়ন পদ্ধতি" },
+    { title: "জৈব কীটনাশক", description: "প্রাকৃতিক কীটপতঙ্গ নিয়ন্ত্রণ" },
+    { title: "সেচ", description: "সেচের সেরা পদ্ধতি" },
   ];
 
   /* ---------------- BOTTOM NAV ---------------- */
   const bottomNavItems = [
-    { name: "Home", img: homeIcon, route: "/GuestHome" },
-    { name: "Products", img: productsIcon, route: "/browse" },
-    { name: "Learn", img: learnIcon, route: "/LearnArti" },
-    { name: "AI Chat", img: chatIcon, route: "/Ai" },
+    { name: "হোম", img: homeIcon, route: "/GuestHome" },
+    { name: "পণ্যসমূহ", img: productsIcon, route: "/browse" },
+    { name: "শিখুন", img: learnIcon, route: "/LearnArti" },
+    { name: "এআই চ্যাট", img: chatIcon, route: "/Ai" },
   ];
 
   return (
@@ -142,8 +142,10 @@ export default function Ai() {
           <View style={styles.headerRow}>
             <Image source={robot} style={styles.robotImage} />
             <View>
-              <Text style={styles.headerTitle}>AI Agriculture Assistant</Text>
-              <Text style={styles.headerSubtitle}>Ask anything about farming</Text>
+              <Text style={styles.headerTitle}>এআই কৃষি সহকারী</Text>
+              <Text style={styles.headerSubtitle}>
+                কৃষিকাজ সম্পর্কে কিছু জিজ্ঞাসা করুন
+              </Text>
             </View>
           </View>
 
@@ -185,7 +187,7 @@ export default function Ai() {
 
           {/* -------- Popular Questions -------- */}
           <ScrollView style={{ maxHeight: 180 }}>
-            <Text style={styles.popularTitle}>Popular Questions</Text>
+            <Text style={styles.popularTitle}>জনপ্রিয় প্রশ্নসমূহ</Text>
 
             {popularQuestions.map((q, i) => (
               <TouchableOpacity
@@ -204,14 +206,14 @@ export default function Ai() {
           <View style={styles.inputRow}>
             <TextInput
               style={styles.input}
-              placeholder="Type your question..."
+              placeholder="আপনার প্রশ্ন টাইপ করুন..."
               value={input}
               onChangeText={setInput}
               multiline
             />
 
             <TouchableOpacity style={styles.sendBtn} onPress={sendMessage}>
-              <Text style={styles.sendBtnTxt}>Send</Text>
+              <Text style={styles.sendBtnTxt}>পাঠান</Text>
             </TouchableOpacity>
           </View>
 
@@ -245,7 +247,7 @@ export default function Ai() {
 }
 
 /* ===========================================================
-                     STYLES (FULL + ERROR FREE)
+                     STYLES (UNCHANGED)
    =========================================================== */
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#fff" },

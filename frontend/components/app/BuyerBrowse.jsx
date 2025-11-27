@@ -40,10 +40,10 @@ const imageMap = {
 
 
 export default function BuyerBrowse() {
-  const [activeNav, setActiveNav] = useState('Browse');
-  const [selectedCategory, setSelectedCategory] = useState('All Categories');
-  const [selectedLocation, setSelectedLocation] = useState('All Locations');
-  const [sortBy, setSortBy] = useState('Newest First');
+  const [activeNav, setActiveNav] = useState('পণ্য');
+  const [selectedCategory, setSelectedCategory] = useState('সব ক্যাটাগরি');
+  const [selectedLocation, setSelectedLocation] = useState('সব লোকেশন');
+  const [sortBy, setSortBy] = useState('নতুন পণ্য আগে');
   const [searchQuery, setSearchQuery] = useState('');
 
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -52,18 +52,18 @@ export default function BuyerBrowse() {
   const [cartCount, setCartCount] = useState(0);
 
   const products = [
-    { id: 1, name: 'Premium Basmati Rice', farmer: 'Rice Fields', price: 85, location: 'Khulna', category: 'Grains', image: rice, rating: 4.8, harvestedDays: 2, available: 500 },
-    { id: 2, name: 'Fresh Carrots', farmer: 'Green Valley Farms', price: 45, location: 'Khulna', category: 'Vegetables', image: carrot, rating: 4.9, harvestedDays: 1, available: 300 },
-    { id: 3, name: 'Fresh Tomatoes', farmer: 'Green Valley Farms', price: 60, location: 'Dhaka', category: 'Vegetables', image: tomato, rating: 4.5, harvestedDays: 5, available: 200 },
-    { id: 4, name: 'Organic Potatoes', farmer: 'Farm Fresh Co.', price: 85, location: 'Chittagong', category: 'Vegetables', image: potato, rating: 4.2, harvestedDays: 3, available: 400 },
-    { id: 5, name: 'Sweet Mangoes', farmer: 'Mango Garden', price: 80, location: 'Rajshahi', category: 'Fruits', image: mango, rating: 4.8, harvestedDays: 10, available: 150 },
-    { id: 6, name: 'Fresh Milk', farmer: 'Dairy Pure', price: 1.2, location: 'Dhaka', category: 'Dairy', image: milk, rating: 4.3, harvestedDays: 1, available: 100 },
-    { id: 7, name: 'Eggs', farmer: 'Happy Hens', price: 0.25, location: 'Sylhet', category: 'Poultry', image: eggs, rating: 4.6, harvestedDays: 4, available: 250 },
+    { id: 1, name: 'বাসমতি চাল', farmer: 'ধানক্ষেত', price: 85, location: 'খুলনা', category: 'শস্য', image: rice, rating: 4.8, harvestedDays: 2, available: 500 },
+    { id: 2, name: 'গাজর', farmer: 'গ্রিন ভ্যালি ফার্মস', price: 45, location: 'খুলনা', category: 'সবজি', image: carrot, rating: 4.9, harvestedDays: 1, available: 300 },
+    { id: 3, name: 'টমেটো', farmer: 'গ্রিন ভ্যালি ফার্মস', price: 60, location: 'ঢাকা', category: 'সবজি', image: tomato, rating: 4.5, harvestedDays: 5, available: 200 },
+    { id: 4, name: 'আলু', farmer: 'ফার্ম ফ্রেশ লিমিটেড', price: 85, location: 'চট্টগ্রাম', category: 'সবজি', image: potato, rating: 4.2, harvestedDays: 3, available: 400 },
+    { id: 5, name: 'মিষ্টি আম', farmer: 'আম বাগান', price: 80, location: 'রাজশাহী', category: 'ফল', image: mango, rating: 4.8, harvestedDays: 10, available: 150 },
+    { id: 6, name: 'দুধ', farmer: 'বিশুদ্ধ দুগ্ধজাত', price: 1.2, location: 'ঢাকা', category: 'দুগ্ধজাত পণ্য', image: milk, rating: 4.3, harvestedDays: 1, available: 100 },
+    { id: 7, name: 'ডিম', farmer: 'হ্যাপি হেনস', price: 0.25, location: 'সিলেট', category: 'মুরগি/পোল্ট্রি', image: eggs, rating: 4.6, harvestedDays: 4, available: 250 },
   ];
 
-  const categories = ['All Categories', 'Vegetables', 'Fruits', 'Dairy', 'Poultry', 'Grains', 'Spices'];
-  const locations = ['All Locations', 'Dhaka', 'Chittagong', 'Rajshahi', 'Khulna', 'Sylhet', 'Barisal'];
-  const sortOptions = ['Newest First', 'Price: Low to High', 'Price: High to Low', 'Highest Rated', 'Oldest First'];
+  const categories = ['সব ক্যাটাগরি', 'সবজি', 'ফল', 'দুগ্ধজাত পণ্য', 'মুরগি/পোল্ট্রি', 'শস্য', 'মসলা'];
+  const locations = ['সব লোকেশন', 'ঢাকা', 'চট্টগ্রাম', 'রাজশাহী', 'খুলনা', 'সিলেট', 'বরিশাল'];
+  const sortOptions = ['নতুন পণ্য আগে', 'দাম: কম থেকে বেশি', 'দাম: বেশি থেকে কম', 'সর্বোচ্চ রেটিং', 'পুরনো পণ্য আগে'];
 
   // ✅ Refresh cart count whenever screen is focused
   useFocusEffect(
@@ -87,15 +87,15 @@ export default function BuyerBrowse() {
         item.location.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    if (selectedCategory !== "All Categories") result = result.filter(item => item.category === selectedCategory);
-    if (selectedLocation !== "All Locations") result = result.filter(item => item.location === selectedLocation);
+    if (selectedCategory !== "সব ক্যাটাগরি") result = result.filter(item => item.category === selectedCategory);
+    if (selectedLocation !== "সব লোকেশন") result = result.filter(item => item.location === selectedLocation);
 
     switch (sortBy) {
-      case "Newest First": result.sort((a, b) => a.harvestedDays - b.harvestedDays); break;
-      case "Oldest First": result.sort((a, b) => b.harvestedDays - a.harvestedDays); break;
-      case "Price: Low to High": result.sort((a, b) => a.price - b.price); break;
-      case "Price: High to Low": result.sort((a, b) => b.price - a.price); break;
-      case "Highest Rated": result.sort((a, b) => b.rating - a.rating); break;
+      case "নতুন পণ্য আগে": result.sort((a, b) => a.harvestedDays - b.harvestedDays); break;
+      case "পুরনো পণ্য আগে": result.sort((a, b) => b.harvestedDays - a.harvestedDays); break;
+      case "দাম: কম থেকে বেশি": result.sort((a, b) => a.price - b.price); break;
+      case "দাম: বেশি থেকে কম": result.sort((a, b) => b.price - a.price); break;
+      case "সর্বোচ্চ রেটিং": result.sort((a, b) => b.rating - a.rating); break;
     }
 
     return result;
@@ -176,14 +176,6 @@ const addToCart = async () => {
   }
 };
 
-
-
-
-
-
-
-
-
   const renderProductItem = ({ item }) => (
     <TouchableOpacity
       style={styles.productCard}
@@ -209,61 +201,106 @@ const addToCart = async () => {
   );
 
   const navItems = [
-    { name: 'Home', image: homeIcon, route: 'BuyerDashboard' },
-    { name: 'Browse', image: productsIcon, route: 'BuyerBrowse' },
-    { name: 'Cart', image: cartIcon, notification: cartCount, route: 'Cart' },
-    { name: 'Orders', image: ordersIcon, route: 'BuyerOrder' },
+    { name: 'হোম', image: homeIcon, route: 'BuyerDashboard' },
+    { name: 'পণ্য', image: productsIcon, route: 'BuyerBrowse' },
+    { name: 'কার্ট', image: cartIcon, notification: cartCount, route: 'Cart' },
+    { name: 'অর্ডার', image: ordersIcon, route: 'BuyerOrder' },
   ];
 
-  return (
+ return (
     <View style={styles.container}>
+
       {/* PRODUCT DETAILS MODAL */}
       {selectedProduct && (
-        <Modal visible={detailsVisible} animationType="slide" transparent onRequestClose={() => setDetailsVisible(false)}>
+        <Modal visible={detailsVisible} animationType="slide" transparent>
           <View style={styles.modalOverlay}>
             <View style={styles.modalBox}>
               <ScrollView style={styles.modalContent}>
+                
                 <Image source={selectedProduct.image} style={styles.modalImage} />
+
                 <Text style={styles.modalTitle}>{selectedProduct.name}</Text>
-                <Text style={styles.modalSubtitle}>Hot and fresh</Text>
+                {/* <Text style={styles.modalSubtitle}>তাজা</Text> */}
+
                 <View style={styles.ratingRow}>
                   <View style={styles.starsContainer}>
-                    {[1, 2, 3, 4, 5].map(star => <Text key={star} style={styles.star}>⭐</Text>)}
+                    {[1, 2, 3, 4, 5].map(i => <Text key={i} style={styles.star}>⭐</Text>)}
                   </View>
-                  <Text style={styles.ratingText}>({selectedProduct.rating} rating)</Text>
+                  <Text style={styles.ratingText}>
+                    ({selectedProduct.rating} রেটিং)
+                  </Text>
                 </View>
+
                 <View style={styles.priceSection}>
-                  <Text style={styles.priceLabel}>Price per kg</Text>
+                  <Text style={styles.priceLabel}>প্রতি কেজির দাম</Text>
                   <Text style={styles.priceValue}>৳{selectedProduct.price}</Text>
                 </View>
-                {['available','location','farmer','harvestedDays'].map((field,i) => (
-                  <View key={i} style={styles.infoSection}>
-                    <Text style={styles.infoLabel}>
-                      {field==='available'?'Available':field==='location'?'Location':field==='farmer'?'Farmer':'Harvested'}
-                    </Text>
-                    <Text style={styles.infoValue}>
-                      {field==='available'?selectedProduct.available:field==='location'?selectedProduct.location:field==='farmer'?selectedProduct.farmer:`${selectedProduct.harvestedDays} days ago`}
-                    </Text>
-                  </View>
-                ))}
+
+                {/* INFO */}
+                <View style={styles.infoSection}>
+                  <Text style={styles.infoLabel}>উপলব্ধ</Text>
+                  <Text style={styles.infoValue}>{selectedProduct.available} kg</Text>
+                </View>
+
+                <View style={styles.infoSection}>
+                  <Text style={styles.infoLabel}>লোকেশন</Text>
+                  <Text style={styles.infoValue}>{selectedProduct.location}</Text>
+                </View>
+
+                <View style={styles.infoSection}>
+                  <Text style={styles.infoLabel}>কৃষক</Text>
+                  <Text style={styles.infoValue}>{selectedProduct.farmer}</Text>
+                </View>
+
+                <View style={styles.infoSection}>
+                  <Text style={styles.infoLabel}>কাটাই হয়েছে</Text>
+                  <Text style={styles.infoValue}>{selectedProduct.harvestedDays} দিন আগে</Text>
+                </View>
+
+                {/* QUANTITY */}
                 <View style={styles.quantitySection}>
-                  <Text style={styles.quantityLabel}>Quantity</Text>
+                  <Text style={styles.quantityLabel}>পরিমাণ</Text>
+
                   <View style={styles.quantitySelector}>
-                    <TouchableOpacity style={styles.quantityButton} onPress={()=>quantity>1&&setQuantity(quantity-1)}><Text style={styles.quantityButtonText}>-</Text></TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.quantityButton}
+                      onPress={() => quantity > 1 && setQuantity(quantity - 1)}
+                    >
+                      <Text style={styles.quantityButtonText}>-</Text>
+                    </TouchableOpacity>
+
                     <Text style={styles.quantityValue}>{quantity} kg</Text>
-                    <TouchableOpacity style={styles.quantityButton} onPress={()=>setQuantity(quantity+1)}><Text style={styles.quantityButtonText}>+</Text></TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.quantityButton}
+                      onPress={() => setQuantity(quantity + 1)}
+                    >
+                      <Text style={styles.quantityButtonText}>+</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
+
+                {/* TOTAL */}
                 <View style={styles.totalSection}>
-                  <Text style={styles.totalLabel}>Total</Text>
+                  <Text style={styles.totalLabel}>মোট</Text>
                   <Text style={styles.totalValue}>৳{totalPrice}</Text>
                 </View>
+
+                {/* ACTION BUTTONS */}
                 <View style={styles.actionButtons}>
-                  <TouchableOpacity style={styles.addToCartButton} onPress={addToCart}><Text style={styles.addToCartText}>Add to Cart</Text></TouchableOpacity>
-                  <TouchableOpacity style={styles.buyNowButton}><Text style={styles.buyNowText}>Buy Now</Text></TouchableOpacity>
+                  <TouchableOpacity style={styles.addToCartButton} onPress={addToCart}>
+                    <Text style={styles.addToCartText}>কার্টে যোগ করুন</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.buyNowButton}>
+                    <Text style={styles.buyNowText}>এখনই কিনুন</Text>
+                  </TouchableOpacity>
                 </View>
               </ScrollView>
-              <TouchableOpacity style={styles.closeBtn} onPress={()=>setDetailsVisible(false)}><Text style={styles.closeBtnText}>Close</Text></TouchableOpacity>
+
+              <TouchableOpacity style={styles.closeBtn} onPress={() => setDetailsVisible(false)}>
+                <Text style={styles.closeBtnText}>বন্ধ করুন</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
@@ -272,60 +309,122 @@ const addToCart = async () => {
       {/* MAIN CONTENT */}
       <ScrollView style={styles.content}>
         <View style={styles.browseSection}>
-          <Text style={styles.browseTitle}>Browse Products</Text>
-          <Text style={styles.browseSubtitle}>Discover fresh produce from local farmers</Text>
+
+          <Text style={styles.browseTitle}>পণ্য ব্রাউজ করুন</Text>
+          <Text style={styles.browseSubtitle}>স্থানীয় কৃষকদের থেকে পণ্য আবিষ্কার করুন</Text>
+
           <View style={styles.searchContainer}>
-            <TextInput style={styles.searchInput} placeholder="Search products..." value={searchQuery} onChangeText={setSearchQuery}/>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="পণ্য সার্চ করুন..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
           </View>
-          <Text style={styles.filterLabel}>Categories</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
-            {categories.map((category, index)=>(
-              <TouchableOpacity key={index} style={[styles.filterChip, selectedCategory===category&&styles.selectedFilterChip]} onPress={()=>setSelectedCategory(category)}>
-                <Text style={[styles.filterChipText, selectedCategory===category&&styles.selectedFilterChipText]}>{category}</Text>
+
+          <Text style={styles.filterLabel}>ক্যাটাগরি</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {categories.map((c, i) => (
+              <TouchableOpacity
+                key={i}
+                style={[styles.filterChip, selectedCategory === c && styles.selectedFilterChip]}
+                onPress={() => setSelectedCategory(c)}
+              >
+                <Text style={[
+                  styles.filterChipText,
+                  selectedCategory === c && styles.selectedFilterChipText
+                ]}>{c}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <Text style={styles.filterLabel}>Locations</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
-            {locations.map((location,index)=>(
-              <TouchableOpacity key={index} style={[styles.filterChip, selectedLocation===location&&styles.selectedFilterChip]} onPress={()=>setSelectedLocation(location)}>
-                <Text style={[styles.filterChipText, selectedLocation===location&&styles.selectedFilterChipText]}>{location}</Text>
+
+          <Text style={styles.filterLabel}>লোকেশন</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {locations.map((l, i) => (
+              <TouchableOpacity
+                key={i}
+                style={[styles.filterChip, selectedLocation === l && styles.selectedFilterChip]}
+                onPress={() => setSelectedLocation(l)}
+              >
+                <Text style={[
+                  styles.filterChipText,
+                  selectedLocation === l && styles.selectedFilterChipText
+                ]}>{l}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
+
           <View style={styles.sortContainer}>
-            <Text style={styles.sortLabel}>Sort by:</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.sortScroll}>
-              {sortOptions.map((option,index)=>(
-                <TouchableOpacity key={index} style={[styles.sortChip, sortBy===option&&styles.selectedSortChip]} onPress={()=>setSortBy(option)}>
-                  <Text style={[styles.sortChipText, sortBy===option&&styles.selectedSortChipText]}>{option}</Text>
+            <Text style={styles.sortLabel}>সাজান:</Text>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {sortOptions.map((o, i) => (
+                <TouchableOpacity
+                  key={i}
+                  style={[styles.sortChip, sortBy === o && styles.selectedSortChip]}
+                  onPress={() => setSortBy(o)}
+                >
+                  <Text style={[
+                    styles.sortChipText,
+                    sortBy === o && styles.selectedSortChipText
+                  ]}>{o}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
           </View>
-          <Text style={styles.productsTitle}>Available Products</Text>
-          <FlatList data={filteredProducts} renderItem={renderProductItem} keyExtractor={item=>item.id.toString()} scrollEnabled={false} numColumns={2} columnWrapperStyle={styles.productsRow}/>
+
+          <Text style={styles.productsTitle}>উপলব্ধ পণ্য</Text>
+
+          <FlatList
+            data={filteredProducts}
+            renderItem={renderProductItem}
+            keyExtractor={item => item.id.toString()}
+            scrollEnabled={false}
+            numColumns={2}
+            columnWrapperStyle={styles.productsRow}
+          />
+
         </View>
       </ScrollView>
 
       {/* BOTTOM NAV */}
       <View style={styles.bottomNav}>
-        {navItems.map((item,index)=>{
-          const isActive = activeNav===item.name;
+        {navItems.map((item, index) => {
+          const isActive = activeNav === item.name;
           return (
-            <TouchableOpacity key={index} style={[styles.navItem, isActive&&styles.activeNavItem]} onPress={()=>{setActiveNav(item.name); router.push(`/${item.route}`)}}>
-              <View style={{position:'relative'}}>
-                <Image source={item.image} style={styles.navIcon}/>
-                {item.notification>0 && <View style={styles.notificationBadge}><Text style={styles.notificationText}>{item.notification}</Text></View>}
+            <TouchableOpacity
+              key={index}
+              style={[styles.navItem, isActive && styles.activeNavItem]}
+              onPress={() => {
+                setActiveNav(item.name);
+                router.push(`/${item.route}`);
+              }}
+            >
+              <View style={{ position: 'relative' }}>
+                <Image source={item.image} style={styles.navIcon} />
+
+                {item.notification > 0 && (
+                  <View style={styles.notificationBadge}>
+                    <Text style={styles.notificationText}>{item.notification}</Text>
+                  </View>
+                )}
               </View>
-              <Text style={[styles.navText,isActive&&styles.activeNavText]}>{item.name}</Text>
+              <Text style={[styles.navText, isActive && styles.activeNavText]}>
+                {item.name}
+              </Text>
             </TouchableOpacity>
-          )
+          );
         })}
       </View>
+
     </View>
   );
 }
+
+
+
+
+
 // Styles remain the same as your provided code
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },

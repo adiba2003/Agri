@@ -31,25 +31,25 @@ export default function BuyerDashboard() {
   const recentOrders = [
     {
       id: 1,
-      name: 'Premium Basmati Rice - 5kg',
+      name: 'প্রিমিয়াম বাসমতি চাল - ৫ কেজি',
       orderId: '#1234',
-      status: 'Delivered',
+      status: 'ডেলিভার্ড',
       statusColor: '#4CAF50',
       image: riceImg,
     },
     {
       id: 2,
-      name: 'Fresh Carrots - 2kg',
+      name: 'তাজা গাজর - ২ কেজি',
       orderId: '#1235',
-      status: 'In Transit',
+      status: 'পথে আছে',
       statusColor: '#FF9800',
       image: carrotImg,
     },
     {
       id: 3,
-      name: 'Fresh Tomatoes - 3kg',
+      name: 'তাজা টমেটো - ৩ কেজি',
       orderId: '#1236',
-      status: 'Delivered',
+      status: 'ডেলিভার্ড',
       statusColor: '#4CAF50',
       image: tomatoImg,
     },
@@ -57,36 +57,35 @@ export default function BuyerDashboard() {
 
   const quickActions = [
     {
-      title: 'Browse Products',
-      subtitle: 'Find fresh produce',
+      title: 'প্রোডাক্ট দেখুন',
+      subtitle: 'তাজা পণ্য খুঁজুন',
       image: cartImg,
       route: 'BuyerBrowse',
     },
     {
-      title: 'My Orders',
-      subtitle: 'Track deliveries',
+      title: 'আমার অর্ডার',
+      subtitle: 'ডেলিভারি ট্র্যাক করুন',
       image: orderImg,
       route: 'BuyerOrder',
     },
     {
-      title: 'Shopping Cart',
-      subtitle: '5 items ready',
+      title: 'শপিং কার্ট',
+      subtitle: '৫ টি পণ্য প্রস্তুত',
       image: shoppingCart,
       route: 'Cart',
     },
     {
-      title: 'Learn',
-      subtitle: 'Farming guides',
+      title: 'শিখুন',
+      subtitle: 'কৃষি বিষয়ক গাইড',
       image: booksImg,
       route: 'BuyerLearn',
     },
   ];
 
-  // ⭐ UPDATED — NO NOTIFICATION ON CART
   const navItems = [
     { name: 'Home', image: homeIcon, route: 'BuyerDashboard' },
     { name: 'Browse', image: productsIcon, route: 'BuyerBrowse' },
-    { name: 'Cart', image: cartImg, route: 'Cart' }, // notification removed
+    { name: 'Cart', image: cartImg, route: 'Cart' },
     { name: 'Orders', image: ordersIcon, route: 'BuyerOrder' },
   ];
 
@@ -96,9 +95,9 @@ export default function BuyerDashboard() {
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.welcomeSection}>
-          <Text style={styles.welcomeTitle}>Welcome Back!</Text>
+          <Text style={styles.welcomeTitle}>ফিরে আসার জন্য স্বাগতম!</Text>
           <Text style={styles.welcomeSubtitle}>
-            Find fresh products from local farmers
+            স্থানীয় কৃষকদের কাছ থেকে তাজা পণ্য খুঁজে নিন
           </Text>
         </View>
 
@@ -106,21 +105,21 @@ export default function BuyerDashboard() {
           <View style={styles.statCard}>
             <Image source={cartImg} style={styles.statIcon} />
             <Text style={styles.statNumber}>5</Text>
-            <Text style={styles.statLabel}>Cart Items</Text>
+            <Text style={styles.statLabel}>কার্ট আইটেম</Text>
           </View>
           <View style={styles.statCard}>
             <Image source={orderImg} style={styles.statIcon} />
             <Text style={styles.statNumber}>12</Text>
-            <Text style={styles.statLabel}>Orders</Text>
+            <Text style={styles.statLabel}>অর্ডার</Text>
           </View>
           <View style={styles.statCard}>
             <Image source={starIcon} style={styles.statIcon} />
             <Text style={styles.statNumber}>4.8</Text>
-            <Text style={styles.statLabel}>Rating</Text>
+            <Text style={styles.statLabel}>রেটিং</Text>
           </View>
         </View>
 
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <Text style={styles.sectionTitle}>দ্রুত অ্যাকশন</Text>
         <View style={styles.quickActionsGrid}>
           {quickActions.map((action, index) => (
             <TouchableOpacity
@@ -138,9 +137,9 @@ export default function BuyerDashboard() {
         </View>
 
         <View style={styles.ordersHeader}>
-          <Text style={styles.sectionTitle}>Recent Orders</Text>
+          <Text style={styles.sectionTitle}>সাম্প্রতিক অর্ডার</Text>
           <TouchableOpacity onPress={() => router.push('/BuyerOrder')}>
-            <Text style={styles.viewAllText}>View All</Text>
+            <Text style={styles.viewAllText}>সব দেখুন</Text>
           </TouchableOpacity>
         </View>
 
@@ -169,7 +168,7 @@ export default function BuyerDashboard() {
         </View>
       </ScrollView>
 
-      {/* ⭐ FULLY FIXED BOTTOM NAV — NO BADGE ANYMORE */}
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {navItems.map((item, index) => {
           const isActive = activeNav === item.name;
@@ -186,7 +185,13 @@ export default function BuyerDashboard() {
                 <Image source={item.image} style={styles.navIcon} />
               </View>
               <Text style={[styles.navText, isActive && styles.activeNavText]}>
-                {item.name}
+                {item.name === 'Home'
+                  ? 'হোম'
+                  : item.name === 'Browse'
+                  ? 'ব্রাউজ'
+                  : item.name === 'Cart'
+                  ? 'কার্ট'
+                  : 'অর্ডার'}
               </Text>
             </TouchableOpacity>
           );
@@ -195,6 +200,7 @@ export default function BuyerDashboard() {
     </View>
   );
 }
+
 
 // Styles
 const styles = StyleSheet.create({

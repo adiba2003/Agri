@@ -1,6 +1,7 @@
 // models/Product.js
 import mongoose from "mongoose";
 
+
 export const productSchema = new mongoose.Schema(
   {
     productId: { type: Number, required: true, unique: true },
@@ -17,6 +18,8 @@ export const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
 const Product = mongoose.model("Product", productSchema);
+
 
 export default Product;

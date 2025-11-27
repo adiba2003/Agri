@@ -29,10 +29,10 @@ import learnIcon from "@/assets/learn-icon.webp";
 import chatIcon from "@/assets/chat-icon.png";
 
 export default function Browse() {
-  const [activeTab, setActiveTab] = useState("Products");
-  const [selectedCategory, setSelectedCategory] = useState("All Categories");
-  const [selectedLocation, setSelectedLocation] = useState("All Locations");
-  const [sortBy, setSortBy] = useState("Newest First");
+  const [activeTab, setActiveTab] = useState("পণ্য");
+  const [selectedCategory, setSelectedCategory] = useState("সব ক্যাটাগরি");
+  const [selectedLocation, setSelectedLocation] = useState("সব লোকেশন");
+  const [sortBy, setSortBy] = useState("নতুন পণ্য আগে");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [detailsVisible, setDetailsVisible] = useState(false);
@@ -41,77 +41,77 @@ export default function Browse() {
   const products = [
     {
       id: 1,
-      name: "Premium Basmati Rice",
-      farmer: "Rice Fields",
+      name: "বাসমতি চাল",
+      farmer: "ধানক্ষেত",
       price: 85,
-      location: "Khulna",
-      category: "Grains",
+      location: "খুলনা",
+      category: "শস্য",
       image: rice,
       rating: 4.8,
       harvestedDays: 2,
     },
     {
       id: 2,
-      name: "Fresh Carrots",
-      farmer: "Green Valley Farms",
+      name: "গাজর",
+      farmer: "গ্রিন ভ্যালি ফার্মস",
       price: 45,
-      location: "Khulna",
-      category: "Vegetables",
+      location: "খুলনা",
+      category: "সবজি",
       image: carrot,
       rating: 4.9,
       harvestedDays: 1,
     },
     {
       id: 3,
-      name: "Fresh Tomatoes",
-      farmer: "Green Valley Farms",
+      name: "টমেটো",
+      farmer: "গ্রিন ভ্যালি ফার্মস",
       price: 60,
-      location: "Dhaka",
-      category: "Vegetables",
+      location: "ঢাকা",
+      category: "সবজি",
       image: tomato,
       rating: 4.5,
       harvestedDays: 5,
     },
     {
       id: 4,
-      name: "Organic Potatoes",
-      farmer: "Farm Fresh Co.",
+      name: "আলু",
+      farmer: "ফার্ম ফ্রেশ লিমিটেড",
       price: 85,
-      location: "Chittagong",
-      category: "Vegetables",
+      location: "চট্টগ্রাম",
+      category: "সবজি",
       image: potato,
       rating: 4.2,
       harvestedDays: 3,
     },
     {
       id: 5,
-      name: "Sweet Mangoes",
-      farmer: "Mango Garden",
+      name: "মিষ্টি আম",
+      farmer: "আম বাগান",
       price: 80,
-      location: "Rajshahi",
-      category: "Fruits",
+      location: "রাজশাহী",
+      category: "ফল",
       image: mango,
       rating: 4.8,
       harvestedDays: 10,
     },
     {
       id: 6,
-      name: "Fresh Milk",
-      farmer: "Dairy Pure",
+      name: "দুধ",
+      farmer: "বিশুদ্ধ দুগ্ধজাত",
       price: 1.2,
-      location: "Dhaka",
-      category: "Dairy",
+      location: "ঢাকা",
+      category: "দুগ্ধজাত পণ্য",
       image: milk,
       rating: 4.3,
       harvestedDays: 1,
     },
     {
       id: 7,
-      name: "Eggs",
-      farmer: "Happy Hens",
+      name: "ডিম",
+      farmer: "হ্যাপি হেনস",
       price: 0.25,
-      location: "Sylhet",
-      category: "Poultry",
+      location: "সিলেট",
+      category: "মুরগি/পোল্ট্রি",
       image: eggs,
       rating: 4.6,
       harvestedDays: 4,
@@ -119,31 +119,31 @@ export default function Browse() {
   ];
 
   const categories = [
-    "All Categories",
-    "Vegetables",
-    "Fruits",
-    "Dairy",
-    "Poultry",
-    "Grains",
-    "Spices",
+    "সব ক্যাটাগরি",
+    "সবজি",
+    "ফল",
+    "দুগ্ধজাত পণ্য",
+    "মুরগি/পোল্ট্রি",
+    "শস্য",
+    "মসলা",
   ];
 
   const locations = [
-    "All Locations",
-    "Dhaka",
-    "Chittagong",
-    "Rajshahi",
-    "Khulna",
-    "Sylhet",
-    "Barisal",
+    "সব লোকেশন",
+    "ঢাকা",
+    "চট্টগ্রাম",
+    "রাজশাহী",
+    "খুলনা",
+    "সিলেট",
+    "বরিশাল",
   ];
 
   const sortOptions = [
-    "Newest First",
-    "Price: Low to High",
-    "Price: High to Low",
-    "Highest Rated",
-    "Oldest First",
+    "নতুন পণ্য আগে",
+    "দাম: কম থেকে বেশি",
+    "দাম: বেশি থেকে কম",
+    "সর্বোচ্চ রেটিং",
+    "পুরনো পণ্য আগে",
   ];
 
   // FILTER + SEARCH + SORT LOGIC
@@ -160,32 +160,28 @@ export default function Browse() {
       );
     }
 
-    if (selectedCategory !== "All Categories") {
+    if (selectedCategory !== "সব ক্যাটাগরি") {
       result = result.filter((item) => item.category === selectedCategory);
     }
 
-    if (selectedLocation !== "All Locations") {
+    if (selectedLocation !== "সব লোকেশন") {
       result = result.filter((item) => item.location === selectedLocation);
     }
 
     switch (sortBy) {
-      case "Newest First":
+      case "নতুন পণ্য আগে":
         result.sort((a, b) => a.harvestedDays - b.harvestedDays);
         break;
-
-      case "Oldest First":
+      case "পুরনো পণ্য আগে":
         result.sort((a, b) => b.harvestedDays - a.harvestedDays);
         break;
-
-      case "Price: Low to High":
+      case "দাম: কম থেকে বেশি":
         result.sort((a, b) => a.price - b.price);
         break;
-
-      case "Price: High to Low":
+      case "দাম: বেশি থেকে কম":
         result.sort((a, b) => b.price - a.price);
         break;
-
-      case "Highest Rated":
+      case "সর্বোচ্চ রেটিং":
         result.sort((a, b) => b.rating - a.rating);
         break;
     }
@@ -205,9 +201,7 @@ export default function Browse() {
       <Image source={item.image} style={styles.productImage} />
       <Text style={styles.productName}>{item.name}</Text>
       <Text style={styles.farmerName}>{item.farmer}</Text>
-
       <Text style={styles.priceText}>৳{item.price}</Text>
-
       <Text style={styles.locationText}>{item.location}</Text>
 
       <View style={styles.ratingRow}>
@@ -220,10 +214,10 @@ export default function Browse() {
 
   // BOTTOM NAV
   const bottomNavItems = [
-    { name: "Home", image: homeIcon, route: "GuestHome" },
-    { name: "Products", image: productsIcon, route: "browse" },
-    { name: "Learn", image: learnIcon, route: "LearnArti" },
-    { name: "AI Chat", image: chatIcon, route: "Ai" },
+    { name: "হোম", image: homeIcon, route: "GuestHome" },
+    { name: "পণ্য", image: productsIcon, route: "browse" },
+    { name: "শিখুন", image: learnIcon, route: "LearnArti" },
+    { name: "এআই চ্যাট", image: chatIcon, route: "Ai" },
   ];
 
   return (
@@ -233,14 +227,11 @@ export default function Browse() {
         <Modal visible={detailsVisible} animationType="slide" transparent>
           <View style={styles.modalOverlay}>
             <View style={styles.modalBox}>
-              <Image
-                source={selectedProduct.image}
-                style={styles.modalImage}
-              />
+              <Image source={selectedProduct.image} style={styles.modalImage} />
 
               <Text style={styles.modalTitle}>{selectedProduct.name}</Text>
               <Text style={styles.modalSubtitle}>
-                Organic, fresh & pesticide-free
+                অর্গানিক, তাজা ও ক্ষতিকর কেমিকেলমুক্ত
               </Text>
 
               <View style={styles.modalRatingRow}>
@@ -248,37 +239,41 @@ export default function Browse() {
                   <Image key={i} source={starIcon} style={styles.starIconLarge} />
                 ))}
                 <Text style={styles.modalRatingText}>
-                  ({selectedProduct.rating} rating)
+                  ({selectedProduct.rating} রেটিং)
                 </Text>
               </View>
 
               <View style={styles.infoBlock}>
                 <Text style={styles.infoRow}>
-                  Price per kg:
+                  মূল্য (প্রতি কেজি):
                   <Text style={styles.priceGreen}> ৳{selectedProduct.price}</Text>
                 </Text>
 
                 <Text style={styles.infoRow}>
-                  Available: <Text style={styles.infoBold}>500 kg</Text>
+                  উপলব্ধ: <Text style={styles.infoBold}>500 কেজি</Text>
                 </Text>
 
                 <Text style={styles.infoRow}>
-                  Location: <Text style={styles.infoBold}>{selectedProduct.location}</Text>
+                  লোকেশন:{" "}
+                  <Text style={styles.infoBold}>{selectedProduct.location}</Text>
                 </Text>
 
                 <Text style={styles.infoRow}>
-                  Farmer: <Text style={styles.infoBold}>{selectedProduct.farmer}</Text>
+                  কৃষক:{" "}
+                  <Text style={styles.infoBold}>{selectedProduct.farmer}</Text>
                 </Text>
 
                 <Text style={styles.infoRow}>
-                  Harvested:
-                  <Text style={styles.infoBold}> {selectedProduct.harvestedDays} days ago</Text>
+                  ফসল তোলা হয়েছে:{" "}
+                  <Text style={styles.infoBold}>
+                    {selectedProduct.harvestedDays} দিন আগে
+                  </Text>
                 </Text>
               </View>
 
               <View style={styles.guestBox}>
                 <Text style={styles.guestText}>
-                  Guest Mode: To purchase products, please sign in.
+                  গেস্ট মোড: পণ্য কিনতে হলে অনুগ্রহ করে লগইন করুন।
                 </Text>
               </View>
 
@@ -287,14 +282,14 @@ export default function Browse() {
                   style={styles.closeBtn}
                   onPress={() => setDetailsVisible(false)}
                 >
-                  <Text style={styles.closeBtnText}>Close</Text>
+                  <Text style={styles.closeBtnText}>বন্ধ করুন</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={styles.buyBtn}
                   onPress={() => router.push("/login")}
                 >
-                  <Text style={styles.buyBtnText}>Sign In to Purchase</Text>
+                  <Text style={styles.buyBtnText}>কিনতে লগইন করুন</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -304,16 +299,16 @@ export default function Browse() {
 
       {/* MAIN CONTENT */}
       <ScrollView style={styles.content}>
-        <Text style={styles.title}>Browse Products</Text>
+        <Text style={styles.title}>পণ্য ব্রাউজ করুন</Text>
 
         <TextInput
           style={styles.searchInput}
-          placeholder="Search products..."
+          placeholder="পণ্য সার্চ করুন..."
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
 
-        <Text style={styles.filterTitle}>Categories</Text>
+        <Text style={styles.filterTitle}>ক্যাটাগরি</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {categories.map((cat, index) => (
             <TouchableOpacity
@@ -336,7 +331,7 @@ export default function Browse() {
           ))}
         </ScrollView>
 
-        <Text style={styles.filterTitle}>Locations</Text>
+        <Text style={styles.filterTitle}>লোকেশন</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {locations.map((loc, index) => (
             <TouchableOpacity
@@ -359,7 +354,7 @@ export default function Browse() {
           ))}
         </ScrollView>
 
-        <Text style={styles.filterTitle}>Sort By</Text>
+        <Text style={styles.filterTitle}>সাজান</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {sortOptions.map((opt, index) => (
             <TouchableOpacity
@@ -483,7 +478,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  // PRODUCT CARD
   productCard: {
     backgroundColor: "#fff",
     width: "48%",
@@ -531,7 +525,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
 
-  /* MODAL STYLE */
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -636,7 +629,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  /* BOTTOM NAV */
   bottomNav: {
     flexDirection: "row",
     paddingVertical: 10,
