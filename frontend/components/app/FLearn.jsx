@@ -24,8 +24,8 @@ import help from "@/assets/help.png";
 import orders from "@/assets/orders.png";
 
 export default function FLearn() {
-  const [activeTab, setActiveTab] = useState("Articles");
-  const [activeNav, setActiveNav] = useState("Home");
+  const [activeTab, setActiveTab] = useState("নিবন্ধ");
+  const [activeNav, setActiveNav] = useState("হোম");
 
   return (
     <View style={styles.container}>
@@ -37,9 +37,9 @@ export default function FLearn() {
         <View style={styles.titleSection}>
           <Image source={books} style={styles.iconImage} />
           <View>
-            <Text style={styles.title}>Learning Center</Text>
+            <Text style={styles.title}>শিক্ষা কেন্দ্র</Text>
             <Text style={styles.subTitleText}>
-              Educational blogs and video tutorials in English
+               শিক্ষামূলক ব্লগ এবং ভিডিও টিউটোরিয়াল 
             </Text>
           </View>
         </View>
@@ -47,9 +47,9 @@ export default function FLearn() {
         {/* 🔥 Tabs with Navigation */}
         <View style={styles.tabContainer}>
           {[
-            { name: "Articles", route: "/FLearn" },
-            { name: "Videos", route: "/Fvdo" },
-            { name: "Soil Guide", route: "/Fsoil" },
+            { name: "নিবন্ধ", route: "/FLearn" },
+            { name: "ভিডিও", route: "/Fvdo" },
+            { name: "মাটি নির্দেশিকা", route: "/Fsoil" },
           ].map((tab, index) => (
             <TouchableOpacity
               key={index}
@@ -77,19 +77,19 @@ export default function FLearn() {
           <View style={styles.articleCard}>
             <Image source={rice} style={styles.articleImage} />
             <View style={styles.articleContent}>
-              <Text style={styles.articleTitle}>Modern Rice Cultivation</Text>
+              <Text style={styles.articleTitle}>আধুনিক ধান চাষের কৌশলn</Text>
               <Text style={styles.articleDesc}>
-                Learn scientific and modern methods of rice cultivation.
+                উচ্চ ফলনের ধান চাষে বৈজ্ঞানিক পদ্ধতি ও পরিচর্যার বিস্তারিত জানুন।
               </Text>
 
               <View style={styles.articleFooter}>
                 <View style={styles.footerItem}>
                   <Image source={calendarIcon} style={styles.footerIcon} />
-                  <Text style={styles.articleDate}>Dec 10, 2024</Text>
+                  <Text style={styles.articleDate}>১০ ডিসেম্বর, ২০২৪</Text>
                 </View>
                 <View style={styles.footerItem}>
                   <Image source={clock} style={styles.footerIcon} />
-                  <Text style={styles.articleTime}>5 min read</Text>
+                  <Text style={styles.articleTime}>৫ মিনিট পড়া</Text>
                 </View>
               </View>
             </View>
@@ -99,19 +99,19 @@ export default function FLearn() {
           <View style={styles.articleCard}>
             <Image source={carrot} style={styles.articleImage} />
             <View style={styles.articleContent}>
-              <Text style={styles.articleTitle}>Winter Vegetable Guide</Text>
+              <Text style={styles.articleTitle}>শীতকালীন সবজি চাষ</Text>
               <Text style={styles.articleDesc}>
-                Learn methods and tips for winter vegetable farming.
+                পুষ্টিকর শীতকালীন সবজি উৎপাদনের কৌশল ও যত্ন।
               </Text>
 
               <View style={styles.articleFooter}>
                 <View style={styles.footerItem}>
                   <Image source={calendarIcon} style={styles.footerIcon} />
-                  <Text style={styles.articleDate}>Dec 8, 2024</Text>
+                  <Text style={styles.articleDate}>৮ ডিসেম্বর, ২০২৪</Text>
                 </View>
                 <View style={styles.footerItem}>
                   <Image source={clock} style={styles.footerIcon} />
-                  <Text style={styles.articleTime}>7 min read</Text>
+                  <Text style={styles.articleTime}>৭ মিনিট পড়া</Text>
                 </View>
               </View>
             </View>
@@ -121,19 +121,19 @@ export default function FLearn() {
           <View style={styles.articleCard}>
             <Image source={waterIcon} style={styles.articleImage} />
             <View style={styles.articleContent}>
-              <Text style={styles.articleTitle}>Irrigation Management</Text>
+              <Text style={styles.articleTitle}>সেচ ব্যবস্থাপনা</Text>
               <Text style={styles.articleDesc}>
-                Smart irrigation systems and water control methods.
+                কার্যকর সেচ ব্যবস্থা এবং আধুনিক প্রযুক্তির ব্যবহার।
               </Text>
 
               <View style={styles.articleFooter}>
                 <View style={styles.footerItem}>
                   <Image source={calendarIcon} style={styles.footerIcon} />
-                  <Text style={styles.articleDate}>Dec 5, 2024</Text>
+                  <Text style={styles.articleDate}>৫ ডিসেম্বর, ২০২৪</Text>
                 </View>
                 <View style={styles.footerItem}>
                   <Image source={clock} style={styles.footerIcon} />
-                  <Text style={styles.articleTime}>6 min read</Text>
+                  <Text style={styles.articleTime}>৬ মিনিট পড়া</Text>
                 </View>
               </View>
             </View>
@@ -145,11 +145,11 @@ export default function FLearn() {
       {/* 🔻 Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
-          { name: "Products", image: productsIcon, route: "/FarmerProducts" },
-          { name: "Weather", image: weather, route: "/Calendar" },
-          { name: "Help", image: help, route: "/Calendar" },
-          { name: "Orders", image: orders, notification: 15, route: "/FarmerOrders" },
+          { name: "হোম", image: homeIcon, route: "/FarmerDashboard" },
+          { name: "পণ্য", image: productsIcon, route: "/FarmerProducts" },
+          { name: "আবহাওয়া", image: weather, route: "/Calendar" },
+          { name: "সহায়তা", image: help, route: "/Calendar" },
+          { name: "অর্ডার", image: orders, notification: 15, route: "/FarmerOrders" },
         ].map((item, index) => {
           const isActive = activeNav === item.name;
 

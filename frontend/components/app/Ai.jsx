@@ -130,25 +130,25 @@ export default function Ai() {
   ];
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <View style={styles.container}>
-
-
-          {/* -------- Header -------- */}
-          <View style={styles.headerRow}>
-            <Image source={robot} style={styles.robotImage} />
-            <View>
-              <Text style={styles.headerTitle}>এআই কৃষি সহকারী</Text>
-              <Text style={styles.headerSubtitle}>
-                কৃষিকাজ সম্পর্কে কিছু জিজ্ঞাসা করুন
-              </Text>
+          {/* -------- Header (Moved Up) -------- */}
+          <View style={styles.headerContainer}>
+            <View style={styles.headerRow}>
+              <Image source={robot} style={styles.robotImage} />
+              <View style={styles.headerTextContainer}>
+                <Text style={styles.headerTitle}>এআই কৃষি সহকারী</Text>
+                <Text style={styles.headerSubtitle}>
+                  কৃষিকাজ সম্পর্কে কিছু জিজ্ঞাসা করুন
+                </Text>
+              </View>
             </View>
           </View>
-
 
           {/* -------- Chat Box -------- */}
           <View style={styles.chatContainer}>
@@ -184,9 +184,8 @@ export default function Ai() {
             />
           </View>
 
-
           {/* -------- Popular Questions -------- */}
-          <ScrollView style={{ maxHeight: 180 }}>
+          <ScrollView style={styles.popularContainer}>
             <Text style={styles.popularTitle}>জনপ্রিয় প্রশ্নসমূহ</Text>
 
             {popularQuestions.map((q, i) => (
@@ -201,9 +200,8 @@ export default function Ai() {
             ))}
           </ScrollView>
 
-
           {/* -------- Input Row -------- */}
-          <View style={styles.inputRow}>
+          <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
               placeholder="আপনার প্রশ্ন টাইপ করুন..."
@@ -216,47 +214,79 @@ export default function Ai() {
               <Text style={styles.sendBtnTxt}>পাঠান</Text>
             </TouchableOpacity>
           </View>
-
-
-          {/* -------- Bottom Navigation -------- */}
-          <View style={styles.bottomNav}>
-            {bottomNavItems.map((item, idx) => {
-              const active = activeNav === item.name;
-              return (
-                <TouchableOpacity
-                  key={idx}
-                  style={[styles.navItem, active && styles.activeNav]}
-                  onPress={() => {
-                    setActiveNav(item.name);
-                    router.push(item.route);
-                  }}
-                >
-                  <Image source={item.img} style={styles.navIcon} />
-                  <Text style={[styles.navTxt, active && styles.activeNavTxt]}>
-                    {item.name}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-
         </View>
       </KeyboardAvoidingView>
+
+      {/* -------- Bottom Navigation -------- */}
+      <View style={styles.bottomNav}>
+        {bottomNavItems.map((item, idx) => {
+          const active = activeNav === item.name;
+          return (
+            <TouchableOpacity
+              key={idx}
+              style={[styles.navItem, active && styles.activeNav]}
+              onPress={() => {
+                setActiveNav(item.name);
+                router.push(item.route);
+              }}
+            >
+              <Image source={item.img} style={styles.navIcon} />
+              <Text style={[styles.navTxt, active && styles.activeNavTxt]}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </SafeAreaView>
   );
 }
 
 /* ===========================================================
-                     STYLES (UNCHANGED)
+                     STYLES (UPDATED)
    =========================================================== */
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#fff" },
-  container: { flex: 1, padding: 15 },
+  safeArea: { 
+    flex: 1, 
+    backgroundColor: "#fff" 
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  container: { 
+    flex: 1, 
+    paddingHorizontal: 15,
+    paddingTop: 10, // Reduced top padding
+    paddingBottom: 0,
+  },
 
-  headerRow: { flexDirection: "row", marginBottom: 10 },
-  robotImage: { width: 50, height: 50, marginRight: 10 },
-  headerTitle: { fontSize: 18, fontWeight: "bold" },
-  headerSubtitle: { color: "#666" },
+  // Header Container with negative margin to move it up
+  headerContainer: {
+    marginTop: -55, // Move header up
+    marginBottom: 10,
+  },
+  headerRow: { 
+    flexDirection: "row", 
+    alignItems: "center", 
+  },
+  robotImage: { 
+    width: 40, 
+    height: 40, 
+    marginRight: 12 
+  },
+  headerTextContainer: {
+    flex: 1,
+  },
+  headerTitle: { 
+    fontSize: 18, 
+    fontWeight: "bold", 
+    color: "#333" 
+  },
+  headerSubtitle: { 
+    fontSize: 14, 
+    color: "#666", 
+    marginTop: 2 
+  },
 
   chatContainer: {
     flex: 1,
@@ -292,7 +322,16 @@ const styles = StyleSheet.create({
   userBubble: { backgroundColor: "#d1ecf1" },
   msgText: { fontSize: 15 },
 
-  popularTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+  popularContainer: { 
+    maxHeight: 180, 
+    marginBottom: 10 
+  },
+  popularTitle: { 
+    fontSize: 18, 
+    fontWeight: "bold", 
+    marginBottom: 10, 
+    color: "#333" 
+  },
 
   questionCard: {
     backgroundColor: "white",
@@ -302,10 +341,21 @@ const styles = StyleSheet.create({
     borderColor: "#eee",
     marginBottom: 10,
   },
-  questionTitle: { fontSize: 16, fontWeight: "600" },
-  questionDesc: { color: "#666" },
+  questionTitle: { 
+    fontSize: 16, 
+    fontWeight: "600", 
+    color: "#333" 
+  },
+  questionDesc: { 
+    color: "#666", 
+    fontSize: 14, 
+    marginTop: 2 
+  },
 
-  inputRow: { flexDirection: "row", marginTop: 10 },
+  inputContainer: { 
+    flexDirection: "row", 
+    marginBottom: 10 
+  },
   input: {
     flex: 1,
     padding: 12,
@@ -313,6 +363,8 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 10,
     minHeight: 45,
+    fontSize: 16,
+    backgroundColor: "#fff",
   },
   sendBtn: {
     marginLeft: 10,
@@ -321,23 +373,46 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 10,
   },
-  sendBtnTxt: { color: "#fff", fontWeight: "bold" },
+  sendBtnTxt: { 
+    color: "#fff", 
+    fontWeight: "bold", 
+    fontSize: 16 
+  },
 
   bottomNav: {
     flexDirection: "row",
     borderTopWidth: 1,
     borderColor: "#ddd",
-    paddingVertical: 10,
-    marginTop: 10,
+    paddingVertical: 12,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5,
   },
-  navItem: { flex: 1, alignItems: "center" },
-  navIcon: { width: 22, height: 22, marginBottom: 4 },
-  navTxt: { fontSize: 12 },
+  navItem: { 
+    flex: 1, 
+    alignItems: "center",
+    paddingVertical: 4,
+  },
+  navIcon: { 
+    width: 22, 
+    height: 22, 
+    marginBottom: 4 
+  },
+  navTxt: { 
+    fontSize: 12, 
+    color: "#666" 
+  },
 
   activeNav: {
     backgroundColor: "#eaf8ea",
     borderRadius: 10,
     paddingVertical: 5,
   },
-  activeNavTxt: { color: "#28a745", fontWeight: "bold" },
+  activeNavTxt: { 
+    color: "#28a745", 
+    fontWeight: "bold" 
+  },
 });

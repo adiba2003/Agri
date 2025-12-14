@@ -431,6 +431,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 15,
     color: "#222",
+    paddingTop: 1,
+    marginTop:-25
   },
 
   searchInput: {
@@ -482,6 +484,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     width: "48%",
     marginBottom: 15,
+     marginTop: 15,
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
@@ -635,6 +638,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#ddd",
     backgroundColor: "#fafafa",
+
   },
 
   navItem: { flex: 1, alignItems: "center", paddingVertical: 5 },

@@ -1,4 +1,3 @@
-// BuyerOrder.jsx (UPDATED - uses backend)
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
@@ -9,9 +8,11 @@ import {
   ScrollView,
   StatusBar,
   Alert,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import { router } from 'expo-router';
-import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Icons
 import homeIcon from '@/assets/home-icon.png';
@@ -19,149 +20,126 @@ import productsIcon from '@/assets/products-icon.png';
 import cartIcon from '@/assets/cart.png';
 import ordersIcon from '@/assets/orders.png';
 
-// <-- set this to your backend URL -->
-const API_BASE = 'http://localhost:5000';
-
 export default function BuyerOrder() {
-  const [activeNav, setActiveNav] = useState('Orders');
+  const [activeNav, setActiveNav] = useState('অর্ডার');
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
-
-
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    fetchOrders();
+    loadOrders();
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchOrders();
-    }, [])
-  );
-
-  
-  const fetchOrders = async () => {
+  const loadOrders = async () => {
     try {
       setLoading(true);
+      const storedOrders = await AsyncStorage.getItem('orders');
       
-    const res = await fetch("http://localhost:5000/api/product/get-cart-item");
-    const data = await res.json();
-    console.log("Cart items from backend:", data);
-    setOrders(data?.data);
-    console.log(data.data)
-      // backend returns { pending, processing, declined, cancelled }
-      // map each array to include status and combine
-      // const combined = [];
-      // if (data.pending?.length) {
-      //   data.pending.forEach(o => combined.push({ ...o, status: 'pending' }));
-      // }
-      // if (data.processing?.length) {
-      //   data.processing.forEach(o => combined.push({ ...o, status: 'processing' }));
-      // }
-      // if (data.declined?.length) {
-      //   data.declined.forEach(o => combined.push({ ...o, status: 'declined' }));
-      // }
-      // if (data.cancelled?.length) {
-      //   data.cancelled.forEach(o => combined.push({ ...o, status: 'cancelled' }));
-      // }
-      setOrders(combined);
+      if (storedOrders) {
+        const parsedOrders = JSON.parse(storedOrders);
+        
+        // Filter out any null or invalid orders এবং status ensure করুন
+        const validOrders = Array.isArray(parsedOrders) 
+          ? parsedOrders
+              .filter(order => order && order.orderId)
+              .map(order => ({
+                ...order,
+                status: order.status || 'pending' // ✅ Default status set করুন
+              }))
+          : [];
+          
+        setOrders(validOrders);
+      } else {
+        setOrders([]);
+      }
       setLoading(false);
     } catch (err) {
-      console.log('Error fetching orders:', err);
+      console.log('Error loading orders:', err);
       setLoading(false);
+      Alert.alert('ত্রুটি', 'অর্ডার লোড করতে ব্যর্থ হয়েছে');
     }
   };
 
-  // Generate random 6-digit order ID (for display)
-  const generateRandomOrderId = () => {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    loadOrders().then(() => setRefreshing(false));
+  }, []);
+
+  const saveOrders = async (updatedOrders) => {
+    try {
+      await AsyncStorage.setItem('orders', JSON.stringify(updatedOrders));
+      setOrders(updatedOrders);
+    } catch (err) {
+      console.log('Error saving orders:', err);
+      Alert.alert('ত্রুটি', 'অর্ডার সংরক্ষণ করতে ব্যর্থ হয়েছে');
+    }
   };
 
-  const confirmCancel = (orderIdWithCat, category) => {
-    // RN Alert confirm
+  const confirmCancel = (order) => {
     Alert.alert(
-      `Cancel ${category} order?`,
-      `Are you sure you want to cancel the ${category} items from this order?`,
+      'অর্ডার বাতিল করবেন?',
+      `আপনি কি নিশ্চিত যে অর্ডার #${order.displayOrderId} বাতিল করতে চান?\n\nএই কাজটি পূর্বাবস্থায় ফেরানো যাবে না।`,
       [
-        { text: 'No', style: 'cancel' },
-        { text: 'Yes', onPress: () => handleCancelConfirmation(orderIdWithCat, category) },
+        { text: 'না', style: 'cancel' },
+        { 
+          text: 'হ্যাঁ, বাতিল করুন', 
+          style: 'destructive',
+          onPress: () => handleCancelOrder(order) 
+        },
       ],
       { cancelable: true }
     );
   };
 
-  const handleCancelConfirmation = async (orderIdWithCat, category) => {
+  const handleCancelOrder = async (orderToCancel) => {
     try {
-      // handle both formats:
-      // If frontend passed "mainId-category", split
-      let mainOrderId = orderIdWithCat;
-      if (orderIdWithCat.includes('-')) {
-        mainOrderId = orderIdWithCat.split('-')[0];
-      }
-
-      const res = await fetch(`${API_BASE}/api/orders/${mainOrderId}/cancel`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        Alert.alert('Cancel failed', data.error || 'Failed to cancel order');
-        return;
-      }
-
-      Alert.alert('Cancelled', data.message || 'Order updated');
-      setRefreshKey(prev => prev + 1);
-      fetchOrders();
+      // Order টি filter করে বাদ দেই
+      const updatedOrders = orders.filter(order => order.orderId !== orderToCancel.orderId);
+      
+      // AsyncStorage থেকে delete করি
+      await AsyncStorage.setItem('orders', JSON.stringify(updatedOrders));
+      
+      // State update করি
+      setOrders(updatedOrders);
+      
+      Alert.alert('সফল', `অর্ডার #${orderToCancel.displayOrderId} বাতিল করা হয়েছে`);
+      
     } catch (err) {
-      console.log('cancel error', err);
-      Alert.alert('Error', 'Failed to cancel order');
+      console.log('Cancel error', err);
+      Alert.alert('ত্রুটি', 'অর্ডার বাতিল করতে ব্যর্থ হয়েছে। আবার চেষ্টা করুন।');
     }
   };
 
-  // Group orders by category with status
-  const getOrdersByCategory = () => {
-    const categoryOrders = [];
-
-    orders.forEach(order => {
-      if (!order.items || order.items.length === 0) return;
-
-      const itemsByCategory = {};
-      
-      order.forEach(item => {
-        const category = item.category || 'General';
-        if (!itemsByCategory[category]) {
-          itemsByCategory[category] = {
-            orderId: order.orderId + '-' + category,
-            originalOrderId: order.orderId,
-            category: category,
-            items: [],
-            totalAmount: 0,
-            createdAt: order.createdAt,
-            displayOrderId: generateRandomOrderId(),
-            parentStatus: order.status || 'pending'
-          };
-        }
-        itemsByCategory[category].items.push(item);
-        itemsByCategory[category].totalAmount += (item.price * (item.quantity || 1));
-      });
-      
-      Object.values(itemsByCategory).forEach(catOrder => {
-        categoryOrders.push(catOrder);
-      });
-    });
-
-    
-    return orders;
+  // CLEAR ALL ORDERS (for testing/debugging)
+  const clearAllOrders = async () => {
+    Alert.alert(
+      'সব অর্ডার মুছবেন?',
+      'আপনি কি নিশ্চিত যে সব অর্ডার মুছতে চান? এই কাজটি পূর্বাবস্থায় ফেরানো যাবে না।',
+      [
+        { text: 'না', style: 'cancel' },
+        { 
+          text: 'হ্যাঁ, সব মুছুন', 
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem('orders');
+              setOrders([]);
+              Alert.alert('সফল', 'সব অর্ডার মুছে ফেলা হয়েছে');
+            } catch (err) {
+              console.log('Clear error:', err);
+              Alert.alert('ত্রুটি', 'অর্ডার মুছতে ব্যর্থ হয়েছে');
+            }
+          }
+        },
+      ]
+    );
   };
 
   const navItems = [
-    { name: 'Home', image: homeIcon, route: 'BuyerDashboard' },
-    { name: 'Browse', image: productsIcon, route: 'BuyerBrowse' },
-    { name: 'Cart', image: cartIcon, route: 'Cart' },
-    { name: 'Orders', image: ordersIcon, route: 'BuyerOrder' },
+    { name: 'হোম', image: homeIcon, route: 'BuyerDashboard' },
+    { name: 'পণ্য', image: productsIcon, route: 'BuyerBrowse' },
+    { name: 'কার্ট', image: cartIcon, route: 'Cart' },
+    { name: 'অর্ডার', image: ordersIcon, route: 'BuyerOrder' },
   ];
 
   const handleNavPress = (item) => {
@@ -169,104 +147,118 @@ export default function BuyerOrder() {
     router.push(`/${item.route}`);
   };
 
-  const categoryOrders = getOrdersByCategory();
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4CAF50" />
+        <Text style={styles.loadingText}>অর্ডার লোড হচ্ছে...</Text>
+      </View>
+    );
+  }
+
+  // সব orders একসাথে sort করি (নতুন order উপরে)
+  const sortedOrders = [...orders].sort((a, b) => 
+    new Date(b.createdAt) - new Date(a.createdAt)
+  );
 
   return (
-    <View key={refreshKey} style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#4CAF50" />
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.titleSection}>
-          <Text style={styles.pageTitle}>My Orders</Text>
-          <Text style={styles.pageSubtitle}>Track your order status and history</Text>
-          <Text style={styles.orderCount}>Total Orders: {categoryOrders.length}</Text>
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#4CAF50']}
+            tintColor="#4CAF50"
+          />
+        }
+      >
+        <View style={styles.headerSection}>
+          <View>
+            <Text style={styles.pageTitle}>আমার অর্ডারসমূহ</Text>
+            <Text style={styles.pageSubtitle}>আপনার অর্ডারের অবস্থা এবং ইতিহাস দেখুন</Text>
+          </View>
+          
+          {orders.length > 0 && (
+            <TouchableOpacity onPress={clearAllOrders} style={styles.clearButton}>
+              <Text style={styles.clearButtonText}>সব মুছুন</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
-        {categoryOrders.length === 0 ? (
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <Text style={styles.statNumber}>{orders.length}</Text>
+            <Text style={styles.statLabel}>মোট অর্ডার</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={[styles.statNumber, styles.pendingStat]}>
+              {orders.filter(o => o.status === 'pending').length}
+            </Text>
+            <Text style={styles.statLabel}>পেন্ডিং</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={[styles.statNumber, styles.processingStat]}>
+              {orders.filter(o => o.status === 'processing').length}
+            </Text>
+            <Text style={styles.statLabel}>প্রক্রিয়াধীন</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={[styles.statNumber, styles.cancelledStat]}>
+              {orders.filter(o => o.status === 'cancelled').length}
+            </Text>
+            <Text style={styles.statLabel}>বাতিল</Text>
+          </View>
+        </View>
+
+        {orders.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>{loading ? 'Loading orders...' : 'No orders yet'}</Text>
-            <Text style={styles.emptySubtext}>Your orders will appear here</Text>
+            <Text style={styles.emptyText}>কোন অর্ডার নেই</Text>
+            <Text style={styles.emptySubtext}>আপনার অর্ডারগুলো এখানে দেখানো হবে</Text>
+            <TouchableOpacity
+              style={styles.browseButton}
+              onPress={() => router.push('/BuyerBrowse')}
+            >
+              <Text style={styles.browseButtonText}>পণ্য ব্রাউজ করুন</Text>
+            </TouchableOpacity>
           </View>
         ) : (
-          categoryOrders.map((order) => {
-            // Determine status based on parentStatus
-            const hasProcessing = order.parentStatus === 'processing';
-            const hasDeclined = order.parentStatus === 'declined';
-            const status = hasDeclined ? 'Declined' : hasProcessing ? 'Processing' : 'Pending';
-
-            return (
-              <View key={order.orderId} style={styles.orderCard}>
-                <View style={styles.orderHeader}>
-                  <View>
-                    <Text style={styles.orderNumber}>#{order.displayOrderId}</Text>
-                    <Text style={styles.orderCategory}>{order.category} Order</Text>
-                  </View>
-                  <View style={styles.statusSection}>
-                    <Text style={styles.orderDate}>
-                      {new Date(order.createdAt).toLocaleDateString('en-US', { 
-                        month: 'short', 
-                        day: 'numeric', 
-                        year: 'numeric' 
-                      })}
-                    </Text>
-                    <View style={[
-                      styles.statusBadge,
-                      status === 'Processing' && styles.processingStatus,
-                      status === 'Declined' && styles.declinedStatus
-                    ]}>
-                      <Text style={styles.statusText}>{status}</Text>
-                    </View>
-                  </View>
-                </View>
-
-                <View style={styles.divider} />
-
-                <View style={styles.orderItems}>
-                  {order.items?.map((item, idx) => (
-                    <View key={`${order.orderId}-${idx}`} style={styles.orderItem}>
-                      <View style={styles.itemInfo}>
-                        <Text style={styles.itemName}>{item.name} - {item.quantity}kg</Text>
-                        <Text style={styles.itemPrice}>৳{item.price * item.quantity}</Text>
-                      </View>
-                    </View>
-                  ))}
-                </View>
-
-                <View style={styles.orderFooter}>
-                  <View style={styles.totalSection}>
-                    <Text style={styles.totalLabel}>Total:</Text>
-                    <Text style={styles.totalAmount}>৳{order.totalAmount}</Text>
-                  </View>
-
-                  {status === 'Pending' && (
-                    <TouchableOpacity
-                      style={styles.cancelButton}
-                      onPress={() => confirmCancel(order.orderId, order.category)}
-                    >
-                      <Text style={styles.cancelButtonText}>Cancel Order</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-            );
-          })
+          sortedOrders.map((order) => (
+            <OrderCard 
+              key={order.orderId} 
+              order={order} 
+              onCancel={order.status === 'pending' ? confirmCancel : null} 
+            />
+          ))
         )}
+        
+        <View style={styles.bottomSpacer} />
       </ScrollView>
 
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {navItems.map((item, index) => {
           const isActive = activeNav === item.name;
           return (
             <TouchableOpacity
               key={index}
-              style={styles.navItem}
+              style={[styles.navItem, isActive && styles.activeNavItem]}
               onPress={() => handleNavPress(item)}
             >
-              <Image 
-                source={item.image} 
-                style={styles.navIcon} 
-              />
-              <Text style={styles.navText}>
+              <View style={styles.navIconContainer}>
+                <Image 
+                  source={item.image} 
+                  style={styles.navIcon}
+                />
+              </View>
+              <Text style={[
+                styles.navText, 
+                isActive && styles.activeNavText
+              ]}>
                 {item.name}
               </Text>
             </TouchableOpacity>
@@ -277,35 +269,192 @@ export default function BuyerOrder() {
   );
 }
 
-// styles: keep the same styles as your original file (copy-paste)
+// Separate Order Card Component
+const OrderCard = ({ order, onCancel }) => {
+  const totalAmount = order.items?.reduce((sum, item) => {
+    return sum + (item.price * (item.quantity || 1));
+  }, 0) || (order.price * (order.quantity || 1));
+
+  const getStatusColor = (status) => {
+    switch(status) {
+      case 'pending': return '#FFA726';
+      case 'processing': return '#29B6F6';
+      case 'completed': return '#4CAF50';
+      case 'cancelled': return '#F44336';
+      default: return '#757575';
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch(status) {
+      case 'pending': return 'পেন্ডিং';
+      case 'processing': return 'প্রক্রিয়াধীন';
+      case 'completed': return 'সম্পূর্ণ';
+      case 'cancelled': return 'বাতিল';
+      default: return status;
+    }
+  };
+
+  return (
+    <View style={styles.orderCard}>
+      <View style={styles.orderHeader}>
+        <View style={styles.orderInfo}>
+          <Text style={styles.orderNumber}>অর্ডার #{order.displayOrderId}</Text>
+          <Text style={styles.orderDate}>
+            {new Date(order.createdAt).toLocaleDateString('en-BD', { 
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </Text>
+        </View>
+        <View style={[
+          styles.statusBadge,
+          { backgroundColor: getStatusColor(order.status) }
+        ]}>
+          <Text style={styles.statusText}>
+            {getStatusText(order.status)}
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.divider} />
+
+      <View style={styles.orderItems}>
+        {order.items?.map((item, idx) => (
+          <View key={`${order.orderId}-${idx}`} style={styles.orderItem}>
+            <Text style={styles.itemName}>
+              {item.name} 
+              {item.quantity > 1 ? ` (${item.quantity} কেজি)` : ' (১ কেজি)'}
+            </Text>
+            <Text style={styles.itemPrice}>
+              ৳{(item.price * (item.quantity || 1)).toFixed(2)}
+            </Text>
+            {item.category && (
+              <Text style={styles.itemCategory}>{item.category}</Text>
+            )}
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.orderFooter}>
+        <View style={styles.totalSection}>
+          <Text style={styles.totalLabel}>মোট:</Text>
+          <Text style={styles.totalAmount}>৳{totalAmount.toFixed(2)}</Text>
+        </View>
+
+        {order.status === 'pending' && onCancel && (
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => onCancel(order)}
+          >
+            <Text style={styles.cancelButtonText}>বাতিল করুন</Text>
+          </TouchableOpacity>
+        )}
+        
+        {order.status === 'processing' && (
+          <View style={styles.processingMessage}>
+            <Text style={styles.processingText}>কৃষক অর্ডারটি প্রক্রিয়া করছেন</Text>
+          </View>
+        )}
+        
+        {order.status === 'cancelled' && (
+          <View style={styles.cancelledMessage}>
+            <Text style={styles.cancelledText}>অর্ডারটি বাতিল করা হয়েছে</Text>
+          </View>
+        )}
+      </View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: '#f8f9fa' 
   },
-  content: { 
-    flex: 1, 
-    padding: 20,
-    marginBottom: 70
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
-  titleSection: { 
-    marginBottom: 24,
-  },
-  pageTitle: { 
-    fontSize: 28, 
-    fontWeight: 'bold', 
-    color: '#2c3e50', 
-    marginBottom: 8 
-  },
-  pageSubtitle: { 
-    fontSize: 16, 
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
     color: '#666',
   },
-  orderCount: {
-    fontSize: 14,
-    color: '#4CAF50',
+  headerSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  clearButton: {
+    backgroundColor: '#F44336',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  clearButtonText: {
+    color: '#fff',
+    fontSize: 12,
     fontWeight: '600',
+  },
+  content: { 
+    flex: 1, 
+    paddingHorizontal: 15,
+    paddingTop: 15,
+    paddingBottom: 80,
+  },
+  pageTitle: { 
+    fontSize: 24, 
+    fontWeight: 'bold', 
+    color: '#2c3e50', 
+    marginBottom: 4 
+  },
+  pageSubtitle: { 
+    fontSize: 14, 
+    color: '#666',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  statItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statNumber: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2c3e50',
+  },
+  pendingStat: {
+    color: '#FFA726',
+  },
+  processingStat: {
+    color: '#29B6F6',
+  },
+  cancelledStat: {
+    color: '#F44336',
+  },
+  statLabel: {
+    fontSize: 10,
+    color: '#666',
     marginTop: 4,
+    textAlign: 'center',
   },
   emptyState: {
     alignItems: 'center',
@@ -323,119 +472,151 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#999',
     textAlign: 'center',
+    marginBottom: 20,
+  },
+  browseButton: {
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  browseButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   orderCard: { 
     backgroundColor: '#fff', 
     borderRadius: 12, 
-    padding: 20, 
-    marginBottom: 16,
+    padding: 16, 
+    marginBottom: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 3,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
   orderHeader: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 12,
+  },
+  orderInfo: {
+    flex: 1,
+    marginRight: 10,
   },
   orderNumber: { 
-    fontSize: 18, 
+    fontSize: 16, 
     fontWeight: 'bold', 
     color: '#2c3e50',
     marginBottom: 4,
   },
-  orderCategory: {
-    fontSize: 14,
-    color: '#4CAF50',
-    fontWeight: '600',
-  },
-  statusSection: {
-    alignItems: 'flex-end',
-  },
   orderDate: { 
-    fontSize: 14, 
+    fontSize: 13, 
     color: '#666',
-    marginBottom: 6,
-    textAlign: 'right',
   },
   statusBadge: {
-    backgroundColor: '#FFF3CD',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: 12,
-  },
-  processingStatus: {
-    backgroundColor: '#BBDEFB',
-  },
-  declinedStatus: {
-    backgroundColor: '#FFCDD2',
+    minWidth: 70,
+    alignItems: 'center',
   },
   statusText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
-    color: '#856404',
+    color: '#fff',
   },
   divider: {
     height: 1,
     backgroundColor: '#e0e0e0',
-    marginBottom: 16,
-  },
-  orderItems: { 
-    marginBottom: 16,
-  },
-  orderItem: { 
     marginBottom: 12,
   },
-  itemInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  orderItems: { 
+    marginBottom: 12,
+  },
+  orderItem: { 
+    marginBottom: 10,
+    padding: 8,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
   },
   itemName: { 
-    fontSize: 16, 
+    fontSize: 14, 
     color: '#333', 
     fontWeight: '500',
-    flex: 1,
+    marginBottom: 4,
   },
   itemPrice: { 
-    fontSize: 16, 
+    fontSize: 14, 
     fontWeight: '600', 
     color: '#2c3e50',
-    marginLeft: 10,
+    marginBottom: 2,
+  },
+  itemCategory: {
+    fontSize: 11,
+    color: '#666',
+    fontStyle: 'italic',
   },
   orderFooter: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'center',
+    marginTop: 5,
   },
   totalSection: { 
     flexDirection: 'row', 
     alignItems: 'center' 
   },
   totalLabel: { 
-    fontSize: 16, 
+    fontSize: 15, 
     color: '#666', 
     marginRight: 8,
     fontWeight: '500',
   },
   totalAmount: { 
-    fontSize: 18, 
+    fontSize: 17, 
     fontWeight: 'bold', 
     color: '#2c3e50' 
   },
   cancelButton: {
     backgroundColor: '#ff4d4f',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
   },
   cancelButtonText: { 
     color: '#fff', 
-    fontSize: 14, 
+    fontSize: 13, 
     fontWeight: '600' 
+  },
+  processingMessage: {
+    backgroundColor: '#E1F5FE',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  processingText: {
+    color: '#0277bd',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  cancelledMessage: {
+    backgroundColor: '#FFEBEE',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  cancelledText: {
+    color: '#c62828',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  bottomSpacer: {
+    height: 20,
   },
   bottomNav: { 
     flexDirection: 'row', 
@@ -446,8 +627,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    paddingHorizontal: 0,
-    paddingVertical: 12,
+    paddingVertical: 10,
     height: 70,
   },
   navItem: { 
@@ -455,15 +635,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  navIcon: { 
-    width: 24, 
-    height: 24, 
-    resizeMode: 'contain',
+  activeNavItem: {
+    // শুধু text color change হবে, কোনো background বা
+  },
+  navIconContainer: {
     marginBottom: 4,
   },
+  navIcon: { 
+    width: 24, 
+    height: 24,
+  },
   navText: { 
-    fontSize: 12, 
-    color: '#333', 
+    fontSize: 11, 
+    color: '#666', 
     fontWeight: '500',
+  },
+  activeNavText: { 
+    color: '#4CAF50', 
+    fontWeight: 'bold' 
   },
 });

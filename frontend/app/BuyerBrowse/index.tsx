@@ -13,7 +13,7 @@ const RegisterHeaderTitle = () => {
       </View>
       <View>
         <Text style={styles.appName}>AgriXpert</Text>
-        <Text style={styles.subtitle}>Browse Products</Text>
+        <Text style={styles.subtitle}>প্রোডাক্ট দেখুন</Text>
       </View>
     </View>
   );

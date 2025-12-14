@@ -27,22 +27,20 @@ import onionImg from "@/assets/onion.png";
 import riceImg from "@/assets/rice.png";
 
 export default function Calendar() {
-  const [activeNav, setActiveNav] = useState("Home");
+  const [activeNav, setActiveNav] = useState("হোম");
   const [checkedTasks, setCheckedTasks] = useState({});
 
-  // Bottom navigation items (Expo Router routes)
   const navItems = [
-    { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
-    { name: "Products", image: productsIcon, route: "/FarmerProducts" },
-    { name: "Weather", image: weatherIcon, route: "/Calendar" },
-    { name: "Help", image: helpIcon, route: "/FAi" },
-    { name: "Orders", image: ordersIcon, notification: 15, route: "/FarmerOrders" },
+    { name: "হোম", image: homeIcon, route: "/FarmerDashboard" },
+    { name: "পণ্য", image: productsIcon, route: "/FarmerProducts" },
+    { name: "আবহাওয়া", image: weatherIcon, route: "/Calendar" },
+    { name: "সহায়তা", image: helpIcon, route: "/FAi" },
+    { name: "অর্ডার", notification: 15, image: ordersIcon, route: "/FarmerOrders" },
   ];
 
-  // Calendar data
   const calendarData = {
-    month: "October 2025",
-    days: ["Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"],
+    month: "অক্টোবর ২০২৫",
+    days: ["বুধ", "বৃহঃ", "শুক্র", "শনি", "রবি", "সোম", "মঙ্গল"],
     dates: [
       [1, 2, 3, 4, 5, 6, 7],
       [8, 9, 10, 11, 12, 13, 14],
@@ -57,20 +55,20 @@ export default function Calendar() {
   const farmingTasks = [
     {
       id: 1,
-      title: "Irrigate the rice field",
-      items: ["6:00 AM - 8:00 AM • Urgent"],
+      title: "ধানের জমিতে সেচ দিন",
+      items: ["৬:০০ AM - ৮:০০ AM • জরুরি"],
       image: waterIcon,
     },
     {
       id: 2,
-      title: "Apply fertilizer to tomato plants",
-      items: ["4:00 PM - 6:00 PM"],
+      title: "টমেটো গাছে সার প্রয়োগ",
+      items: ["৪:০০ PM - ৬:০০ PM"],
       image: leafImg,
     },
     {
       id: 3,
-      title: "Check weather forecast",
-      items: ["Anytime"],
+      title: "আবহাওয়ার পূর্বাভাস দেখুন",
+      items: ["যেকোনো সময়"],
       image: weatherColor,
     },
   ];
@@ -78,30 +76,30 @@ export default function Calendar() {
   const cropCards = [
     {
       id: 1,
-      title: "Vegetables",
-      crops: "Spinach, Red Amaranth, Radish",
-      season: "Planting: December - January",
+      title: "শাকসবজি",
+      crops: "পালং, লালশাক, মূলা",
+      season: "রোপণ সময়: ডিসেম্বর - জানুয়ারি",
       image: vegetablesImg,
     },
     {
       id: 2,
-      title: "Root Vegetables",
-      crops: "Carrot, Beetroot, Turnip",
-      season: "Planting: November - December",
+      title: "মূলজাতীয় ফসল",
+      crops: "গাজর, বিট, শালগম",
+      season: "রোপণ সময়: নভেম্বর - ডিসেম্বর",
       image: carrotImg,
     },
     {
       id: 3,
-      title: "Spices",
-      crops: "Chili, Coriander, Cumin",
-      season: "Planting: October - November",
+      title: "মসলা",
+      crops: "মরিচ, ধনে, জিরা",
+      season: "রোপণ সময়: অক্টোবর - নভেম্বর",
       image: chiliImg,
     },
     {
       id: 4,
-      title: "Bulb Vegetables",
-      crops: "Onion, Garlic, Leek",
-      season: "Planting: November - December",
+      title: "বাল্বজাতীয় ফসল",
+      crops: "পেঁয়াজ, রসুন, লিক",
+      season: "রোপণ সময়: নভেম্বর - ডিসেম্বর",
       image: onionImg,
     },
   ];
@@ -109,14 +107,14 @@ export default function Calendar() {
   const nextWeekTasks = [
     {
       id: 1,
-      title: "Rice Harvesting Preparation",
-      detail: "October 9 • Prepare Equipment",
+      title: "ধান কাটার প্রস্তুতি",
+      detail: "৯ অক্টোবর • যন্ত্রপাতি প্রস্তুত করুন",
       image: riceImg,
     },
     {
       id: 2,
-      title: "Carrot Seed Sowing",
-      detail: "October 14 • Prepare the Land",
+      title: "গাজরের বীজ বপন",
+      detail: "১৪ অক্টোবর • জমি প্রস্তুত করুন",
       image: carrotImg,
     },
   ];
@@ -132,24 +130,20 @@ export default function Calendar() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#4CAF50" />
 
-      {/* Main Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Screen Title with calendar icon */}
         <View style={styles.titleSection}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Image source={calendarIconImg} style={styles.calendarIcon} />
-            <Text style={styles.screenTitle}>Farming Calendar</Text>
+            <Text style={styles.screenTitle}>কৃষি ক্যালেন্ডার</Text>
           </View>
           <Text style={styles.screenSubtitle}>
-            Plan your crops and track farming activities
+            আপনার ফসল পরিকল্পনা করুন এবং কৃষি কাজ ট্র্যাক করুন
           </Text>
         </View>
 
-        {/* Calendar Section */}
         <View style={styles.calendarCard}>
           <Text style={styles.monthTitle}>{calendarData.month}</Text>
 
-          {/* Days Header */}
           <View style={styles.daysHeader}>
             {calendarData.days.map((day, index) => (
               <Text key={index} style={styles.dayText}>
@@ -158,7 +152,6 @@ export default function Calendar() {
             ))}
           </View>
 
-          {/* Calendar Dates */}
           <View style={styles.calendarGrid}>
             {calendarData.dates.map((week, weekIndex) => (
               <View key={weekIndex} style={styles.weekRow}>
@@ -189,12 +182,11 @@ export default function Calendar() {
             ))}
           </View>
 
-          {/* Divider */}
           <View style={styles.divider} />
 
-          {/* Farming Tasks Section */}
+          {/* আজকের কাজ */}
           <View style={styles.tasksSection}>
-            <Text style={styles.tasksTitle}>Today's Tasks (6 October)</Text>
+            <Text style={styles.tasksTitle}>আজকের কাজ (৬ অক্টোবর)</Text>
 
             {farmingTasks.map((task) => (
               <TouchableOpacity
@@ -221,6 +213,7 @@ export default function Calendar() {
                   </Text>
                   <Image source={task.image} style={styles.taskImage} />
                 </View>
+
                 <View style={styles.taskDetails}>
                   {task.items.map((item, idx) => (
                     <Text key={idx} style={styles.taskDetail}>
@@ -232,31 +225,29 @@ export default function Calendar() {
             ))}
           </View>
 
-          {/* Weather Alert Section */}
+          {/* আবহাওয়া সতর্কতা */}
           <View style={styles.alertCard}>
             <Image source={weatherColor} style={styles.alertImage} />
             <View style={{ flex: 1 }}>
-              <Text style={styles.alertTitle}>Weather Alert</Text>
+              <Text style={styles.alertTitle}>আবহাওয়া সতর্কতা</Text>
               <Text style={styles.alertText}>
-                There is a possibility of rain for the next 3 days. Advance the
-                rice harvesting work and suspend irrigation activities.
+                আগামী ৩ দিন বৃষ্টির সম্ভাবনা রয়েছে। ধান কাটার কাজ এগিয়ে নিন এবং সেচ কার্য বন্ধ রাখুন।
               </Text>
               <TouchableOpacity
                 style={styles.alertButton}
                 onPress={() => router.push("/FAi")}
               >
-                <Text style={styles.alertButtonText}>Get advice from AI</Text>
+                <Text style={styles.alertButtonText}>AI থেকে পরামর্শ নিন</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          {/* Winter Cultivation Guide Title */}
-          <Text style={styles.cultivationTitle}>Winter Cultivation Guide</Text>
+          {/* শীতকালীন চাষাবাদ নির্দেশিকা */}
+          <Text style={styles.cultivationTitle}>শীতকালীন চাষাবাদ নির্দেশিকা</Text>
 
-          {/* Crop Cards Grid */}
           <View style={styles.cardsGrid}>
             {cropCards.map((card) => (
-              <View key={card.id} style={[styles.cropCard]}>
+              <View key={card.id} style={styles.cropCard}>
                 <Image source={card.image} style={styles.cardImage} />
                 <Text style={styles.cardTitle}>{card.title}</Text>
                 <Text style={styles.cardCrops}>{card.crops}</Text>
@@ -265,11 +256,11 @@ export default function Calendar() {
             ))}
           </View>
 
-          {/* Next Week's Tasks */}
+          {/* আগামী সপ্তাহের কাজ */}
           <View style={styles.nextWeekBox}>
-            <Text style={styles.nextWeekTitle}>Next Week's Tasks</Text>
+            <Text style={styles.nextWeekTitle}>আগামী সপ্তাহের কাজ</Text>
             {nextWeekTasks.map((task, index) => {
-              const daysLeft = index === 0 ? "3 days left" : "8 days left";
+              const daysLeft = index === 0 ? "৩ দিন বাকি" : "৮ দিন বাকি";
               return (
                 <View key={task.id} style={styles.nextTaskCard}>
                   <Image source={task.image} style={styles.nextTaskImage} />
@@ -287,11 +278,11 @@ export default function Calendar() {
         </View>
       </ScrollView>
 
-      {/* 🔻 Bottom Navigation (Orders badge up & corner) */}
+      {/* নিচের ন্যাভ */}
       <View style={styles.bottomNav}>
         {navItems.map((item, index) => {
           const isActive = activeNav === item.name;
-          const showBadge = item.notification != null && item.name === "Orders";
+          const showBadge = item.notification != null && item.name === "অর্ডার";
 
           return (
             <TouchableOpacity
@@ -325,6 +316,7 @@ export default function Calendar() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f8f9fa" },

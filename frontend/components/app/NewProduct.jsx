@@ -24,11 +24,11 @@ export default function NewProduct() {
   const [activeNav, setActiveNav] = useState("Products");
 
   const bottomNavItems = [
-    { name: "Home", img: homeIcon, route: "/FarmerDashboard" },
-    { name: "Products", img: productsIcon, route: "/FarmerProducts" },
-    { name: "Weather", img: weatherIcon, route: "/Calendar" },
-    { name: "Help", img: helpIcon, route: "/Calendar" },
-    { name: "Orders", img: ordersIcon, route: "/FarmerOrders", notification: 15 },
+    { name: "হোম", img: homeIcon, route: "/FarmerDashboard" },
+    { name: "পণ্য", img: productsIcon, route: "/FarmerProducts" },
+    { name: "আবহাওয়া", img: weatherIcon, route: "/Calendar" },
+    { name: "সহায়তা", img: helpIcon, route: "/Calendar" },
+    { name: "অর্ডার", img: ordersIcon, route: "/FarmerOrders", notification: 15 },
   ];
 
   return (
@@ -39,27 +39,27 @@ export default function NewProduct() {
         style={styles.scrollArea}
         contentContainerStyle={{ paddingBottom: 100 }}
       >
-        <Text style={styles.sectionTitle}>Add New Product</Text>
+        <Text style={styles.sectionTitle}>নতুন পণ্য যোগ করুন</Text>
         <Text style={styles.sectionSubtitle}>
-          List your farm products for sale
+          আপনার ফার্ম পণ্য বিক্রয়ের জন্য তালিকাভুক্ত করুন
         </Text>
 
-        <Text style={styles.label}>Product Name</Text>
+        <Text style={styles.label}>পণ্যের নাম</Text>
         <TextInput
           style={styles.input}
-          placeholder="e.g., Premium Basmati Rice"
+          placeholder="যেমন: বাসমতি চাল"
         />
 
         <View style={styles.row}>
           <View style={{ flex: 1, marginRight: 10 }}>
-            <Text style={styles.label}>Category</Text>
-            <TextInput style={styles.input} placeholder="Select Category" />
+            <Text style={styles.label}>শ্রেণি</Text>
+            <TextInput style={styles.input} placeholder="শ্রেণি নির্বাচন করুন" />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={styles.label}>Price per kg ($)</Text>
+            <Text style={styles.label}>দর প্রতি কেজি (৳)</Text>
             <TextInput
               style={styles.input}
-              placeholder="85"
+              placeholder="৮৫"
               keyboardType="numeric"
             />
           </View>
@@ -67,42 +67,42 @@ export default function NewProduct() {
 
         <View style={styles.row}>
           <View style={{ flex: 1, marginRight: 10 }}>
-            <Text style={styles.label}>Available Quantity (kg)</Text>
+            <Text style={styles.label}>উপলব্ধ পরিমাণ (কেজি)</Text>
             <TextInput
               style={styles.input}
-              placeholder="500"
+              placeholder="৫০০"
               keyboardType="numeric"
             />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={styles.label}>Location</Text>
-            <TextInput style={styles.input} placeholder="Select Location" />
+            <Text style={styles.label}>অবস্থান</Text>
+            <TextInput style={styles.input} placeholder="অবস্থান নির্বাচন করুন" />
           </View>
         </View>
 
-        <Text style={styles.label}>Description</Text>
+        <Text style={styles.label}>বর্ণনা</Text>
         <TextInput
           style={[styles.input, { height: 80, textAlignVertical: "top" }]}
-          placeholder="Describe your product quality, farming methods, etc."
+          placeholder="পণ্যের মান, চাষের পদ্ধতি ইত্যাদি বর্ণনা করুন"
           multiline
         />
 
-        <Text style={styles.label}>Product Image</Text>
+        <Text style={styles.label}>পণ্যের ছবি</Text>
         <TouchableOpacity style={styles.imageUpload}>
           <Image
             source={cameraIcon}
             style={{ width: 30, height: 30, marginBottom: 5 }}
           />
           <Text style={{ color: "#666", fontSize: 12 }}>
-            Click to upload product image
+            পণ্যের ছবি আপলোড করতে ক্লিক করুন
           </Text>
           <Text style={{ color: "#aaa", fontSize: 11 }}>
-            JPG, PNG up to 5MB
+            JPG, PNG ৫MB পর্যন্ত
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.submitButton}>
-          <Text style={styles.submitButtonText}>List Product</Text>
+          <Text style={styles.submitButtonText}>পণ্য তালিকাভুক্ত করুন</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -135,6 +135,7 @@ export default function NewProduct() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f8f9fa" },

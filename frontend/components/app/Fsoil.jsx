@@ -21,8 +21,8 @@ import help from "@/assets/help.png";
 import orders from "@/assets/orders.png";
 
 export default function Fsoil() {
-  const [activeTab, setActiveTab] = useState("Soil Guide");
-  const [activeNav, setActiveNav] = useState("Home");
+  const [activeTab, setActiveTab] = useState("মাটি নির্দেশিকা");
+  const [activeNav, setActiveNav] = useState("হোম");
 
   return (
     <View style={styles.container}>
@@ -34,9 +34,9 @@ export default function Fsoil() {
         <View style={styles.titleSection}>
           <Image source={booksIcon} style={styles.iconImage} />
           <View>
-            <Text style={styles.title}>Learning Center</Text>
+            <Text style={styles.title}>শিক্ষা কেন্দ্র</Text>
             <Text style={styles.subTitleText}>
-              Educational blogs and video tutorials in English
+              শিক্ষামূলক ব্লগ ও ভিডিও টিউটোরিয়াল 
             </Text>
           </View>
         </View>
@@ -44,9 +44,9 @@ export default function Fsoil() {
         {/* 🔥 Tabs with Navigation */}
         <View style={styles.tabContainer}>
           {[
-            { name: "Articles", route: "/FLearn" },
-            { name: "Videos", route: "/Fvdo" },
-            { name: "Soil Guide", route: "/Fsoil" },
+            { name: "আর্টিকেল", route: "/FLearn" },
+            { name: "ভিডিও", route: "/Fvdo" },
+            { name: "মাটি নির্দেশিকা", route: "/Fsoil" },
           ].map((tab, index) => (
             <TouchableOpacity
               key={index}
@@ -68,23 +68,23 @@ export default function Fsoil() {
           ))}
         </View>
 
-        <Text style={styles.fertilizerTitle}>Types of Soil</Text>
+        <Text style={styles.fertilizerTitle}>মাটির ধরন</Text>
 
         {/* Soil Types */}
         {[
           {
-            name: "Loamy Soil",
-            description: "Most fertile, suitable for all types of crops",
+            name: "দোঁআশ মাটি",
+            description: "সবচেয়ে উর্বর, প্রায় সব ফসল চাষের জন্য উপযুক্ত",
             color: "#8FBC8F",
           },
           {
-            name: "Clay Soil",
-            description: "Good water retention, ideal for rice cultivation",
+            name: "এঁটেল মাটি",
+            description: "জল ধারণ ক্ষমতা বেশি, ধান চাষের জন্য আদর্শ",
             color: "#D2B48C",
           },
           {
-            name: "Sandy Soil",
-            description: "Good drainage, suitable for vegetables",
+            name: "বেলে মাটি",
+            description: "নিষ্কাশন ভালো, সবজি চাষের জন্য উপযোগী",
             color: "#F4A460",
           },
         ].map((soil, index) => (
@@ -108,17 +108,17 @@ export default function Fsoil() {
         ))}
 
         {/* Fertilizer Section */}
-        <Text style={styles.fertilizerTitle}>Fertilizer Usage Guide</Text>
+        <Text style={styles.fertilizerTitle}>সারের ব্যবহার নির্দেশিকা</Text>
         <View style={styles.fertilizerSection}>
           {[
             {
-              name: "Organic Fertilizer",
-              desc: "Animal dung, Compost",
+              name: "জৈব সার",
+              desc: "গোবর, কম্পোস্ট ইত্যাদি",
               image: leafIcon,
             },
             {
-              name: "Chemical Fertilizer",
-              desc: "Urea, TSP, MP",
+              name: "রাসায়নিক সার",
+              desc: "ইউরিয়া, টিএসপি, এমপি",
               image: chemicalIcon,
             },
           ].map((fertilizer, index, arr) => (
@@ -157,11 +157,11 @@ export default function Fsoil() {
       {/* 🔻 Bottom Navigation (Updated like Fvdo) */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
-          { name: "Products", image: productsIcon, route: "/FarmerProducts" },
-          { name: "Weather", image: weather, route: "/Calendar" },
-          { name: "Help", image: help, route: "/Calendar" },
-          { name: "Orders", image: orders, notification: 15, route: "/FarmerOrders" },
+          { name: "হোম", image: homeIcon, route: "/FarmerDashboard" },
+          { name: "পণ্য", image: productsIcon, route: "/FarmerProducts" },
+          { name: "আবহাওয়া", image: weather, route: "/Calendar" },
+          { name: "সহায়তা", image: help, route: "/Calendar" },
+          { name: "অর্ডার", image: orders, notification: 15, route: "/FarmerOrders" },
         ].map((item, index) => {
           const isActive = activeNav === item.name;
 

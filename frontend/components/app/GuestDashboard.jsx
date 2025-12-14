@@ -26,28 +26,26 @@ import learnIcon from "@/assets/learn-icon.webp";
 import chatIcon from "@/assets/chat-icon.png";
 
 export default function GuestDashboard() {
-  const [activeNav, setActiveNav] = useState("Home");
+  const [activeNav, setActiveNav] = useState("হোম");
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
         {/* Welcome */}
-        <Text style={styles.welcome}>Welcome, Guest!</Text>
+        <Text style={styles.welcome}>স্বাগতম, অতিথি!</Text>
         <Text style={styles.subtext}>
-          Explore AgriXpert&apos;s educational resources and browse products
+          AgriXpert-এর শিক্ষামূলক রিসোর্স এক্সপ্লোর করুন এবং পণ্য ব্রাউজ করুন
         </Text>
 
         {/* Daily Tip */}
         <View style={styles.tipCard}>
           <Image source={tipImg} style={styles.tipIcon} />
-          {/* 🔹 টেক্সট container-কে flex: 1 দিলাম যাতে সবকিছু কার্ডের ভেতরে wrap হয় */}
           <View style={styles.tipTextContainer}>
-            <Text style={styles.tipTitle}>Today&apos;s Farming Tip</Text>
+            <Text style={styles.tipTitle}>আজকের চাষাবাদের পরামর্শ</Text>
             <Text style={styles.tipDesc}>
-              For better tomato yield in winter, apply compost fertilizer and
-              water regularly.
+              শীতকালে টমেটোর ভালো ফলনের জন্য কম্পোস্ট সার ব্যবহার করুন এবং নিয়মিত পানি দিন।
             </Text>
-            <Text style={styles.tipFooter}>Daily Farming Tip</Text>
+            <Text style={styles.tipFooter}>দৈনিক চাষাবাদ পরামর্শ</Text>
           </View>
         </View>
 
@@ -61,10 +59,8 @@ export default function GuestDashboard() {
               <View style={styles.featureIconContainer}>
                 <Image source={cartIcon} style={styles.featureIcon} />
               </View>
-              <Text style={styles.featureTitle}>Browse Products</Text>
-              <Text style={styles.featureDesc}>
-                Search &amp; filter farm products
-              </Text>
+              <Text style={styles.featureTitle}>পণ্য ব্রাউজ করুন</Text>
+              <Text style={styles.featureDesc}>কৃষি পণ্য অনুসন্ধান ও ফিল্টার</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -74,10 +70,8 @@ export default function GuestDashboard() {
               <View style={styles.featureIconContainer}>
                 <Image source={booksIcon} style={styles.featureIcon} />
               </View>
-              <Text style={styles.featureTitle}>Learning Center</Text>
-              <Text style={styles.featureDesc}>
-                Educational content in English
-              </Text>
+              <Text style={styles.featureTitle}>শিক্ষা কেন্দ্র</Text>
+              <Text style={styles.featureDesc}>শিক্ষামূলক কনটেন্ট </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -87,8 +81,8 @@ export default function GuestDashboard() {
               <View style={styles.featureIconContainer}>
                 <Image source={robotIcon} style={styles.featureIcon} />
               </View>
-              <Text style={styles.featureTitle}>AI Assistant</Text>
-              <Text style={styles.featureDesc}>Ask farming questions</Text>
+              <Text style={styles.featureTitle}>এআই সহকারী</Text>
+              <Text style={styles.featureDesc}>চাষাবাদের প্রশ্ন করুন</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -98,8 +92,8 @@ export default function GuestDashboard() {
               <View style={styles.featureIconContainer}>
                 <Image source={leafIcon} style={styles.featureIcon} />
               </View>
-              <Text style={styles.featureTitle}>Soil Guide</Text>
-              <Text style={styles.featureDesc}>Soil types &amp; fertilizers</Text>
+              <Text style={styles.featureTitle}>মাটি গাইড</Text>
+              <Text style={styles.featureDesc}>মাটির ধরন ও সার</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -107,18 +101,18 @@ export default function GuestDashboard() {
         {/* Featured Products */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Featured Products</Text>
+            <Text style={styles.sectionTitle}>বৈশিষ্ট্যযুক্ত পণ্য</Text>
             <TouchableOpacity onPress={() => router.push("/browse")}>
-              <Text style={styles.viewAllText}>View All</Text>
+              <Text style={styles.viewAllText}>সব দেখুন</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.productsContainer}>
             <View style={styles.productCard}>
               <Image source={riceImg} style={styles.productImage} />
               <View style={styles.productInfo}>
-                <Text style={styles.productName}>Premium Basmati Rice</Text>
+                <Text style={styles.productName}>বাসমতি চাল</Text>
                 <View style={styles.productDetails}>
-                  <Text style={styles.productPrice}>$85/kg</Text>
+                  <Text style={styles.productPrice}>৳85/কেজি</Text>
                   <View style={styles.ratingContainer}>
                     <Image source={starIcon} style={styles.starIcon} />
                     <Text style={styles.rating}>4.8</Text>
@@ -130,9 +124,9 @@ export default function GuestDashboard() {
             <View style={styles.productCard}>
               <Image source={carrotImg} style={styles.productImage} />
               <View style={styles.productInfo}>
-                <Text style={styles.productName}>Fresh Carrots</Text>
+                <Text style={styles.productName}>গাজর</Text>
                 <View style={styles.productDetails}>
-                  <Text style={styles.productPrice}>$45/kg</Text>
+                  <Text style={styles.productPrice}>৳45/কেজি</Text>
                   <View style={styles.ratingContainer}>
                     <Image source={starIcon} style={styles.starIcon} />
                     <Text style={styles.rating}>4.9</Text>
@@ -146,9 +140,9 @@ export default function GuestDashboard() {
         {/* Latest Learning Content */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Latest Learning Content</Text>
+            <Text style={styles.sectionTitle}>সর্বশেষ শিক্ষামূলক বিষয়</Text>
             <TouchableOpacity onPress={() => router.push("/LearnArti")}>
-              <Text style={styles.viewAllText}>View All</Text>
+              <Text style={styles.viewAllText}>সব দেখুন</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.learningContent}>
@@ -157,10 +151,8 @@ export default function GuestDashboard() {
                 <Image source={bookIcon} style={styles.learningImage} />
               </View>
               <View style={styles.learningInfo}>
-                <Text style={styles.learningDesc}>
-                  Modern Rice Cultivation Methods
-                </Text>
-                <Text style={styles.learningTitle}>5 min read • English</Text>
+                <Text style={styles.learningDesc}>আধুনিক ধানের চাষ পদ্ধতি</Text>
+                <Text style={styles.learningTitle}>৫ মিনিট পড়া </Text>
               </View>
             </View>
 
@@ -169,34 +161,30 @@ export default function GuestDashboard() {
                 <Image source={waterPump} style={styles.learningImage} />
               </View>
               <View style={styles.learningInfo}>
-                <Text style={styles.learningDesc}>
-                  Winter vegetable cultivation
-                </Text>
-                <Text style={styles.learningTitle}>
-                  Video tutorial • English
-                </Text>
+                <Text style={styles.learningDesc}>শীতকালীন সবজির চাষ</Text>
+                <Text style={styles.learningTitle}>ভিডিও টিউটোরিয়াল </Text>
               </View>
             </View>
           </View>
 
           {/* CTA */}
           <View style={styles.ctaSection}>
-            <Text style={styles.ctaTitle}>Ready to Get Started?</Text>
+            <Text style={styles.ctaTitle}>শুরু করতে প্রস্তুত?</Text>
             <Text style={styles.ctaSubtitle}>
-              Join thousands of farmers and buyers on AgriXpert
+              হাজার হাজার কৃষক ও ক্রেতার সাথে AgriXpert-এ যোগ দিন
             </Text>
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 onPress={() => router.push("/login")}
                 style={styles.signInButton}
               >
-                <Text style={styles.signInButtonText}>Sign In</Text>
+                <Text style={styles.signInButtonText}>সাইন ইন</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => router.push("/register")}
                 style={styles.registerButton}
               >
-                <Text style={styles.registerButtonText}>Register</Text>
+                <Text style={styles.registerButtonText}>রেজিস্টার</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -206,10 +194,10 @@ export default function GuestDashboard() {
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", icon: homeIcon, route: "/GuestHome" },
-          { name: "Products", icon: productsIcon, route: "/browse" },
-          { name: "Learn", icon: learnIcon, route: "/LearnArti" },
-          { name: "AI Chat", icon: chatIcon, route: "/Ai" },
+          { name: "হোম", icon: homeIcon, route: "/GuestHome" },
+          { name: "পণ্য", icon: productsIcon, route: "/browse" },
+          { name: "শিখুন", icon: learnIcon, route: "/LearnArti" },
+          { name: "এআই চ্যাট", icon: chatIcon, route: "/Ai" },
         ].map((item) => {
           const isActive = activeNav === item.name;
           return (
@@ -224,7 +212,7 @@ export default function GuestDashboard() {
               <Image
                 source={item.icon}
                 style={
-                  item.name === "AI Chat"
+                  item.name === "এআই চ্যাট"
                     ? styles.navAIChatIcon
                     : styles.navIcon
                 }
@@ -241,6 +229,7 @@ export default function GuestDashboard() {
     </View>
   );
 }
+
 
 // ✅ Styles
 const styles = StyleSheet.create({
@@ -271,7 +260,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 5,
     paddingHorizontal: 20,
-    paddingTop: 30,
+    paddingTop: 4,
+    marginTop:-6
   },
   subtext: {
     fontSize: 14,

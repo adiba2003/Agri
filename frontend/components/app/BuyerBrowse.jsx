@@ -11,7 +11,7 @@ import {
   Modal,
   Alert
 } from 'react-native';
-import { router, useFocusEffect } from 'expo-router'; // ✅ Added useFocusEffect
+import { router, useFocusEffect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Images
@@ -37,7 +37,6 @@ const imageMap = {
   "milk.png": milk,
   "eggs.png": eggs,
 };
-
 
 export default function BuyerBrowse() {
   const [activeNav, setActiveNav] = useState('পণ্য');
@@ -65,7 +64,6 @@ export default function BuyerBrowse() {
   const locations = ['সব লোকেশন', 'ঢাকা', 'চট্টগ্রাম', 'রাজশাহী', 'খুলনা', 'সিলেট', 'বরিশাল'];
   const sortOptions = ['নতুন পণ্য আগে', 'দাম: কম থেকে বেশি', 'দাম: বেশি থেকে কম', 'সর্বোচ্চ রেটিং', 'পুরনো পণ্য আগে'];
 
-  // ✅ Refresh cart count whenever screen is focused
   useFocusEffect(
     React.useCallback(() => {
       const loadCart = async () => {
@@ -103,78 +101,74 @@ export default function BuyerBrowse() {
 
   const totalPrice = selectedProduct ? (selectedProduct.price * quantity).toFixed(2) : 0;
 
-const addToCart = async () => {
-  try {
-    let cartData = await AsyncStorage.getItem("cart");
-    let cartItems = cartData ? JSON.parse(cartData) : [];
+  const addToCart = async () => {
+    try {
+      let cartData = await AsyncStorage.getItem("cart");
+      let cartItems = cartData ? JSON.parse(cartData) : [];
 
-    const productId =
-      selectedProduct.productId ||
-      selectedProduct.id ||
-      selectedProduct._id ||
-      Date.now();
+      const productId =
+        selectedProduct.productId ||
+        selectedProduct.id ||
+        selectedProduct._id ||
+        Date.now();
 
-    // FIXED mapping (EXACT MATCH)
-    const imageNameMap = {
-      "Premium Basmati Rice": "rice.png",
-      "Fresh Carrots": "carrot.png",
-      "Fresh Tomatoes": "tomato.png",
-      "Organic Potatoes": "potato.png",
-      "Sweet Mangoes": "mango.png",
-      "Fresh Milk": "milk.png",
-      "Eggs": "eggs.png",
-    };
+      const imageNameMap = {
+        "বাসমতি চাল": "rice.png",
+        "গাজর": "carrot.png",
+        "টমেটো": "tomato.png",
+        "আলু": "potato.png",
+        "মিষ্টি আম": "mango.png",
+        "দুধ": "milk.png",
+        "ডিম": "eggs.png",
+      };
 
-    const imageName = imageNameMap[selectedProduct.name] || "rice.png";
+      const imageName = imageNameMap[selectedProduct.name] || "rice.png";
 
-    // Check if exists in cart
-    const existingIndex = cartItems.findIndex(i => i.productId === productId);
+      const existingIndex = cartItems.findIndex(i => i.productId === productId);
 
-    if (existingIndex >= 0) {
-      cartItems[existingIndex].quantity += quantity;
-    } else {
-      cartItems.push({
-        ...selectedProduct,
-        productId,
-        quantity,
-        imageName: imageName,   // 100% correct
+      if (existingIndex >= 0) {
+        cartItems[existingIndex].quantity += quantity;
+      } else {
+        cartItems.push({
+          ...selectedProduct,
+          productId,
+          quantity,
+          imageName: imageName,
+        });
+      }
+
+      await AsyncStorage.setItem("cart", JSON.stringify(cartItems));
+
+      setCartCount(
+        cartItems.reduce((acc, item) => acc + Number(item.quantity), 0)
+      );
+      const api = "http://192.168.0.107:5000/api/product/add-to-cart"
+
+      await fetch(api, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId,
+          name: selectedProduct.name,
+          farmer: selectedProduct.farmer,
+          price: selectedProduct.price,
+          location: selectedProduct.location,
+          category: selectedProduct.category?.trim(),
+          harvestedDays: selectedProduct.harvestedDays,
+          available: selectedProduct.available,
+          quantity,
+          imageName: imageName,
+        }),
       });
+
+      Alert.alert("সফল", `${selectedProduct.name} কার্টে যোগ করা হয়েছে`);
+      setDetailsVisible(false);
+
+    } catch (err) {
+      Alert.alert("ত্রুটি", "কার্টে যোগ করতে ব্যর্থ হয়েছে");
+      console.error(err);
     }
-
-    // Save locally
-    await AsyncStorage.setItem("cart", JSON.stringify(cartItems));
-
-    setCartCount(
-      cartItems.reduce((acc, item) => acc + Number(item.quantity), 0)
-    );
-    const api= "http://localhost:5000/api/product/add-to-cart"
-
-    // SEND to backend
-    await fetch(api, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        productId,
-        name: selectedProduct.name,
-        farmer: selectedProduct.farmer,
-        price: selectedProduct.price,
-        location: selectedProduct.location,
-        category: selectedProduct.category?.trim(),
-        harvestedDays: selectedProduct.harvestedDays,
-        available: selectedProduct.available,
-        quantity,
-        imageName: imageName, // backend gets same mapping
-      }),
-    });
-
-    Alert.alert("Success", `${selectedProduct.name} added to cart`);
-    setDetailsVisible(false);
-
-  } catch (err) {
-    Alert.alert("Error", "Failed to add to cart");
-    console.error(err);
-  }
-};
+  };
 
   const renderProductItem = ({ item }) => (
     <TouchableOpacity
@@ -207,60 +201,60 @@ const addToCart = async () => {
     { name: 'অর্ডার', image: ordersIcon, route: 'BuyerOrder' },
   ];
 
- return (
+  return (
     <View style={styles.container}>
 
       {/* PRODUCT DETAILS MODAL */}
       {selectedProduct && (
-        <Modal visible={detailsVisible} animationType="slide" transparent>
+        <Modal
+          visible={detailsVisible}
+          animationType="slide"
+          transparent
+          statusBarTranslucent={true}
+        >
           <View style={styles.modalOverlay}>
             <View style={styles.modalBox}>
-              <ScrollView style={styles.modalContent}>
-                
-                <Image source={selectedProduct.image} style={styles.modalImage} />
-
-                <Text style={styles.modalTitle}>{selectedProduct.name}</Text>
-                {/* <Text style={styles.modalSubtitle}>তাজা</Text> */}
-
-                <View style={styles.ratingRow}>
-                  <View style={styles.starsContainer}>
-                    {[1, 2, 3, 4, 5].map(i => <Text key={i} style={styles.star}>⭐</Text>)}
+              <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false}>
+                <View style={styles.modalHeader}>
+                  <Image source={selectedProduct.image} style={styles.modalImage} />
+                  <Text style={styles.modalTitle}>{selectedProduct.name}</Text>
+                  <View style={styles.ratingRow}>
+                    <View style={styles.starsContainer}>
+                      {[1, 2, 3, 4, 5].map(i => <Text key={i} style={styles.star}>⭐</Text>)}
+                    </View>
+                    <Text style={styles.ratingText}>({selectedProduct.rating} রেটিং)</Text>
                   </View>
-                  <Text style={styles.ratingText}>
-                    ({selectedProduct.rating} রেটিং)
-                  </Text>
                 </View>
 
-                <View style={styles.priceSection}>
-                  <Text style={styles.priceLabel}>প্রতি কেজির দাম</Text>
-                  <Text style={styles.priceValue}>৳{selectedProduct.price}</Text>
+                <View style={styles.modalInfoContainer}>
+                  <View style={styles.modalInfoRow}>
+                    <Text style={styles.modalInfoLabel}>দাম:</Text>
+                    <Text style={styles.modalInfoValue}>৳{selectedProduct.price} প্রতি কেজি</Text>
+                  </View>
+                  
+                  <View style={styles.modalInfoRow}>
+                    <Text style={styles.modalInfoLabel}>উপলব্ধ:</Text>
+                    <Text style={styles.modalInfoValue}>{selectedProduct.available} kg</Text>
+                  </View>
+                  
+                  <View style={styles.modalInfoRow}>
+                    <Text style={styles.modalInfoLabel}>লোকেশন:</Text>
+                    <Text style={styles.modalInfoValue}>{selectedProduct.location}</Text>
+                  </View>
+                  
+                  <View style={styles.modalInfoRow}>
+                    <Text style={styles.modalInfoLabel}>কৃষক:</Text>
+                    <Text style={styles.modalInfoValue}>{selectedProduct.farmer}</Text>
+                  </View>
+                  
+                  <View style={styles.modalInfoRow}>
+                    <Text style={styles.modalInfoLabel}>কাটাই হয়েছে:</Text>
+                    <Text style={styles.modalInfoValue}>{selectedProduct.harvestedDays} দিন আগে</Text>
+                  </View>
                 </View>
 
-                {/* INFO */}
-                <View style={styles.infoSection}>
-                  <Text style={styles.infoLabel}>উপলব্ধ</Text>
-                  <Text style={styles.infoValue}>{selectedProduct.available} kg</Text>
-                </View>
-
-                <View style={styles.infoSection}>
-                  <Text style={styles.infoLabel}>লোকেশন</Text>
-                  <Text style={styles.infoValue}>{selectedProduct.location}</Text>
-                </View>
-
-                <View style={styles.infoSection}>
-                  <Text style={styles.infoLabel}>কৃষক</Text>
-                  <Text style={styles.infoValue}>{selectedProduct.farmer}</Text>
-                </View>
-
-                <View style={styles.infoSection}>
-                  <Text style={styles.infoLabel}>কাটাই হয়েছে</Text>
-                  <Text style={styles.infoValue}>{selectedProduct.harvestedDays} দিন আগে</Text>
-                </View>
-
-                {/* QUANTITY */}
-                <View style={styles.quantitySection}>
-                  <Text style={styles.quantityLabel}>পরিমাণ</Text>
-
+                <View style={styles.quantityContainer}>
+                  <Text style={styles.quantityLabel}>পরিমাণ (kg):</Text>
                   <View style={styles.quantitySelector}>
                     <TouchableOpacity
                       style={styles.quantityButton}
@@ -268,9 +262,9 @@ const addToCart = async () => {
                     >
                       <Text style={styles.quantityButtonText}>-</Text>
                     </TouchableOpacity>
-
-                    <Text style={styles.quantityValue}>{quantity} kg</Text>
-
+                    
+                    <Text style={styles.quantityDisplay}>{quantity}</Text>
+                    
                     <TouchableOpacity
                       style={styles.quantityButton}
                       onPress={() => setQuantity(quantity + 1)}
@@ -280,38 +274,47 @@ const addToCart = async () => {
                   </View>
                 </View>
 
-                {/* TOTAL */}
-                <View style={styles.totalSection}>
-                  <Text style={styles.totalLabel}>মোট</Text>
-                  <Text style={styles.totalValue}>৳{totalPrice}</Text>
+                <View style={styles.totalContainer}>
+                  <Text style={styles.totalLabel}>মোট:</Text>
+                  <Text style={styles.totalPrice}>৳{totalPrice}</Text>
                 </View>
 
-                {/* ACTION BUTTONS */}
-                <View style={styles.actionButtons}>
-                  <TouchableOpacity style={styles.addToCartButton} onPress={addToCart}>
+                <View style={styles.modalActionButtons}>
+                  <TouchableOpacity 
+                    style={styles.addToCartButton} 
+                    onPress={addToCart}
+                  >
                     <Text style={styles.addToCartText}>কার্টে যোগ করুন</Text>
                   </TouchableOpacity>
-
-                  <TouchableOpacity style={styles.buyNowButton}>
+                  
+                  <TouchableOpacity 
+                    style={styles.buyNowButton}
+                    onPress={() => {
+                      Alert.alert('সফল', 'অর্ডার প্লেস করা হয়েছে!');
+                      setDetailsVisible(false);
+                    }}
+                  >
                     <Text style={styles.buyNowText}>এখনই কিনুন</Text>
                   </TouchableOpacity>
                 </View>
-              </ScrollView>
 
-              <TouchableOpacity style={styles.closeBtn} onPress={() => setDetailsVisible(false)}>
-                <Text style={styles.closeBtnText}>বন্ধ করুন</Text>
-              </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.closeButton} 
+                  onPress={() => setDetailsVisible(false)}
+                >
+                  <Text style={styles.closeButtonText}>বন্ধ করুন</Text>
+                </TouchableOpacity>
+              </ScrollView>
             </View>
           </View>
         </Modal>
       )}
 
       {/* MAIN CONTENT */}
-      <ScrollView style={styles.content}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.browseSection}>
-
           <Text style={styles.browseTitle}>পণ্য ব্রাউজ করুন</Text>
-          <Text style={styles.browseSubtitle}>স্থানীয় কৃষকদের থেকে পণ্য আবিষ্কার করুন</Text>
+          <Text style={styles.browseSubtitle}>স্থানীয় কৃষকদের থেকে পণ্য কিনুন</Text>
 
           <View style={styles.searchContainer}>
             <TextInput
@@ -319,11 +322,16 @@ const addToCart = async () => {
               placeholder="পণ্য সার্চ করুন..."
               value={searchQuery}
               onChangeText={setSearchQuery}
+              placeholderTextColor="#999"
             />
           </View>
 
           <Text style={styles.filterLabel}>ক্যাটাগরি</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            style={styles.filterScroll}
+          >
             {categories.map((c, i) => (
               <TouchableOpacity
                 key={i}
@@ -339,7 +347,11 @@ const addToCart = async () => {
           </ScrollView>
 
           <Text style={styles.filterLabel}>লোকেশন</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            style={styles.filterScroll}
+          >
             {locations.map((l, i) => (
               <TouchableOpacity
                 key={i}
@@ -356,8 +368,11 @@ const addToCart = async () => {
 
           <View style={styles.sortContainer}>
             <Text style={styles.sortLabel}>সাজান:</Text>
-
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              style={styles.sortScroll}
+            >
               {sortOptions.map((o, i) => (
                 <TouchableOpacity
                   key={i}
@@ -382,6 +397,11 @@ const addToCart = async () => {
             scrollEnabled={false}
             numColumns={2}
             columnWrapperStyle={styles.productsRow}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>কোন পণ্য পাওয়া যায়নি</Text>
+              </View>
+            }
           />
 
         </View>
@@ -421,47 +441,60 @@ const addToCart = async () => {
   );
 }
 
-
-
-
-
-// Styles remain the same as your provided code
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  content: { flex: 1, padding: 20 },
-  browseSection: { flex: 1 },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#fff' 
+  },
+  content: { 
+    flex: 1, 
+    paddingHorizontal: 15,
+    paddingTop: 10,
+  },
+  browseSection: { 
+    flex: 1,
+    paddingBottom: 20,
+  },
   browseTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#2c3e50',
-    marginBottom: 8,
-    marginTop: -8,
+    marginBottom: 5,
   },
-  browseSubtitle: { fontSize: 16, color: '#666', marginBottom: 20 },
-  searchContainer: { marginBottom: 20 },
+  browseSubtitle: { 
+    fontSize: 14, 
+    color: '#666', 
+    marginBottom: 20 
+  },
+  searchContainer: { 
+    marginBottom: 20 
+  },
   searchInput: {
     backgroundColor: '#f8f9fa',
     borderWidth: 1,
     borderColor: '#e9ecef',
-    borderRadius: 12,
-    padding: 15,
-    fontSize: 16,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    fontSize: 14,
     color: '#333',
   },
   filterLabel: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: '#2c3e50',
-    marginBottom: 10,
-    marginTop: 10,
+    marginBottom: 8,
+    marginTop: 5,
   },
-  filterScroll: { marginBottom: 15 },
+  filterScroll: { 
+    marginBottom: 15 
+  },
   filterChip: {
     backgroundColor: '#f8f9fa',
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    marginRight: 10,
+    marginRight: 8,
     borderWidth: 1,
     borderColor: '#e9ecef',
   },
@@ -469,15 +502,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     borderColor: '#4CAF50',
   },
-  filterChipText: { fontSize: 14, color: '#666', fontWeight: '500' },
-  selectedFilterChipText: { color: '#fff', fontWeight: '600' },
+  filterChipText: { 
+    fontSize: 12, 
+    color: '#666', 
+    fontWeight: '500' 
+  },
+  selectedFilterChipText: { 
+    color: '#fff', 
+    fontWeight: '600' 
+  },
   sortContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
   },
-  sortLabel: { fontSize: 14, fontWeight: '600', color: '#666', marginRight: 10 },
-  sortScroll: { flex: 1 },
+  sortLabel: { 
+    fontSize: 14, 
+    fontWeight: '600', 
+    color: '#666', 
+    marginRight: 10 
+  },
+  sortScroll: { 
+    flex: 1 
+  },
   sortChip: {
     backgroundColor: '#f8f9fa',
     paddingHorizontal: 12,
@@ -491,91 +538,145 @@ const styles = StyleSheet.create({
     backgroundColor: '#2196F3',
     borderColor: '#2196F3',
   },
-  sortChipText: { fontSize: 12, color: '#666', fontWeight: '500' },
-  selectedSortChipText: { color: '#fff', fontWeight: '600' },
+  sortChipText: { 
+    fontSize: 11, 
+    color: '#666', 
+    fontWeight: '500' 
+  },
+  selectedSortChipText: { 
+    color: '#fff', 
+    fontWeight: '600' 
+  },
   productsTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#2c3e50',
     marginBottom: 15,
-    marginTop: 10,
+    marginTop: 5,
   },
-  productsRow: { justifyContent: 'space-between', marginBottom: 15 },
+  productsRow: { 
+    justifyContent: 'space-between', 
+    marginBottom: 10 
+  },
   productCard: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: 10,
+    padding: 10,
     width: '48%',
-    marginBottom: 15,
+    marginBottom: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 3,
+    elevation: 2,
     borderWidth: 1,
     borderColor: '#f0f0f0',
   },
   productImage: {
     width: '100%',
-    height: 100,
+    height: 90,
     borderRadius: 8,
-    marginBottom: 10,
+    marginBottom: 8,
     resizeMode: 'contain',
   },
-  productInfo: { flex: 1 },
-  productName: { fontSize: 14, fontWeight: 'bold', color: '#333', marginBottom: 4 },
-  farmerName: { fontSize: 12, color: '#666', marginBottom: 6 },
+  productInfo: { 
+    flex: 1 
+  },
+  productName: { 
+    fontSize: 13, 
+    fontWeight: 'bold', 
+    color: '#333', 
+    marginBottom: 4 
+  },
+  farmerName: { 
+    fontSize: 11, 
+    color: '#666', 
+    marginBottom: 6 
+  },
   productMeta: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 6,
   },
-  productPrice: { fontSize: 14, fontWeight: 'bold', color: '#4CAF50' },
-  productLocation: { fontSize: 11, color: '#999' },
+  productPrice: { 
+    fontSize: 13, 
+    fontWeight: 'bold', 
+    color: '#4CAF50' 
+  },
+  productLocation: { 
+    fontSize: 10, 
+    color: '#999' 
+  },
   ratingContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  starIcon: { width: 14, height: 14, marginRight: 4, resizeMode: 'contain' },
-  rating: { fontSize: 11, color: '#666' },
+  starIcon: { 
+    width: 12, 
+    height: 12, 
+    marginRight: 3, 
+    resizeMode: 'contain' 
+  },
+  rating: { 
+    fontSize: 10, 
+    color: '#666' 
+  },
   category: {
-    fontSize: 10,
+    fontSize: 9,
     color: '#999',
     backgroundColor: '#f0f0f0',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
   },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#999',
+    textAlign: 'center',
+  },
   bottomNav: {
     flexDirection: 'row',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
     borderTopWidth: 1,
     borderTopColor: '#ddd',
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   navItem: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
-    borderWidth: 2,
-    borderColor: 'transparent',
-    borderRadius: 10,
-    marginHorizontal: 5,
+    paddingVertical: 6,
   },
-  activeNavItem: { borderColor: '#4CAF50', backgroundColor: '#eaf8ea' },
-  navIcon: { width: 28, height: 28, marginBottom: 5, resizeMode: 'contain' },
+  activeNavItem: { 
+    backgroundColor: '#eaf8ea',
+    borderRadius: 8,
+  },
+  navIcon: { 
+    width: 24, 
+    height: 24, 
+    marginBottom: 4, 
+    resizeMode: 'contain' 
+  },
   navText: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#333',
     fontWeight: '500',
     textAlign: 'center',
   },
+  activeNavText: {
+    color: '#4CAF50',
+    fontWeight: 'bold',
+  },
   notificationBadge: {
     position: 'absolute',
     top: -5,
-    right: -10,
+    right: -8,
     backgroundColor: 'red',
     borderRadius: 8,
     paddingHorizontal: 4,
@@ -584,110 +685,103 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  notificationText: { color: '#fff', fontSize: 10, fontWeight: 'bold' },
+  notificationText: { 
+    color: '#fff', 
+    fontSize: 9, 
+    fontWeight: 'bold' 
+  },
 
-  // MODAL STYLES - Updated to match the image
+  // MODAL STYLES - Phone-friendly
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 10,
   },
   modalBox: {
-    width: '100%',
-    maxHeight: '90%',
+    width: '95%',
+    maxHeight: '85%',
     backgroundColor: '#fff',
     borderRadius: 15,
-    padding: 20,
+    padding: 15,
   },
   modalContent: {
-    flex: 1,
+    flexGrow: 1,
   },
-  modalImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 20,
-    alignSelf: 'center',
-    backgroundColor: '#ecf9ef',
+  modalHeader: {
+    alignItems: 'center',
     marginBottom: 15,
   },
+  modalImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 15,
+    backgroundColor: '#ecf9ef',
+    marginBottom: 10,
+  },
   modalTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#222',
     marginBottom: 5,
   },
-  modalSubtitle: {
-    textAlign: 'center',
-    color: '#666',
-    marginBottom: 15,
-    fontSize: 16,
-  },
   ratingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
   },
   starsContainer: {
     flexDirection: 'row',
-    marginRight: 8,
+    marginRight: 5,
   },
   star: {
-    fontSize: 16,
-    marginRight: 2,
+    fontSize: 14,
   },
   ratingText: {
     color: '#666',
-    fontSize: 14,
+    fontSize: 12,
   },
-  priceSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  modalInfoContainer: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 10,
+    padding: 15,
     marginBottom: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
   },
-  priceLabel: {
-    fontSize: 16,
-    color: '#666',
-  },
-  priceValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#222',
-  },
-  infoSection: {
+  modalInfoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 10,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e9ecef',
   },
-  infoLabel: {
-    fontSize: 16,
+  modalInfoLabel: {
+    fontSize: 14,
     color: '#666',
+    flex: 1,
   },
-  infoValue: {
-    fontSize: 16,
+  modalInfoValue: {
+    fontSize: 14,
     fontWeight: '500',
     color: '#222',
+    flex: 1.5,
+    textAlign: 'right',
   },
-  quantitySection: {
+  quantityContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 15,
-    paddingVertical: 15,
+    paddingVertical: 12,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: '#f0f0f0',
   },
   quantityLabel: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#666',
   },
   quantitySelector: {
@@ -706,36 +800,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quantityButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
   },
-  quantityValue: {
-    fontSize: 16,
+  quantityDisplay: {
+    fontSize: 15,
     fontWeight: '500',
     marginHorizontal: 15,
     color: '#222',
+    minWidth: 20,
+    textAlign: 'center',
   },
-  totalSection: {
+  totalContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
-    paddingBottom: 15,
+    marginBottom: 15,
+    paddingVertical: 12,
+    borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderColor: '#f0f0f0',
   },
   totalLabel: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
     color: '#666',
   },
-  totalValue: {
-    fontSize: 22,
+  totalPrice: {
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#4CAF50',
   },
-  actionButtons: {
+  modalActionButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 15,
@@ -748,11 +845,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 12,
     alignItems: 'center',
-    marginRight: 10,
+    marginRight: 8,
   },
   addToCartText: {
     color: '#4CAF50',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   buyNowButton: {
@@ -761,22 +858,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 12,
     alignItems: 'center',
-    marginLeft: 10,
+    marginLeft: 8,
   },
   buyNowText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
-  closeBtn: {
+  closeButton: {
     backgroundColor: '#6c757d',
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 5,
   },
-  closeBtnText: {
+  closeButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
-  },});
+  },
+});

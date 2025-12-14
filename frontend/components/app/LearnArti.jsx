@@ -25,7 +25,7 @@ import chatIcon from "@/assets/chat-icon.png";
 
 export default function LearnArti() {
   const [activeTab, setActiveTab] = useState("Articles");
-  const [activeNav, setActiveNav] = useState("Learn");
+  const [activeNav, setActiveNav] = useState("শিখুন");
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
@@ -34,97 +34,96 @@ export default function LearnArti() {
   const articles = [
     {
       id: 1,
-      title: "Modern Rice Cultivation Methods",
-      desc: "Learn about scientific methods and care for high-yield rice cultivation in detail.",
+      title: "আধুনিক ধানের চাষ পদ্ধতি",
+      desc: "উচ্চ ফলনশীল ধানের জন্য বৈজ্ঞানিক চাষ পদ্ধতি ও যত্ন সম্পর্কে বিস্তারিত জানুন।",
       image: riceIcon,
-      date: "Dec 10, 2024",
-      time: "5 min read",
+      date: "১০ ডিসেম্বর, ২০২৪",
+      time: "৫ মিনিট পড়া",
       fullContent: `
-Modern rice cultivation has significantly improved due to scientific farming techniques. 
-Here are some important steps:
+বৈজ্ঞানিক চাষাবাদের কৌশলের কারণে আধুনিক ধানের চাষ অনেক উন্নত হয়েছে। গুরুত্বপূর্ণ ধাপগুলো হলো:
 
-1. **Seed Selection:**  
-   Choose high-yield, disease-resistant rice varieties.
+1. **বীজ নির্বাচন:**  
+   উচ্চ ফলনশীল ও রোগ প্রতিরোধী ধানের জাত বেছে নিন।
 
-2. **Seed Bed Preparation:**  
-   Use raised beds to ensure better root growth.
+2. **বীজতলা প্রস্তুতি:**  
+   উত্তোলিত বীজতলা ব্যবহার করুন যাতে মূল ভালোভাবে বৃদ্ধি পায়।
 
-3. **Modern Transplanting:**  
-   Mechanized transplanting reduces labor and increases uniformity.
+3. **আধুনিক রোপণ:**  
+   যান্ত্রিক রোপণ শ্রম কমায় এবং সমজাতীয় বৃদ্ধি নিশ্চিত করে।
 
-4. **Fertilizer Management:**  
-   Apply urea, TSP, and potash in the correct ratios at proper stages.
+4. **সারের ব্যবস্থাপনা:**  
+   ইউরিয়া, টিএসপি, পটাশ সঠিক অনুপাতে এবং সঠিক সময়ে প্রয়োগ করুন।
 
-5. **Water Management:**  
-   Maintain 2–3 cm standing water for best productivity.
+5. **জল ব্যবস্থাপনা:**  
+   সর্বোচ্চ উৎপাদনের জন্য ২–৩ সেমি স্থির পানি বজায় রাখুন।
 
-6. **Pest Control:**  
-   Use pheromone traps & organic pesticides to reduce harmful insects.
+6. **পোকামাকড় নিয়ন্ত্রণ:**  
+   ক্ষতিকারক পোকামাকড় কমাতে ফারোমোন ট্র্যাপ এবং জৈব সার ব্যবহার করুন।
 
-Following these steps can increase rice yield by 30–40%.
+এই ধাপগুলো অনুসরণ করলে ধানের ফলন ৩০–৪০% পর্যন্ত বৃদ্ধি পেতে পারে।
       `,
     },
     {
       id: 2,
-      title: "Winter Vegetable Cultivation",
-      desc: "Skills and care for growing nutritious winter vegetables.",
+      title: "শীতকালীন সবজির চাষ",
+      desc: "পুষ্টিকর শীতকালীন সবজি চাষের কৌশল ও যত্ন।",
       image: carrotIcon,
-      date: "Dec 8, 2024",
-      time: "7 min read",
+      date: "৮ ডিসেম্বর, ২০২৪",
+      time: "৭ মিনিট পড়া",
       fullContent: `
-Winter vegetables grow best in cool temperatures. Popular crops include carrots, cabbage, radish, tomato, beetroot, etc.
+শীতকালীন সবজি ঠান্ডা আবহাওয়ায় ভালোভাবে জন্মায়। জনপ্রিয় ফসল: গাজর, বাঁধাকপি, মূলা, টমেটো, বিটরুট ইত্যাদি।
 
-### Steps for Successful Winter Vegetable Cultivation:
+### সফল শীতকালীন সবজি চাষের ধাপ:
 
-1. **Soil Preparation**  
-   Use soft, fertile, well-drained loamy soil enriched with compost.
+1. **মাটি প্রস্তুতি:**  
+   নরম, উর্বর, ভালো নিকাশযুক্ত লোমি মাটি ব্যবহার করুন এবং কম্পোস্ট দিয়ে সমৃদ্ধ করুন।
 
-2. **Seed Sowing**  
-   Sow seeds in seed trays for healthier seedlings.
+2. **বীজ রোপণ:**  
+   স্বাস্থ্যকর অঙ্কুরের জন্য বীজ ট্রেতে বপন করুন।
 
-3. **Irrigation Management**  
-   Avoid excess watering—maintain moisture only.
+3. **সেচ ব্যবস্থাপনা:**  
+   অতিরিক্ত পানি দেওয়া এড়িয়ে চলুন—মাটির আর্দ্রতা বজায় রাখুন।
 
-4. **Disease Protection**  
-   Use neem oil spray every 7–10 days to prevent fungal attacks.
+4. **রোগ প্রতিরোধ:**  
+   ফাঙ্গাসের আক্রমণ রোধ করতে ৭–১০ দিনে একবার নীম তেল স্প্রে করুন।
 
-5. **Harvesting**  
-   Vegetables remain fresh longer if picked early morning.
+5. **ফসল তোলা:**  
+   সবজি সকালে তোলা হলে দীর্ঘ সময় তাজা থাকে।
 
-With proper care, farmers can earn high profits in winter seasons.
+সঠিক যত্ন নিলে কৃষকরা শীতকালীন মৌসুমে ভালো লাভ করতে পারবেন।
       `,
     },
     {
       id: 3,
-      title: "Irrigation Management",
-      desc: "Efficient irrigation systems and use of modern technology in water management.",
+      title: "সেচ ব্যবস্থাপনা",
+      desc: "কার্যকর সেচ ব্যবস্থা এবং আধুনিক প্রযুক্তি ব্যবহার।",
       image: waterIcon,
-      date: "Dec 5, 2024",
-      time: "6 min read",
+      date: "৫ ডিসেম্বর, ২০২৪",
+      time: "৬ মিনিট পড়া",
       fullContent: `
-Proper irrigation management saves water and increases crop yield.
+সঠিক সেচ ব্যবস্থাপনা পানি সাশ্রয় করে এবং ফসলের উৎপাদন বৃদ্ধি করে।
 
-### Smart Irrigation Tips:
+### স্মার্ট সেচের টিপস:
 
-1. **Drip Irrigation:**  
-   Saves 40–60% water and improves productivity.
+1. **ড্রিপ ইরিগেশন:**  
+   ৪০–৬০% পানি সাশ্রয় করে এবং উৎপাদন বাড়ায়।
 
-2. **Sprinkler Systems:**  
-   Best for vegetables and leafy greens.
+2. **স্প্রিঙ্কলার সিস্টেম:**  
+   সবজি ও পাতাযুক্ত গাছের জন্য উপযুক্ত।
 
-3. **Soil Moisture Monitoring:**  
-   Use soil moisture sensors or hand-testing to avoid over-watering.
+3. **মাটির আর্দ্রতা পর্যবেক্ষণ:**  
+   অতিরিক্ত পানি এড়াতে মাটির আর্দ্রতা সেন্সর বা হাত দিয়ে পরীক্ষা করুন।
 
-4. **Water Timing:**  
-   Water crops early morning or evening to reduce evaporation.
+4. **জল দেওয়ার সময়:**  
+   বাষ্পীভবন কমাতে সকালে বা সন্ধ্যায় পানি দিন।
 
-5. **Rainwater Harvesting:**  
-   Collect and store rainwater for later crop use.
+5. **বর্ষার পানি সংরক্ষণ:**  
+   পরবর্তী চাষের জন্য বর্ষার পানি সংগ্রহ ও সংরক্ষণ করুন।
 
-6. **Field Leveling:**  
-   Laser leveling reduces water-use by 25%.
+6. **ক্ষেত সমতলীকরণ:**  
+   লেজার সমতলীকরণ পানি ব্যবহারে ২৫% কমায়।
 
-Efficient irrigation ensures healthier crops and reduces cost for farmers.
+কার্যকর সেচ ব্যবস্থাপনা স্বাস্থ্যকর ফসল নিশ্চিত করে এবং কৃষকের খরচ কমায়।
       `,
     },
   ];
@@ -154,7 +153,7 @@ Efficient irrigation ensures healthier crops and reduces cost for farmers.
             style={styles.closeBtn}
             onPress={() => setModalVisible(false)}
           >
-            <Text style={styles.closeBtnText}>Close</Text>
+            <Text style={styles.closeBtnText}>বন্ধ করুন</Text>
           </TouchableOpacity>
         </ScrollView>
       </Modal>
@@ -164,9 +163,9 @@ Efficient irrigation ensures healthier crops and reduces cost for farmers.
         <View style={styles.titleSection}>
           <Image source={booksIcon} style={styles.iconImage} />
           <View>
-            <Text style={styles.title}>Learning Center</Text>
+            <Text style={styles.title}>শিক্ষা কেন্দ্র</Text>
             <Text style={styles.subTitleText}>
-              Educational blogs and video tutorials in English
+              শিক্ষামূলক ব্লগ এবং ভিডিও টিউটোরিয়াল 
             </Text>
           </View>
         </View>
@@ -192,7 +191,7 @@ Efficient irrigation ensures healthier crops and reduces cost for farmers.
                   activeTab === tab.name && styles.activeTabText,
                 ]}
               >
-                {tab.name}
+                {tab.name === "Articles" ? "আর্টিকেল" : tab.name === "Videos" ? "ভিডিও" : "মাটি গাইড"}
               </Text>
             </TouchableOpacity>
           ))}
@@ -230,10 +229,10 @@ Efficient irrigation ensures healthier crops and reduces cost for farmers.
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "/GuestHome" },
-          { name: "Products", image: productsIcon, route: "/browse" },
-          { name: "Learn", image: learnIcon, route: "/LearnArti" },
-          { name: "AI Chat", image: chatIcon, route: "/Ai" },
+          { name: "হোম", image: homeIcon, route: "/GuestHome" },
+          { name: "পণ্য", image: productsIcon, route: "/browse" },
+          { name: "শিখুন", image: learnIcon, route: "/LearnArti" },
+          { name: "এআই চ্যাট", image: chatIcon, route: "/Ai" },
         ].map((item, index) => {
           const isActive = item.name === activeNav;
           return (
@@ -257,6 +256,7 @@ Efficient irrigation ensures healthier crops and reduces cost for farmers.
   );
 }
 
+
 //////////////////////////////////////////////////
 //                STYLES
 //////////////////////////////////////////////////
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   iconImage: { width: 30, height: 30, marginRight: 10 },
-  title: { fontSize: 20, fontWeight: "bold", color: "#333" },
+  title: { fontSize: 20, fontWeight: "bold", color: "#333" ,marginTop:-21},
   subTitleText: { fontSize: 14, color: "#666" },
 
   tabContainer: {

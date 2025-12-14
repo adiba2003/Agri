@@ -17,7 +17,7 @@ import googleIcon from "@/assets/google.png";
 import riceIcon from "@/assets/rice.png";
 
 // ⬇ আপনার Server URL দিন
-const API_URL = "http://localhost:5000/api/auth/register";
+const API_URL = "http://192.168.0.107:5000/api/auth/register";
 
 const RoleCard = ({ role, selectedRole, onPress, icon, title, desc, bgColor }) => {
   const isActive = role === selectedRole;
@@ -55,13 +55,13 @@ export default function RegisterScreen() {
   const [confirm, setConfirm] = useState("");
 
   const handleRegister = async () => {
-    if (!role) return Alert.alert("Please select a role");
+    if (!role) return Alert.alert("ত্রুটি", "একটি ভূমিকা নির্বাচন করুন");
 
     if (!fullName || !email || !password || !confirm)
-      return Alert.alert("All fields are required");
+      return Alert.alert("ত্রুটি", "সব ফিল্ড পূরণ করা আবশ্যক");
 
     if (password !== confirm)
-      return Alert.alert("Passwords do not match");
+      return Alert.alert("ত্রুটি", "পাসওয়ার্ড মিলছে না");
 
     try {
       const res = await fetch(API_URL, {
@@ -72,24 +72,24 @@ export default function RegisterScreen() {
 
       const data = await res.json();
 
-      if (!res.ok) return Alert.alert("Error", data.message);
+      if (!res.ok) return Alert.alert("ত্রুটি", data.message);
 
-      Alert.alert("Success", "Account created");
+      Alert.alert("সফলতা", "অ্যাকাউন্ট তৈরি হয়েছে");
 
       if (role === "buyer") router.push("/BuyerDashboard");
       else router.push("/FarmerDashboard");
 
     } catch (e) {
-      Alert.alert("Network Error", "Could not connect to server");
+      Alert.alert("নেটওয়ার্ক ত্রুটি", "সার্ভারের সাথে সংযোগ সম্ভব হয়নি");
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.welcome}>Welcome</Text>
+        <Text style={styles.welcome}>স্বাগতম</Text>
         <Text style={styles.subtext}>
-          Sign in to your account or create a new one
+          আপনার অ্যাকাউন্টে লগইন করুন বা নতুন অ্যাকাউন্ট তৈরি করুন
         </Text>
 
         {/* Tabs */}
@@ -102,7 +102,7 @@ export default function RegisterScreen() {
             }}
           >
             <Text style={[styles.tabText, activeTab === "signin" && styles.activeTabText]}>
-              Sign In
+              লগইন
             </Text>
           </TouchableOpacity>
 
@@ -111,21 +111,21 @@ export default function RegisterScreen() {
             onPress={() => setActiveTab("register")}
           >
             <Text style={[styles.tabText, activeTab === "register" && styles.activeTabText]}>
-              Register
+              রেজিস্টার
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Role Selection */}
-        <Text style={styles.roleLabel}>I am registering as:</Text>
+        <Text style={styles.roleLabel}>আমি রেজিস্টার করছি এই ভূমিকায়:</Text>
 
         <RoleCard
           role="buyer"
           selectedRole={role}
           onPress={() => setRole("buyer")}
           icon={cartIcon}
-          title="I am a Buyer"
-          desc="I want to purchase fresh farm products"
+          title="আমি একজন ক্রেতা"
+          desc="আমি কৃষি পণ্য ক্রয় করতে চাই"
         />
 
         <RoleCard
@@ -134,17 +134,17 @@ export default function RegisterScreen() {
           onPress={() => setRole("farmer")}
           icon={riceIcon}
           bgColor="#eafce9"
-          title="I am a Farmer"
-          desc="I want to sell my farm products"
+          title="আমি একজন কৃষক"
+          desc="আমি আমার কৃষি পণ্য বিক্রি করতে চাই"
         />
 
         {/* Registration Form */}
         {role && (
           <View style={styles.formBox}>
-            <TextInput placeholder="Full Name" value={fullName} onChangeText={setFullName} style={styles.input} />
+            <TextInput placeholder="পুরো নাম" value={fullName} onChangeText={setFullName} style={styles.input} />
 
             <TextInput
-              placeholder="Email Address"
+              placeholder="ইমেইল ঠিকানা"
               style={styles.input}
               keyboardType="email-address"
               value={email}
@@ -152,7 +152,7 @@ export default function RegisterScreen() {
             />
 
             <TextInput
-              placeholder="Create Password"
+              placeholder="পাসওয়ার্ড তৈরি করুন"
               style={styles.input}
               secureTextEntry
               value={password}
@@ -160,7 +160,7 @@ export default function RegisterScreen() {
             />
 
             <TextInput
-              placeholder="Confirm Password"
+              placeholder="পাসওয়ার্ড নিশ্চিত করুন"
               style={styles.input}
               secureTextEntry
               value={confirm}
@@ -169,19 +169,19 @@ export default function RegisterScreen() {
 
             <View style={styles.orRow}>
               <View style={styles.line} />
-              <Text style={styles.orText}>or</Text>
+              <Text style={styles.orText}>বা</Text>
               <View style={styles.line} />
             </View>
 
             <AppButton
-              title="Continue with Google"
+              title="গুগল দিয়ে চালিয়ে যান"
               style={styles.googleBtn}
               textStyle={styles.googleBtnText}
               icon={googleIcon}
             />
 
             <AppButton
-              title="Create Account"
+              title="অ্যাকাউন্ট তৈরি করুন"
               style={styles.createBtn}
               onPress={handleRegister}
             />
@@ -192,12 +192,13 @@ export default function RegisterScreen() {
           onPress={() => router.push("/GuestHome")}
           style={styles.guestTouchable}
         >
-          <Text style={styles.guestText}>Continue as Guest</Text>
+          <Text style={styles.guestText}>অতিথি হিসাবে চালিয়ে যান</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
@@ -214,6 +215,7 @@ const styles = StyleSheet.create({
     color: "#000",
     marginLeft: 20,
     marginBottom: 4,
+    marginTop: -36
   },
   subtext: {
     fontSize: 14,

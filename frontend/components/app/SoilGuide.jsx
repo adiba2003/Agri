@@ -23,57 +23,57 @@ import calendarIcon from "@/assets/calendar-icon.png";
 import waterIcon from "@/assets/water-icon.png";
 
 export default function SoilGuide() {
-  const [activeTab, setActiveTab] = useState("Home"); // Default Home selected
+  const [activeTab, setActiveTab] = useState("Home"); // ডিফল্ট হোম
 
   const tabs = [
-    { name: "Home", img: homeIcon, route: "/GuestHome" },
-    { name: "Products", img: productsIcon, route: "/browse" },
-    { name: "Learn", img: learnIcon, route: "/LearnArti" },
-    { name: "AI Chat", img: chatIcon, route: "/Ai" },
+    { name: "হোম", img: homeIcon, route: "/GuestHome" },
+    { name: "পণ্য", img: productsIcon, route: "/browse" },
+    { name: "শেখা", img: learnIcon, route: "/LearnArti" },
+    { name: "এআই চ্যাট", img: chatIcon, route: "/Ai" },
   ];
 
   const soilTypes = [
     {
-      name: "Loamy Soil",
-      description: "Most fertile, suitable for all types of crops",
+      name: "দোঁআশ মাটি",
+      description: "সবচেয়ে উর্বর, সব ধরনের ফসলের জন্য উপযুক্ত",
       color: "#8FBC8F",
     },
     {
-      name: "Clay Soil",
-      description: "Good water retention, ideal for rice cultivation",
+      name: "এঁটেল মাটি",
+      description: "ভাল পানি ধারণ ক্ষমতা, ধান চাষের জন্য আদর্শ",
       color: "#D2B48C",
     },
     {
-      name: "Sandy Soil",
-      description: "Good drainage, suitable for vegetables",
+      name: "বেলে মাটি",
+      description: "ভাল নিষ্কাশন ক্ষমতা, শাকসবজির জন্য উপযুক্ত",
       color: "#F4A460",
     },
   ];
 
   const fertilizers = [
-    { name: "Organic Fertilizer", desc: "Animal dung, Compost", image: leaf1 },
-    { name: "Chemical Fertilizer", desc: "Urea, TSP, MP", image: chemicalIcon },
+    { name: "জৈব সার", desc: "পশুর গোবর, কম্পোস্ট", image: leaf1 },
+    { name: "রাসায়নিক সার", desc: "ইউরিয়া, TSP, MP", image: chemicalIcon },
   ];
 
   const cropManagement = [
     {
-      title: "Soil Testing",
-      description: "Comprehensive soil analysis and recommendations",
+      title: "মাটির পরীক্ষা",
+      description: "সম্পূর্ণ মাটি বিশ্লেষণ এবং সুপারিশ",
       image: searchIcon,
     },
     {
-      title: "Nutrient Management",
-      description: "Optimal nutrient balance for different crops",
+      title: "পুষ্টি ব্যবস্থাপনা",
+      description: "বিভিন্ন ফসলের জন্য উপযুক্ত পুষ্টির ভারসাম্য",
       image: leafImage,
     },
     {
-      title: "Season Planning",
-      description: "Best planting times and crop rotation",
+      title: "মৌসুম পরিকল্পনা",
+      description: "সেরা চাষের সময় এবং ফসলের ঘূর্ণন",
       image: calendarIcon,
     },
     {
-      title: "Water Management",
-      description: "Efficient irrigation and water conservation",
+      title: "জল ব্যবস্থাপনা",
+      description: "দক্ষ সেচ এবং জল সংরক্ষণ",
       image: waterIcon,
     },
   ];
@@ -82,17 +82,18 @@ export default function SoilGuide() {
     <View style={styles.container}>
 
       <ScrollView style={styles.content}>
-        {/* Soil Types Section */}
+        {/* মাটি ও সার বিভাগ */}
         <View style={styles.sectionHeader}>
           <Image source={leafImage} style={styles.leafIcon} />
-          <Text style={styles.sectionTitle}>Soil Types & Fertilizers</Text>
+          <Text style={styles.sectionTitle}>মাটির প্রকার ও সার ব্যবস্থাপনা</Text>
         </View>
 
         <Text style={styles.sectionDescription}>
-          Learn about soil health and fertilizer management
+          মাটির স্বাস্থ্য এবং সার ব্যবস্থাপনা সম্পর্কে জানুন
         </Text>
 
-        <Text style={styles.fertilizerTitle}>Types of Soil</Text>
+        {/* মাটির প্রকার */}
+        <Text style={styles.fertilizerTitle}>মাটির প্রকার</Text>
         {soilTypes.map((soil, index) => (
           <View key={index} style={styles.soilCard}>
             <View style={styles.soilHeader}>
@@ -113,8 +114,8 @@ export default function SoilGuide() {
           </View>
         ))}
 
-        {/* Fertilizer Section */}
-        <Text style={styles.fertilizerTitle}>Fertilizer Usage Guide</Text>
+        {/* সার ব্যবহার নির্দেশিকা */}
+        <Text style={styles.fertilizerTitle}>সার ব্যবহারের নির্দেশিকা</Text>
         <View style={styles.fertilizerSection}>
           {fertilizers.map((fertilizer, index, arr) => (
             <View
@@ -144,8 +145,8 @@ export default function SoilGuide() {
           ))}
         </View>
 
-        {/* Crop Management Section */}
-        <Text style={styles.cropManagementTitle}>Crop Management Guide</Text>
+        {/* ফসল ব্যবস্থাপনা নির্দেশিকা */}
+        <Text style={styles.cropManagementTitle}>ফসল ব্যবস্থাপনা নির্দেশিকা</Text>
         <View style={styles.cropManagementSection}>
           {cropManagement.map((crop, index) => (
             <View key={index} style={styles.cropItem}>
@@ -163,7 +164,7 @@ export default function SoilGuide() {
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation */}
+      {/* নিচের ন্যাভিগেশন */}
       <View style={styles.bottomNav}>
         {tabs.map((item, index) => {
           const isActive = item.name === activeTab;
@@ -188,6 +189,7 @@ export default function SoilGuide() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   header: {
@@ -198,6 +200,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
     backgroundColor: "#fff",
+
+
   },
   backButton: { marginRight: 10 },
   backIcon: { width: 24, height: 24, resizeMode: "contain" },

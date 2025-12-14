@@ -22,7 +22,7 @@ import helpIcon from "@/assets/help.png";
 import ordersIcon from "@/assets/orders.png";
 
 export default function FarmerOrders() {
-  const [activeNav, setActiveNav] = useState("Orders");
+  const [activeNav, setActiveNav] = useState("অর্ডার");
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
@@ -40,40 +40,34 @@ export default function FarmerOrders() {
     }
   };
 
-  // Generate random order ID for display
   const generateRandomOrderId = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
   };
 
-  // Group orders by category for farmer view
   const getFarmerOrders = () => {
     const farmerOrders = [];
     
     orders.forEach(order => {
       if (order.items && order.items.length > 0) {
-        // Group items by category
         const itemsByCategory = {};
-        
         order.items.forEach(item => {
           const category = item.category || 'General';
           if (!itemsByCategory[category]) {
             itemsByCategory[category] = {
               orderId: order.orderId + '-' + category,
               originalOrderId: order.orderId,
-              displayOrderId: generateRandomOrderId(),
+              displayOrderId: order.displayOrderId || generateRandomOrderId(),
               category: category,
               items: [],
               totalAmount: 0,
               createdAt: order.createdAt,
               deliveryLocation: getRandomLocation(),
-              status: item.status || 'New Order' // Use item status if exists
+              status: order.status || 'pending' // ✅ Use main order status
             };
           }
           itemsByCategory[category].items.push(item);
           itemsByCategory[category].totalAmount += item.price * item.quantity;
         });
-        
-        // Add category-wise orders to the list
         Object.values(itemsByCategory).forEach(catOrder => {
           farmerOrders.push(catOrder);
         });
@@ -83,71 +77,59 @@ export default function FarmerOrders() {
     return farmerOrders;
   };
 
-  // Helper functions for demo data
   const getRandomLocation = () => {
-    const locations = ['Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna'];
+    const locations = ['ঢাকা', 'চট্টগ্রাম', 'সিলেট', 'রাজশাহী', 'খুলনা'];
     return locations[Math.floor(Math.random() * locations.length)];
   };
 
   const handleAcceptOrder = async (order) => {
     try {
+      // Update order status to 'processing' instead of modifying items
       const updatedOrders = orders.map(mainOrder => {
         if (String(mainOrder.orderId) === String(order.originalOrderId)) {
-          // Update status for items in this category
-          const updatedItems = mainOrder.items.map(item => {
-            const itemCategory = item.category || 'General';
-            if (itemCategory === order.category) {
-              return { ...item, status: 'Processing' };
-            }
-            return item;
-          });
-          
-          return { ...mainOrder, items: updatedItems };
+          return { 
+            ...mainOrder, 
+            status: 'processing' // ✅ Update main order status
+          };
         }
         return mainOrder;
       });
 
       await AsyncStorage.setItem('orders', JSON.stringify(updatedOrders));
       setOrders(updatedOrders);
-      Alert.alert('Order Accepted', `Order #${order.displayOrderId} has been accepted and is now processing!`);
-      
+      Alert.alert('অর্ডার গ্রহণ', `অর্ডার#${order.displayOrderId} গ্রহণ করা হয়েছে এবং প্রক্রিয়াধীন!`);
     } catch (err) {
       console.log('Error accepting order:', err);
-      Alert.alert('Error', 'Failed to accept order');
+      Alert.alert('ত্রুটি', 'অর্ডার গ্রহণ করতে ব্যর্থ হয়েছে');
     }
   };
 
   const handleDeclineOrder = async (order) => {
     try {
+      // Update order status to 'cancelled'
       const updatedOrders = orders.map(mainOrder => {
         if (String(mainOrder.orderId) === String(order.originalOrderId)) {
-          // Update status for items in this category
-          const updatedItems = mainOrder.items.map(item => {
-            const itemCategory = item.category || 'General';
-            if (itemCategory === order.category) {
-              return { ...item, status: 'Declined' };
-            }
-            return item;
-          });
-          
-          return { ...mainOrder, items: updatedItems };
+          return { 
+            ...mainOrder, 
+            status: 'cancelled' // ✅ Update main order status
+          };
         }
         return mainOrder;
       });
 
       await AsyncStorage.setItem('orders', JSON.stringify(updatedOrders));
       setOrders(updatedOrders);
-      Alert.alert('Order Declined', `Order #${order.displayOrderId} has been declined!`);
-      
+      Alert.alert('অর্ডার বাতিল', `অর্ডার#${order.displayOrderId} বাতিল করা হয়েছে!`);
     } catch (err) {
       console.log('Error declining order:', err);
-      Alert.alert('Error', 'Failed to decline order');
+      Alert.alert('ত্রুটি', 'অর্ডার বাতিল করতে ব্যর্থ হয়েছে');
     }
   };
 
   const farmerOrders = getFarmerOrders();
   const newOrders = farmerOrders.filter(order => 
-    !order.items.some(item => item.status === 'Processing' || item.status === 'Declined')
+    !orders.find(o => o.orderId === order.originalOrderId && 
+      (o.status === 'processing' || o.status === 'cancelled'))
   );
 
   return (
@@ -156,102 +138,82 @@ export default function FarmerOrders() {
 
       {/* Header */}
       <View style={styles.header}>
-        {/* <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Image source={backArrow} style={styles.backIcon} />
-        </TouchableOpacity> */}
-        
-        {/* <View style={styles.logoBox}>
-          <Text style={styles.logoText}>F</Text>
-        </View> */}
-        
         <View style={styles.headerText}>
-          <Text style={styles.appName}>FarmAssist</Text>
-          <Text style={styles.subtitle}>Farmer Portal</Text>
+          <Text style={styles.appName}>কৃষি সহায়তা</Text>
+          <Text style={styles.subtitle}>কৃষক তথ্যকেন্দ্র</Text>
         </View>
-        
         <View style={styles.notificationContainer}>
           <Image source={notificationIconImg} style={styles.notificationIcon} />
-          <View style={styles.headerNotificationBadge}>
-            <Text style={styles.headerNotificationText}>{newOrders.length}</Text>
-          </View>
+          {newOrders.length > 0 && (
+            <View style={styles.headerNotificationBadge}>
+              <Text style={styles.headerNotificationText}>{newOrders.length}</Text>
+            </View>
+          )}
         </View>
       </View>
 
-      {/* Scrollable Orders Section */}
+      {/* Orders */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.screenTitle}>Order Management</Text>
-        <Text style={styles.screenSubtitle}>
-          Process and track customer orders
-        </Text>
+        <Text style={styles.screenTitle}>অর্ডার ব্যবস্থাপনা</Text>
+        <Text style={styles.screenSubtitle}>ক্রেতার অর্ডারগুলো প্রক্রিয়া ও অনুসরণ করুন</Text>
 
         {farmerOrders.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>No orders yet</Text>
-            <Text style={styles.emptySubtext}>Customer orders will appear here</Text>
+            <Text style={styles.emptyText}>এখনো কোনো অর্ডার পাওয়া যায়নি</Text>
+            <Text style={styles.emptySubtext}>এখানেই ক্রেতার অর্ডারগুলো দেখানো হবে</Text>
           </View>
         ) : (
           farmerOrders.map((order, index) => {
-            const hasProcessing = order.items.some(item => item.status === 'Processing');
-            const hasDeclined = order.items.some(item => item.status === 'Declined');
-            const isNewOrder = !hasProcessing && !hasDeclined;
+            const mainOrder = orders.find(o => o.orderId === order.originalOrderId);
+            const status = mainOrder?.status || 'pending';
+            const isNewOrder = status === 'pending';
+            const isProcessing = status === 'processing';
+            const isCancelled = status === 'cancelled';
 
             return (
               <View key={order.orderId}>
-                {/* Order Card */}
                 <View style={styles.orderCard}>
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.orderId}>Order #{order.displayOrderId}</Text>
-                    
+                    <Text style={styles.orderId}>অর্ডার #{order.displayOrderId}</Text>
                     {order.items?.map((item, idx) => (
                       <View key={idx} style={styles.orderProductRow}>
                         <View style={styles.productInfo}>
-                          <Text style={styles.orderName}>
-                            {item.name} - {item.quantity}kg
-                          </Text>
-                          <Text style={styles.orderDetails}>
-                            ৳{item.price * item.quantity} • Delivery: {order.deliveryLocation}
-                          </Text>
+                          <Text style={styles.orderName}>{item.name} - {item.quantity}kg</Text>
+                          <Text style={styles.orderDetails}>৳{item.price * item.quantity} • সরবরাহ: {order.deliveryLocation}</Text>
                         </View>
                       </View>
                     ))}
                   </View>
-                  
-                  {/* Status Badge */}
+
                   <View style={[
                     styles.statusBadge,
                     isNewOrder && styles.newOrderBadge,
-                    hasProcessing && styles.processingBadge,
-                    hasDeclined && styles.declinedBadge
+                    isProcessing && styles.processingBadge,
+                    isCancelled && styles.declinedBadge
                   ]}>
                     <Text style={styles.badgeText}>
-                      {hasDeclined ? 'Declined' : hasProcessing ? 'Processing' : 'New Order'}
+                      {isCancelled ? 'বাতিল' : isProcessing ? 'প্রক্রিয়াকরণ' : 'নতুন অর্ডার'}
                     </Text>
                   </View>
                 </View>
 
-                {/* Action Buttons - Only show for new orders */}
-                {isNewOrder ? (
+                {isNewOrder && (
                   <View style={styles.actionRow}>
-                    <TouchableOpacity 
-                      style={styles.acceptBtn}
-                      onPress={() => handleAcceptOrder(order)}
-                    >
-                      <Text style={styles.acceptText}>Accept Order</Text>
+                    <TouchableOpacity style={styles.acceptBtn} onPress={() => handleAcceptOrder(order)}>
+                      <Text style={styles.acceptText}>অর্ডার গ্রহণ</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                      style={styles.declineBtn}
-                      onPress={() => handleDeclineOrder(order)}
-                    >
-                      <Text style={styles.declineText}>Decline</Text>
+                    <TouchableOpacity style={styles.declineBtn} onPress={() => handleDeclineOrder(order)}>
+                      <Text style={styles.declineText}>বাতিল</Text>
                     </TouchableOpacity>
                   </View>
-                ) : hasProcessing ? (
-                  <TouchableOpacity style={styles.shipBtn}>
-                    <Text style={styles.shipText}>Mark as Shipped</Text>
-                  </TouchableOpacity>
-                ) : null}
+                )}
 
-                {/* Divider between orders */}
+                {isProcessing && !isCancelled && (
+                  <TouchableOpacity style={styles.shipBtn}>
+                    <Text style={styles.shipText}>শিপ করা হয়েছে</Text>
+                  </TouchableOpacity>
+                )}
+
                 {index < farmerOrders.length - 1 && <View style={styles.divider} />}
               </View>
             );
@@ -259,14 +221,14 @@ export default function FarmerOrders() {
         )}
       </ScrollView>
 
-      {/* Fixed Bottom Navigation */}
+      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
-          { name: "Products", image: productsIcon, route: "/FarmerProducts" },
-          { name: "Weather", image: weatherIcon, route: "/Calendar" },
-          { name: "Help", image: helpIcon, route: "/FAi" },
-          { name: "Orders", image: ordersIcon, notification: newOrders.length, route: "/FarmerOrders" },
+          { name: "হোম", image: homeIcon, route: "/FarmerDashboard" },
+          { name: "পণ্য", image: productsIcon, route: "/FarmerProducts" },
+          { name: "আবহাওয়া", image: weatherIcon, route: "/Calendar" },
+          { name: "সহায়তা", image: helpIcon, route: "/FAi" },
+          { name: "অর্ডার", image: ordersIcon, notification: newOrders.length, route: "/FarmerOrders" },
         ].map((item, index) => {
           const isActive = activeNav === item.name;
           return (
@@ -280,17 +242,13 @@ export default function FarmerOrders() {
             >
               <View style={{ position: "relative" }}>
                 <Image source={item.image} style={styles.navIcon} />
-                {item.notification && item.notification > 0 && (
+                {item.notification > 0 && (
                   <View style={styles.notificationBadge}>
-                    <Text style={styles.notificationText}>
-                      {item.notification}
-                    </Text>
+                    <Text style={styles.notificationText}>{item.notification}</Text>
                   </View>
                 )}
               </View>
-              <Text style={[styles.navText, isActive && styles.activeNavText]}>
-                {item.name}
-              </Text>
+              <Text style={[styles.navText, isActive && styles.activeNavText]}>{item.name}</Text>
             </TouchableOpacity>
           );
         })}
@@ -311,18 +269,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
-  backButton: { marginRight: 10 },
-  backIcon: { width: 24, height: 24, resizeMode: "contain" },
-  logoBox: {
-    backgroundColor: "#28a745",
-    width: 50,
-    height: 50,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  logoText: { color: "#fff", fontSize: 22, fontWeight: "bold" },
   headerText: { flex: 1 },
   appName: { fontSize: 18, fontWeight: "bold", color: "#000" },
   subtitle: { fontSize: 13, color: "#666" },

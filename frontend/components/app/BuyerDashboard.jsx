@@ -31,7 +31,7 @@ export default function BuyerDashboard() {
   const recentOrders = [
     {
       id: 1,
-      name: 'প্রিমিয়াম বাসমতি চাল - ৫ কেজি',
+      name: 'বাসমতি চাল - ৫ কেজি',
       orderId: '#1234',
       status: 'ডেলিভার্ড',
       statusColor: '#4CAF50',
@@ -39,7 +39,7 @@ export default function BuyerDashboard() {
     },
     {
       id: 2,
-      name: 'তাজা গাজর - ২ কেজি',
+      name: 'গাজর - ২ কেজি',
       orderId: '#1235',
       status: 'পথে আছে',
       statusColor: '#FF9800',
@@ -47,7 +47,7 @@ export default function BuyerDashboard() {
     },
     {
       id: 3,
-      name: 'তাজা টমেটো - ৩ কেজি',
+      name: 'টমেটো - ৩ কেজি',
       orderId: '#1236',
       status: 'ডেলিভার্ড',
       statusColor: '#4CAF50',
@@ -58,7 +58,7 @@ export default function BuyerDashboard() {
   const quickActions = [
     {
       title: 'প্রোডাক্ট দেখুন',
-      subtitle: 'তাজা পণ্য খুঁজুন',
+      subtitle: 'পণ্য খুঁজুন',
       image: cartImg,
       route: 'BuyerBrowse',
     },
@@ -70,7 +70,7 @@ export default function BuyerDashboard() {
     },
     {
       title: 'শপিং কার্ট',
-      subtitle: '৫ টি পণ্য প্রস্তুত',
+      // subtitle: '৫ টি পণ্য প্রস্তুত',
       image: shoppingCart,
       route: 'Cart',
     },
@@ -95,9 +95,9 @@ export default function BuyerDashboard() {
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.welcomeSection}>
-          <Text style={styles.welcomeTitle}>ফিরে আসার জন্য স্বাগতম!</Text>
+          <Text style={styles.welcomeTitle}>স্বাগতম!</Text>
           <Text style={styles.welcomeSubtitle}>
-            স্থানীয় কৃষকদের কাছ থেকে তাজা পণ্য খুঁজে নিন
+            স্থানীয় কৃষকদের কাছ থেকে পণ্য খুঁজে নিন
           </Text>
         </View>
 

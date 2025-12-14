@@ -20,30 +20,30 @@ import learnIcon from "@/assets/learn-icon.webp";
 import chatIcon from "@/assets/chat-icon.png";
 
 export default function LearnSoil() {
-  const [activeTab, setActiveTab] = useState("Soil Guide");
-  const [activeNav, setActiveNav] = useState("Learn"); // Default Learn
+  const [activeTab, setActiveTab] = useState("মাটি গাইড");
+  const [activeNav, setActiveNav] = useState("শিখুন"); // Default Learn
 
   const soilTypes = [
     {
-      name: "Loamy Soil",
-      description: "Most fertile, suitable for all types of crops",
+      name: "দোঁআশ মাটি",
+      description: "সবচেয়ে উর্বর, সকল ধরনের ফসলের জন্য উপযুক্ত",
       color: "#8FBC8F",
     },
     {
-      name: "Clay Soil",
-      description: "Good water retention, ideal for rice cultivation",
+      name: "এঁটেল মাটি",
+      description: "পানি ধরে রাখার ক্ষমতা ভালো, ধানের চাষের জন্য আদর্শ",
       color: "#D2B48C",
     },
     {
-      name: "Sandy Soil",
-      description: "Good drainage, suitable for vegetables",
+      name: "বেলে মাটি",
+      description: "ভালো নিকাশ, সবজির চাষের জন্য উপযুক্ত",
       color: "#F4A460",
     },
   ];
 
   const fertilizers = [
-    { name: "Organic Fertilizer", desc: "Animal dung, Compost", image: leafIcon },
-    { name: "Chemical Fertilizer", desc: "Urea, TSP, MP", image: chemicalIcon },
+    { name: "জৈব সার", desc: "পশুর গোবর, কম্পোস্ট", image: leafIcon },
+    { name: "রাসায়নিক সার", desc: "ইউরিয়া, টিএসপি, এমপি", image: chemicalIcon },
   ];
 
   return (
@@ -55,9 +55,9 @@ export default function LearnSoil() {
         <View style={styles.titleSection}>
           <Image source={booksIcon} style={styles.iconImage} />
           <View>
-            <Text style={styles.title}>Learning Center</Text>
+            <Text style={styles.title}>শিক্ষা কেন্দ্র</Text>
             <Text style={styles.subTitleText}>
-              Educational blogs and video tutorials in English
+              শিক্ষামূলক ব্লগ এবং ভিডিও টিউটোরিয়াল 
             </Text>
           </View>
         </View>
@@ -65,9 +65,9 @@ export default function LearnSoil() {
         {/* Tabs */}
         <View style={styles.tabContainer}>
           {[
-            { name: "Articles", route: "/LearnArti" },
-            { name: "Videos", route: "/LearnVdo" },
-            { name: "Soil Guide", route: "/LearnSoil" },
+            { name: "আর্টিকেল", route: "/LearnArti" },
+            { name: "ভিডিও", route: "/LearnVdo" },
+            { name: "মাটি গাইড", route: "/LearnSoil" },
           ].map((tab, index) => (
             <TouchableOpacity
               key={index}
@@ -90,7 +90,7 @@ export default function LearnSoil() {
         </View>
 
         {/* Soil Types */}
-        <Text style={styles.fertilizerTitle}>Types of Soil</Text>
+        <Text style={styles.fertilizerTitle}>মাটির ধরনসমূহ</Text>
         {soilTypes.map((soil, index) => (
           <View key={index} style={styles.soilCard}>
             <View style={styles.soilHeader}>
@@ -112,7 +112,7 @@ export default function LearnSoil() {
         ))}
 
         {/* Fertilizer Section */}
-        <Text style={styles.fertilizerTitle}>Fertilizer Usage Guide</Text>
+        <Text style={styles.fertilizerTitle}>সারের ব্যবহার নির্দেশিকা</Text>
         <View style={styles.fertilizerSection}>
           {fertilizers.map((fertilizer, index, arr) => (
             <View
@@ -146,10 +146,10 @@ export default function LearnSoil() {
       {/* Bottom Navigation (Guest) */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "/GuestHome" },
-          { name: "Products", image: productsIcon, route: "/browse" },
-          { name: "Learn", image: learnIcon, route: "/LearnArti" },
-          { name: "AI Chat", image: chatIcon, route: "/Ai" },
+          { name: "হোম", image: homeIcon, route: "/GuestHome" },
+          { name: "পণ্য", image: productsIcon, route: "/browse" },
+          { name: "শিখুন", image: learnIcon, route: "/LearnArti" },
+          { name: "এআই চ্যাট", image: chatIcon, route: "/Ai" },
         ].map((item, index) => {
           const isActive = activeNav === item.name;
           return (
@@ -174,6 +174,7 @@ export default function LearnSoil() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
 
   titleSection: { flexDirection: "row", alignItems: "center", padding: 15 },
   iconImage: { width: 30, height: 30, marginRight: 10 },
-  title: { fontSize: 20, fontWeight: "bold", color: "#333" },
+  title: { fontSize: 20, fontWeight: "bold", color: "#333",marginTop:-20 },
   subTitleText: { fontSize: 14, color: "#666" },
 
   tabContainer: {

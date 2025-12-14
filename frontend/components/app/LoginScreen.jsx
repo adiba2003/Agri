@@ -15,7 +15,7 @@ import { router } from "expo-router";
 import cartIcon from "@/assets/cart.png";
 import riceIcon from "@/assets/rice.png";
 
-const API_URL = "http://localhost:5000/api/auth/login";
+const API_URL = "http://192.168.0.107:5000/api/auth/login";
 
 export default function LoginScreen() {
   const [activeTab, setActiveTab] = useState("signin");
@@ -25,13 +25,13 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
 
   const roles = [
-    { name: "Buyer", key: "buyer", image: cartIcon },
-    { name: "Farmer", key: "farmer", image: riceIcon },
+    { name: "ক্রেতা", key: "buyer", image: cartIcon },
+    { name: "কৃষক", key: "farmer", image: riceIcon },
   ];
 
   const handleLogin = async () => {
     if (!email || !password || !role) {
-      return Alert.alert("Error", "All fields + role are required!");
+      return Alert.alert("ত্রুটি", "সব ফিল্ড এবং ভূমিকা নির্বাচন আবশ্যক!");
     }
 
     try {
@@ -44,19 +44,19 @@ export default function LoginScreen() {
       const data = await res.json();
 
       if (!res.ok) {
-        return Alert.alert("Login Failed", data.message);
+        return Alert.alert("লগইন ব্যর্থ", data.message);
       }
 
-      Alert.alert("Success", "Login successful");
+      Alert.alert("সফলতা", "লগইন সফল হয়েছে");
 
-      // Redirect only after successful login
+      // সফল লগইন হলে রিডাইরেক্ট
       if (role === "buyer") {
         router.push("/BuyerDashboard");
       } else {
         router.push("/FarmerDashboard");
       }
     } catch (error) {
-      Alert.alert("Network Error", "Could not connect to server");
+      Alert.alert("নেটওয়ার্ক ত্রুটি", "সার্ভারের সাথে সংযোগ সম্ভব হয়নি");
     }
   };
 
@@ -66,10 +66,10 @@ export default function LoginScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.welcome}>Welcome</Text>
+        <Text style={styles.welcome}>স্বাগতম</Text>
 
         <Text style={styles.subtext}>
-          Sign in to your account or create a new one
+          আপনার অ্যাকাউন্টে লগইন করুন বা নতুন অ্যাকাউন্ট তৈরি করুন
         </Text>
 
         {/* Tabs */}
@@ -85,7 +85,7 @@ export default function LoginScreen() {
                 activeTab === "signin" && styles.activeTabText,
               ]}
             >
-              Sign In
+              লগইন
             </Text>
           </TouchableOpacity>
 
@@ -103,26 +103,26 @@ export default function LoginScreen() {
                 activeTab === "register" && styles.activeTabText,
               ]}
             >
-              Register
+              রেজিস্টার
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Email */}
-        <Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>ইমেইল</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter your email"
+          placeholder="আপনার ইমেইল লিখুন"
           placeholderTextColor="#aaa"
           value={email}
           onChangeText={setEmail}
         />
 
         {/* Password */}
-        <Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>পাসওয়ার্ড</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter your password"
+          placeholder="আপনার পাসওয়ার্ড লিখুন"
           placeholderTextColor="#aaa"
           secureTextEntry
           value={password}
@@ -130,7 +130,7 @@ export default function LoginScreen() {
         />
 
         {/* Role Selection */}
-        <Text style={styles.label}>Sign in as:</Text>
+        <Text style={styles.label}>লগইন করুন এই ভূমিকায়:</Text>
         <View style={styles.roleRow}>
           {roles.map((r, i) => (
             <TouchableOpacity
@@ -153,7 +153,7 @@ export default function LoginScreen() {
 
         {/* Login Button */}
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginText}>Login</Text>
+          <Text style={styles.loginText}>লগইন করুন</Text>
         </TouchableOpacity>
 
         {/* Guest Button */}
@@ -161,7 +161,7 @@ export default function LoginScreen() {
           style={styles.guestButton}
           onPress={() => router.push("/GuestHome")}
         >
-          <Text style={styles.guestText}>Continue as Guest</Text>
+          <Text style={styles.guestText}>অতিথি হিসাবে চালিয়ে যান</Text>
         </TouchableOpacity>
 
         <View style={{ height: 50 }} />
@@ -169,6 +169,7 @@ export default function LoginScreen() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },

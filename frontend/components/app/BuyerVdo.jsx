@@ -22,29 +22,29 @@ import calendarIcon from "@/assets/calendar-icon.png";
 import clockIcon from "@/assets/clock.png";
 
 export default function BuyerVdo() {
-  const [activeTab, setActiveTab] = useState("Videos");
-  const [activeNav, setActiveNav] = useState("Home");
+  const [activeTab, setActiveTab] = useState("ভিডিও");
+  const [activeNav, setActiveNav] = useState("হোম");
 
   const navItems = [
-    { name: "Home", image: homeIcon, route: "BuyerDashboard" },
-    { name: "Browse", image: productsIcon, route: "BuyerBrowse" },
-    { name: "Cart", image: cartIcon, notification: 5, route: "Cart" },
-    { name: "Orders", image: ordersIcon, route: "BuyerOrder" },
+    { name: "হোম", image: homeIcon, route: "BuyerDashboard" },
+    { name: "ব্রাউজ", image: productsIcon, route: "BuyerBrowse" },
+    { name: "কার্ট", image: cartIcon, notification: 5, route: "Cart" },
+    { name: "অর্ডার", image: ordersIcon, route: "BuyerOrder" },
   ];
 
   return (
     <View style={styles.container}>
- 
 
       {/* Scrollable Content */}
       <ScrollView style={{ flex: 1 }}>
+
         {/* Title Section */}
         <View style={styles.titleSection}>
           <Image source={booksIcon} style={styles.iconImage} />
           <View>
-            <Text style={styles.title}>Learning Center</Text>
+            <Text style={styles.title}>শিক্ষা কেন্দ্র</Text>
             <Text style={styles.subTitleText}>
-              Educational blogs and video tutorials in English
+              শিক্ষামূলক ব্লগ এবং ভিডিও টিউটোরিয়াল 
             </Text>
           </View>
         </View>
@@ -52,9 +52,9 @@ export default function BuyerVdo() {
         {/* Tabs */}
         <View style={styles.tabContainer}>
           {[
-            { name: "Articles", route: "BuyerLearn" },
-            { name: "Videos", route: "BuyerVdo" },
-            { name: "Soil Guide", route: "BuyerSoil" },
+            { name: "আর্টিকেল", route: "BuyerLearn" },
+            { name: "ভিডিও", route: "BuyerVdo" },
+            { name: "মাটির গাইড", route: "BuyerSoil" },
           ].map((tab, index) => (
             <TouchableOpacity
               key={index}
@@ -80,18 +80,18 @@ export default function BuyerVdo() {
         <View style={styles.articleContainer}>
           {[
             {
-              title: "Proper Rice Transplanting Method",
-              desc: "Video Tutorial: How to Transplant Rice Properly.",
+              title: "ধান রোপণের সঠিক পদ্ধতি",
+              desc: "ভিডিও টিউটোরিয়াল: কীভাবে ধান রোপণ করবেন।",
               image: waterPump,
-              date: "Dec 12, 2024",
-              time: "15 min",
+              date: "ডিসেম্বর ১২ , ২০২৪",
+              time: "১৫ মিনিট",
             },
             {
-              title: "Organic Pesticide Preparation",
-              desc: "Method of Making Organic Pesticide with Household Ingredients.",
+              title: "জৈব কীটনাশক তৈরির উপায়",
+              desc: "গৃহস্থালির উপকরণ দিয়ে জৈব কীটনাশক তৈরির পদ্ধতি।",
               image: waterPump,
-              date: "Dec 9, 2024",
-              time: "12 min",
+              date: "ডিসেম্বর ৯ , ২০২৪",
+              time: "১২ মিনিট",
             },
           ].map((video, index) => (
             <View key={index} style={styles.articleCard}>
@@ -99,11 +99,13 @@ export default function BuyerVdo() {
               <View style={styles.articleContent}>
                 <Text style={styles.articleTitle}>{video.title}</Text>
                 <Text style={styles.articleDesc}>{video.desc}</Text>
+
                 <View style={styles.articleFooter}>
                   <View style={styles.footerItem}>
                     <Image source={calendarIcon} style={styles.footerIcon} />
                     <Text style={styles.articleDate}>{video.date}</Text>
                   </View>
+
                   <View style={styles.footerItem}>
                     <Image source={clockIcon} style={styles.footerIcon} />
                     <Text style={styles.articleTime}>{video.time}</Text>
@@ -119,6 +121,7 @@ export default function BuyerVdo() {
       <View style={styles.bottomNav}>
         {navItems.map((item, index) => {
           const isActive = activeNav === item.name;
+
           return (
             <TouchableOpacity
               key={index}
@@ -130,6 +133,7 @@ export default function BuyerVdo() {
             >
               <View style={{ position: "relative" }}>
                 <Image source={item.image} style={styles.navIcon} />
+
                 {item.notification && (
                   <View style={styles.notificationBadge}>
                     <Text style={styles.notificationText}>
@@ -138,6 +142,7 @@ export default function BuyerVdo() {
                   </View>
                 )}
               </View>
+
               <Text style={[styles.navText, isActive && styles.activeNavText]}>
                 {item.name}
               </Text>
@@ -148,6 +153,7 @@ export default function BuyerVdo() {
     </View>
   );
 }
+
 
 // Styles remain unchanged
 const styles = StyleSheet.create({

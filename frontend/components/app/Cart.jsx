@@ -41,8 +41,13 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
 
   const loadCart = async () => {
-    const stored = await window.localStorage.getItem("cart");
-    setCartItems(stored ? JSON.parse(stored) : []);
+    try {
+      const stored = await AsyncStorage.getItem("cart");
+      setCartItems(stored ? JSON.parse(stored) : []);
+    } catch (error) {
+      console.log("Error loading cart:", error);
+      setCartItems([]);
+    }
   };
 
   useEffect(() => {
@@ -50,133 +55,144 @@ export default function Cart() {
   }, []);
 
   const saveCart = async (updated) => {
-    await AsyncStorage.setItem("cart", JSON.stringify(updated));
-    setCartItems(updated);
+    try {
+      await AsyncStorage.setItem("cart", JSON.stringify(updated));
+      setCartItems(updated);
+    } catch (error) {
+      console.log("Error saving cart:", error);
+    }
   };
 
   // ======================================
   // 🔥 BACKEND UPDATE FUNCTION
   // ======================================
-const updateBackendQuantity = async (item) => {
-  try {
-    await fetch(
-      `http://localhost:5000/api/product/update-quantity/${item.productId}`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          quantity: item.quantity,
-        }),
-      }
-    );
-  } catch (err) {
-    console.log("Backend update error:", err);
-  }
-};
-
-
+  const updateBackendQuantity = async (item) => {
+    try {
+      await fetch(
+        `http://192.168.0.107:5000/api/product/update-quantity/${item.productId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            quantity: item.quantity,
+          }),
+        }
+      );
+    } catch (err) {
+      console.log("Backend update error:", err);
+    }
+  };
 
   // ======================================
   // 🔼 Quantity Increase / 🔽 Decrease
   // ======================================
   const updateQuantity = async (id, delta) => {
-    const updated = cartItems.map((item) => {
-      if (item.productId === id) {
-        let newQty = Math.max(1, item.quantity + delta);
-        let updatedItem = { ...item, quantity: newQty };
+    try {
+      const updated = cartItems.map((item) => {
+        if (item.productId === id) {
+          let newQty = Math.max(1, item.quantity + delta);
+          let updatedItem = { ...item, quantity: newQty };
 
-        // Update backend
-        updateBackendQuantity(updatedItem);
+          // Update backend
+          updateBackendQuantity(updatedItem);
 
-        return updatedItem;
-      }
-      return item;
-    });
+          return updatedItem;
+        }
+        return item;
+      });
 
-    saveCart(updated);
+      await saveCart(updated);
+    } catch (error) {
+      console.log("Error updating quantity:", error);
+    }
   };
 
   // ======================================
   // ❌ REMOVE FROM CART (LOCAL + DATABASE)
   // ======================================
-const removeFromCart = async (productId) => {
-  try {
-    // FRONTEND REMOVE
-    let updatedCart = cartItems.filter((item) => item.productId !== productId);
-    await saveCart(updatedCart);
+  const removeFromCart = async (productId) => {
+    try {
+      // FRONTEND REMOVE
+      let updatedCart = cartItems.filter((item) => item.productId !== productId);
+      await saveCart(updatedCart);
 
-    // BACKEND REMOVE
-    const res = await fetch(
-      `http://localhost:5000/api/product/remove-from-cart/${productId}`,
-      { method: "DELETE" }
-    );
+      // BACKEND REMOVE
+      const res = await fetch(
+        `http://192.168.0.107:5000/api/product/remove-from-cart/${productId}`,
+        { method: "DELETE" }
+      );
 
-    if (!res.ok) console.log("Backend remove failed");
-  } catch (err) {
-    console.error("Remove error:", err);
-  }
-};
-
+      if (!res.ok) console.log("Backend remove failed");
+    } catch (err) {
+      console.error("Remove error:", err);
+    }
+  };
 
   const totalPrice = cartItems
     .reduce((acc, item) => acc + item.price * item.quantity, 0)
     .toFixed(2);
 
+// Cart.jsx - checkout function আপডেট করুন
 const proceedToCheckout = async () => {
   try {
-    const orderId = Date.now().toString(); // unique ID
+    if (cartItems.length === 0) {
+      Alert.alert("কার্ট খালি", "দয়া করে কার্টে কিছু পণ্য যোগ করুন");
+      return;
+    }
 
     const totalAmount = cartItems.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0
     );
 
-    const res = await fetch("http://localhost:5000/api/product/get-cart-item");
-    const data = await res.json();
-    console.log("Cart items from backend:", data);
-
-
-
-    // ================================
-    // 1️⃣ Create order object
-    // ================================
+    // Order object তৈরি করুন
     const newOrder = {
-      orderId,
+      orderId: Date.now().toString(),
+      displayOrderId: Math.floor(100000 + Math.random() * 900000).toString(),
       createdAt: new Date().toISOString(),
-      status: "Pending",
-      items: cartItems,
+      status: "pending",
+      items: cartItems.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        category: item.category || 'General',
+        farmer: item.farmer,
+        location: item.location
+      })),
       totalAmount,
     };
 
-    // ================================
-    // 2️⃣ Save to AsyncStorage (orders)
-    // ================================
-    const existingOrders = await window.localStorage.getItem("orders");
+    // AsyncStorage-এ order save করুন
+    const existingOrders = await AsyncStorage.getItem('orders');
     const parsedOrders = existingOrders ? JSON.parse(existingOrders) : [];
-
     parsedOrders.push(newOrder);
+    await AsyncStorage.setItem('orders', JSON.stringify(parsedOrders));
 
-    await AsyncStorage.setItem("orders", JSON.stringify(parsedOrders));
-
-    // ================================
-    // 3️⃣ Clear cart
-    // ================================
-    await AsyncStorage.removeItem("cart");
+    // কার্ট clear করুন
+    await AsyncStorage.removeItem('cart');
     setCartItems([]);
 
-    // ================================
-    // 4️⃣ Navigate to Orders page
-    // ================================
-    router.push("/BuyerOrder");
+    // Success message show করুন
+    Alert.alert(
+      "সফল!",
+      `অর্ডার #${newOrder.displayOrderId} সফলভাবে প্লেস করা হয়েছে!`,
+      [
+        { 
+          text: "অর্ডার দেখুন", 
+          onPress: () => router.push("/BuyerOrder") 
+        },
+        { 
+          text: "ঠিক আছে", 
+          style: "cancel" 
+        }
+      ]
+    );
 
   } catch (error) {
     console.log("Checkout Error:", error);
+    Alert.alert("ত্রুটি", "চেকআউট প্রক্রিয়ায় ত্রুটি হয়েছে");
   }
 };
-
-
-
-
 
   const renderItem = ({ item }) => {
     const imageSource = imageMap[item.imageName] ?? rice;
@@ -187,7 +203,7 @@ const proceedToCheckout = async () => {
 
         <View style={styles.info}>
           <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.price}>৳{item.price} per kg</Text>
+          <Text style={styles.price}>৳{item.price} প্রতি কেজি</Text>
 
           <View style={styles.quantityRow}>
             <TouchableOpacity
@@ -197,7 +213,7 @@ const proceedToCheckout = async () => {
               <Text style={styles.qtyBtnText}>-</Text>
             </TouchableOpacity>
 
-            <Text style={styles.qtyValue}>{item.quantity} kg</Text>
+            <Text style={styles.qtyValue}>{item.quantity} কেজি</Text>
 
             <TouchableOpacity
               onPress={() => updateQuantity(item.productId, 1)}
@@ -213,71 +229,85 @@ const proceedToCheckout = async () => {
           onPress={() => removeFromCart(item.productId)}
           style={styles.removeBtn}
         >
-          <Text style={styles.removeText}>Remove</Text>
+          <Text style={styles.removeText}>মুছুন</Text>
         </TouchableOpacity>
       </View>
     );
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.container}>
         <FlatList
           data={cartItems}
           renderItem={renderItem}
-          keyExtractor={(item) => item.productId.toString()}
+          keyExtractor={(item) => item.productId?.toString() || Math.random().toString()}
           ListHeaderComponent={
-            <Text style={styles.cartTitle}>Shopping Cart</Text>
+            <Text style={styles.cartTitle}>আপনার কার্ট</Text>
           }
           ListEmptyComponent={
-            <Text style={styles.emptyText}>Your cart is empty!</Text>
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>আপনার কার্ট খালি!</Text>
+              <TouchableOpacity
+                style={styles.browseButton}
+                onPress={() => router.push("/BuyerBrowse")}
+              >
+                <Text style={styles.browseButtonText}>পণ্য ব্রাউজ করুন</Text>
+              </TouchableOpacity>
+            </View>
           }
           contentContainerStyle={{ paddingBottom: 150 }}
         />
       </View>
 
-      {/* Checkout Bar */}
-      <View style={styles.checkoutBar}>
-        <Text style={styles.totalLabel}>Total:</Text>
-        <Text style={styles.totalPrice}>৳{totalPrice}</Text>
+      {/* Checkout Bar - Only show if cart has items */}
+      {cartItems.length > 0 && (
+        <View style={styles.checkoutBar}>
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalLabel}>মোট:</Text>
+            <Text style={styles.totalPrice}>৳{totalPrice}</Text>
+          </View>
 
-        <TouchableOpacity
-          style={styles.checkoutBtn}
-          onPress={proceedToCheckout}
-        >
-          <Text style={styles.checkoutText}>Proceed to Checkout</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={styles.checkoutBtn}
+            onPress={proceedToCheckout}
+          >
+            <Text style={styles.checkoutText}>চেকআউট করুন</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "BuyerDashboard" },
-          { name: "Browse", image: productsIcon, route: "BuyerBrowse" },
+          { name: "হোম", image: homeIcon, route: "BuyerDashboard" },
+          { name: "পণ্য", image: productsIcon, route: "BuyerBrowse" },
           {
-            name: "Cart",
+            name: "কার্ট",
             image: cartIcon,
             route: "Cart",
-            tification: cartItems.length,
+            notification: cartItems.reduce((acc, item) => acc + item.quantity, 0),
           },
-          { name: "Orders", image: ordersIcon, route: "BuyerOrder" },
+          { name: "অর্ডার", image: ordersIcon, route: "BuyerOrder" },
         ].map((item, index) => {
-          const isActive = item.name === "Cart";
+          const isActive = item.name === "কার্ট";
           return (
             <TouchableOpacity
               key={index}
               style={[styles.navItem, isActive && styles.activeNavItem]}
               onPress={() => router.push(`/${item.route}`)}
             >
-              <Image source={item.image} style={styles.navIcon} />
+              <View style={{ position: 'relative' }}>
+                <Image source={item.image} style={styles.navIcon} />
 
-              {item.notification > 0 && item.name === "Cart" && (
-                <View style={styles.notificationBadge}>
-                  <Text style={styles.notificationText}>
-                    {item.notification}
-                  </Text>
-                </View>
-              )}
+                {item.notification > 0 && item.name === "কার্ট" && (
+                  <View style={styles.notificationBadge}>
+                    <Text style={styles.notificationText}>
+                      {item.notification}
+                    </Text>
+                  </View>
+                )}
+              </View>
 
               <Text
                 style={[styles.navText, isActive && styles.activeNavText]}
@@ -296,20 +326,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingHorizontal: 15,
+    paddingTop: 15,
+  },
+  emptyContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 40,
   },
   emptyText: {
     textAlign: "center",
-    marginTop: 50,
     fontSize: 18,
     color: "#666",
+    marginBottom: 20,
+  },
+  browseButton: {
+    backgroundColor: "#4CAF50",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  browseButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   cartTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
     marginBottom: 20,
+    marginTop:-2,
     color: "#2c3e50",
+    textAlign: "Left",
   },
 
   itemCard: {
@@ -317,23 +365,42 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f9fa",
     borderRadius: 12,
     padding: 12,
-    marginBottom: 15,
+    marginBottom: 12,
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#e9ecef",
   },
 
   image: {
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
     borderRadius: 10,
     marginRight: 12,
     resizeMode: "contain",
+    backgroundColor: "#fff",
   },
 
-  info: { flex: 1 },
-  name: { fontSize: 16, fontWeight: "bold", marginBottom: 4, color: "#333" },
-  price: { fontSize: 14, color: "#4CAF50", marginBottom: 10 },
+  info: { 
+    flex: 1,
+    marginRight: 10,
+  },
+  name: { 
+    fontSize: 15, 
+    fontWeight: "bold", 
+    marginBottom: 4, 
+    color: "#333" 
+  },
+  price: { 
+    fontSize: 14, 
+    color: "#4CAF50", 
+    marginBottom: 10,
+    fontWeight: "500",
+  },
 
-  quantityRow: { flexDirection: "row", alignItems: "center" },
+  quantityRow: { 
+    flexDirection: "row", 
+    alignItems: "center" 
+  },
   qtyBtn: {
     width: 30,
     height: 30,
@@ -342,20 +409,35 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 6,
   },
-  qtyBtnText: { fontSize: 18, fontWeight: "bold", color: "#333" },
-  qtyValue: { marginHorizontal: 10, fontSize: 16, fontWeight: "500", color: "#222" },
+  qtyBtnText: { 
+    fontSize: 16, 
+    fontWeight: "bold", 
+    color: "#333" 
+  },
+  qtyValue: { 
+    marginHorizontal: 10, 
+    fontSize: 15, 
+    fontWeight: "500", 
+    color: "#222",
+    minWidth: 30,
+    textAlign: "center",
+  },
 
   removeBtn: {
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 6,
     backgroundColor: "#ff4d4f",
-    borderRadius: 8,
+    borderRadius: 6,
   },
-  removeText: { color: "#fff", fontWeight: "bold", fontSize: 12 },
+  removeText: { 
+    color: "#fff", 
+    fontWeight: "bold", 
+    fontSize: 11 
+  },
 
   checkoutBar: {
     position: "absolute",
-    bottom: 90,
+    bottom: 70,
     left: 0,
     right: 0,
     backgroundColor: "#fff",
@@ -365,22 +447,44 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5,
   },
 
-  totalLabel: { fontSize: 18, fontWeight: "600", color: "#444" },
-  totalPrice: { fontSize: 20, fontWeight: "bold", color: "#4CAF50" },
+  totalContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  totalLabel: { 
+    fontSize: 16, 
+    fontWeight: "600", 
+    color: "#444",
+    marginRight: 5,
+  },
+  totalPrice: { 
+    fontSize: 18, 
+    fontWeight: "bold", 
+    color: "#4CAF50" 
+  },
 
   checkoutBtn: {
     backgroundColor: "#4CAF50",
     paddingVertical: 12,
-    paddingHorizontal: 18,
+    paddingHorizontal: 20,
     borderRadius: 10,
   },
-  checkoutText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
+  checkoutText: { 
+    color: "#fff", 
+    fontSize: 15, 
+    fontWeight: "bold" 
+  },
 
   bottomNav: {
     flexDirection: "row",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#f8f9fa",
     borderTopWidth: 1,
     borderTopColor: "#ddd",
     paddingVertical: 10,
@@ -394,21 +498,33 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 8,
-    borderWidth: 2,
-    borderColor: "transparent",
-    borderRadius: 10,
-    marginHorizontal: 5,
+    paddingVertical: 6,
   },
-  activeNavItem: { borderColor: "#4CAF50", backgroundColor: "#eaf8ea" },
-  navIcon: { width: 28, height: 28, marginBottom: 5, resizeMode: "contain" },
-  navText: { fontSize: 12, color: "#333", fontWeight: "500", textAlign: "center" },
-  activeNavText: { color: "#4CAF50", fontWeight: "600" },
+  activeNavItem: { 
+    backgroundColor: "#eaf8ea",
+    borderRadius: 8,
+  },
+  navIcon: { 
+    width: 24, 
+    height: 24, 
+    marginBottom: 4, 
+    resizeMode: "contain" 
+  },
+  navText: { 
+    fontSize: 11, 
+    color: "#333", 
+    fontWeight: "500", 
+    textAlign: "center" 
+  },
+  activeNavText: { 
+    color: "#4CAF50", 
+    fontWeight: "bold" 
+  },
 
   notificationBadge: {
     position: "absolute",
     top: -5,
-    right: -10,
+    right: -8,
     backgroundColor: "red",
     borderRadius: 8,
     paddingHorizontal: 4,
@@ -417,5 +533,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  notificationText: { color: "#fff", fontSize: 10, fontWeight: "bold" },
+  notificationText: { 
+    color: "#fff", 
+    fontSize: 9, 
+    fontWeight: "bold" 
+  },
 });

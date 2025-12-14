@@ -22,8 +22,8 @@ import help from "@/assets/help.png";
 import orders from "@/assets/orders.png";
 
 export default function Fvdo() {
-  const [activeTab, setActiveTab] = useState("Videos");
-  const [activeNav, setActiveNav] = useState("Home");
+  const [activeTab, setActiveTab] = useState("ভিডিও");
+  const [activeNav, setActiveNav] = useState("হোম");
 
   return (
     <View style={styles.container}>
@@ -35,9 +35,9 @@ export default function Fvdo() {
         <View style={styles.titleSection}>
           <Image source={booksIcon} style={styles.iconImage} />
           <View>
-            <Text style={styles.title}>Learning Center</Text>
+            <Text style={styles.title}>শিক্ষা কেন্দ্র</Text>
             <Text style={styles.subTitleText}>
-              Educational blogs and video tutorials in English
+             শিক্ষামূলক ব্লগ এবং ভিডিও টিউটোরিয়াল 
             </Text>
           </View>
         </View>
@@ -45,9 +45,9 @@ export default function Fvdo() {
         {/* Tabs */}
         <View style={styles.tabContainer}>
           {[
-            { name: "Articles", route: "/FLearn" },
-            { name: "Videos", route: "/Fvdo" },
-            { name: "Soil Guide", route: "/Fsoil" },
+            { name: "আর্টিকেল", route: "/FLearn" },
+            { name: "ভিডিও", route: "/Fvdo" },
+            { name: "মাটির গাইড", route: "/Fsoil" },
           ].map((tab, index) => (
             <TouchableOpacity
               key={index}
@@ -73,18 +73,18 @@ export default function Fvdo() {
         <View style={styles.articleContainer}>
           {[ 
             {
-              title: "Proper Rice Transplanting Method",
-              desc: "How to transplant rice properly",
+              title: "ধান রোপণের সঠিক পদ্ধতি",
+              desc: "কীভাবে ধান রোপণ করবেন।",
               image: waterPump,
-              date: "Dec 12, 2024",
-              time: "15 min",
+              date: "ডিসেম্বর ১২ , ২০২৪",
+              time: "১৫ মিনিট",
             },
             {
-              title: "Organic Pesticide Preparation",
-              desc: "Making pesticide using home ingredients",
+              title: "জৈব কীটনাশক তৈরির উপায়",
+              desc: "গৃহস্থালির উপকরণ দিয়ে জৈব কীটনাশক তৈরির পদ্ধতি।",
               image: waterPump,
-              date: "Dec 9, 2024",
-              time: "12 min",
+              date: "ডিসেম্বর ৯ , ২০২৪",
+              time: "১২ মিনিট",
             },
           ].map((video, index) => (
             <View key={index} style={styles.articleCard}>
@@ -114,11 +114,11 @@ export default function Fvdo() {
       {/* 🔻 Bottom Navigation (Farmer Version) */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
-          { name: "Products", image: productsIcon, route: "/FarmerProducts" },
-          { name: "Weather", image: weather, route: "/Calendar" },
-          { name: "Help", image: help, route: "/Calendar" },
-          { name: "Orders", image: orders, notification: 15, route: "/FarmerOrders" },
+          { name: "হোম", image: homeIcon, route: "/FarmerDashboard" },
+          { name: "পণ্য", image: productsIcon, route: "/FarmerProducts" },
+          { name: "আবহাওয়া", image: weather, route: "/Calendar" },
+          { name: "সহায়তা", image: help, route: "/Calendar" },
+          { name: "অর্ডার", image: orders, notification: 15, route: "/FarmerOrders" },
         ].map((item, index) => {
           const isActive = activeNav === item.name;
 

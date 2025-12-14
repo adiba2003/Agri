@@ -24,36 +24,36 @@ import helpIcon from "@/assets/help.png";
 import ordersIcon from "@/assets/orders.png";
 
 export default function FarmerProducts() {
-  const [activeNav, setActiveNav] = useState("Products");
+  const [activeNav, setActiveNav] = useState("পণ্য");
 
   // Dummy products data
   const products = [
     {
       id: 1,
-      name: "Premium Basmati Rice",
+      name: "বাসমতি চাল",
       price: "$85/kg",
-      stock: "500kg available",
-      orders: "25 orders",
+      stock: "500kg গ্রহণসাধ্য",
+      orders: "25 অর্ডার",
       rating: "4.8 rating",
       status: "Active",
       icon: riceImg,
     },
     {
       id: 2,
-      name: "Fresh Tomatoes",
+      name: "টমেটো",
       price: "$60/kg",
-      stock: "200kg available",
-      orders: "18 orders",
+      stock: "200kg গ্রহণসাধ্য",
+      orders: "18 অর্ডার",
       rating: "4.7 rating",
       status: "Active",
       icon: tomatoImg,
     },
     {
       id: 3,
-      name: "Organic Potatoes",
+      name: "আলু",
       price: "$85/kg",
-      stock: "300kg available",
-      orders: "12 orders",
+      stock: "300kg গ্রহণসাধ্য",
+      orders: "12 অর্ডার",
       rating: "4.6 rating",
       status: "Active",
       icon: potatoImg,
@@ -67,16 +67,16 @@ export default function FarmerProducts() {
         {/* Section Header */}
         <View style={styles.sectionHeader}>
           <View>
-            <Text style={styles.sectionTitle}>My Products</Text>
+            <Text style={styles.sectionTitle}>আমার পণ্য</Text>
             <Text style={styles.sectionSubtitle}>
-              Manage your product listings
+              আপনার পণ্য তালিকা পরিচালনা করুন
             </Text>
           </View>
           <TouchableOpacity
             style={styles.addButton}
             onPress={() => router.push("/NewProduct")}
           >
-            <Text style={styles.addButtonText}>+ Add Product</Text>
+            <Text style={styles.addButtonText}>+ পণ্য যোগ করুন</Text>
           </TouchableOpacity>
         </View>
 
@@ -120,12 +120,12 @@ export default function FarmerProducts() {
       {/* Fixed Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
-          { name: "Products", image: productsIcon, route: "/FarmerProducts" },
-          { name: "Weather", image: weatherIcon, route: "/Calendar" },
-          { name: "Help", image: helpIcon, route: "/FAi" },
+          { name: "হোম", image: homeIcon, route: "/FarmerDashboard" },
+          { name: "পণ্য", image: productsIcon, route: "/FarmerProducts" },
+          { name: "আবহাওয়া", image: weatherIcon, route: "/Calendar" },
+          { name: "সহায়তা", image: helpIcon, route: "/FAi" },
           {
-            name: "Orders",
+            name: "অর্ডার",
             image: ordersIcon,
             notification: 15,
             route: "/FarmerOrders",

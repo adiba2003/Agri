@@ -46,14 +46,14 @@ export default function HomeScreen() {
               style={styles.primaryBtn}
               onPress={() => router.push({ pathname: "/login" })}
             >
-              <Text style={styles.primaryBtnText}>Get Started</Text>
+              <Text style={styles.primaryBtnText}>শুরু করুন</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.secondaryBtn}
                onPress={() => router.push("/GuestHome")}
             >
-              <Text style={styles.secondaryBtnText}>Browse as Guest</Text>
+              <Text style={styles.secondaryBtnText}>অতিথি হিসেবে ব্রাউজ করুন</Text>
             </TouchableOpacity>
           </View>
 

@@ -36,17 +36,15 @@ export default function BuyerLearn() {
 
   return (
     <View style={styles.container}>
- 
-
-      {/* Scrollable Content */}
       <ScrollView style={{ flex: 1 }}>
+        
         {/* Title */}
         <View style={styles.titleSection}>
           <Image source={booksIcon} style={styles.iconImage} />
           <View>
-            <Text style={styles.title}>Learning Center</Text>
+            <Text style={styles.title}>শিক্ষা কেন্দ্র</Text>
             <Text style={styles.subTitleText}>
-              Educational blogs and video tutorials in English
+              শিক্ষামূলক ব্লগ এবং ভিডিও টিউটোরিয়াল 
             </Text>
           </View>
         </View>
@@ -54,9 +52,9 @@ export default function BuyerLearn() {
         {/* Tabs */}
         <View style={styles.tabContainer}>
           {[
-            { name: "Articles", route: "BuyerLearn" },
-            { name: "Videos", route: "BuyerVdo" },
-            { name: "Soil Guide", route: "BuyerSoil" },
+            { name: "Articles", bn: "আর্টিকেল", route: "BuyerLearn" },
+            { name: "Videos", bn: "ভিডিও", route: "BuyerVdo" },
+            { name: "Soil Guide", bn: "মাটি নির্দেশিকা", route: "BuyerSoil" },
           ].map((tab, index) => (
             <TouchableOpacity
               key={index}
@@ -72,7 +70,7 @@ export default function BuyerLearn() {
                   activeTab === tab.name && styles.activeTabText,
                 ]}
               >
-                {tab.name}
+                {tab.bn}
               </Text>
             </TouchableOpacity>
           ))}
@@ -82,25 +80,25 @@ export default function BuyerLearn() {
         <View style={styles.articleContainer}>
           {[
             {
-              title: "Modern Rice Cultivation Methods",
-              desc: "Learn about scientific methods and care for high-yield rice cultivation.",
+              title: "আধুনিক ধান চাষের কৌশল",
+              desc: "উচ্চ ফলনের ধান চাষে বৈজ্ঞানিক পদ্ধতি ও পরিচর্যার বিস্তারিত জানুন।",
               img: riceImg,
-              date: "Dec 10, 2024",
-              time: "5 min read",
+              date: "১০ ডিসেম্বর, ২০২৪",
+              time: "৫ মিনিট পড়া",
             },
             {
-              title: "Winter Vegetable Cultivation",
-              desc: "Skills and care for growing nutritious winter vegetables.",
+              title: "শীতকালীন সবজি চাষ",
+              desc: "পুষ্টিকর শীতকালীন সবজি উৎপাদনের কৌশল ও যত্ন।",
               img: carrotImg,
-              date: "Dec 8, 2024",
-              time: "7 min read",
+              date: "৮ ডিসেম্বর, ২০২৪",
+              time: "৭ মিনিট পড়া",
             },
             {
-              title: "Irrigation Management",
-              desc: "Efficient irrigation systems and use of modern technology.",
+              title: "সেচ ব্যবস্থাপনা",
+              desc: "কার্যকর সেচ ব্যবস্থা এবং আধুনিক প্রযুক্তির ব্যবহার।",
               img: waterIcon,
-              date: "Dec 5, 2024",
-              time: "6 min read",
+              date: "৫ ডিসেম্বর, ২০২৪",
+              time: "৬ মিনিট পড়া",
             },
           ].map((article, index) => (
             <View key={index} style={styles.articleCard}>
@@ -147,10 +145,15 @@ export default function BuyerLearn() {
                   </View>
                 )}
               </View>
-              <Text
-                style={[styles.navText, isActive && styles.activeNavText]}
-              >
-                {item.name}
+
+              <Text style={[styles.navText, isActive && styles.activeNavText]}>
+                {item.name === "Home"
+                  ? "হোম"
+                  : item.name === "Browse"
+                  ? "ব্রাউজ"
+                  : item.name === "Cart"
+                  ? "কার্ট"
+                  : "অর্ডার"}
               </Text>
             </TouchableOpacity>
           );
@@ -159,6 +162,7 @@ export default function BuyerLearn() {
     </View>
   );
 }
+
 
 // 🔽 styles আগের মতোই
 const styles = StyleSheet.create({

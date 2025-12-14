@@ -33,17 +33,15 @@ export default function BuyerSoil() {
 
   return (
     <View style={styles.container}>
-
-
-      {/* Scrollable Content */}
       <ScrollView style={{ flex: 1 }}>
+
         {/* Title Section */}
         <View style={styles.titleSection}>
           <Image source={booksIcon} style={styles.iconImage} />
           <View>
-            <Text style={styles.title}>Learning Center</Text>
+            <Text style={styles.title}>শিক্ষা কেন্দ্র</Text>
             <Text style={styles.subTitleText}>
-              Educational blogs and video tutorials in English
+              শিক্ষামূলক ব্লগ ও ভিডিও টিউটোরিয়াল 
             </Text>
           </View>
         </View>
@@ -51,9 +49,9 @@ export default function BuyerSoil() {
         {/* Tabs */}
         <View style={styles.tabContainer}>
           {[
-            { name: "Articles", route: "BuyerLearn" },
-            { name: "Videos", route: "BuyerVdo" },
-            { name: "Soil Guide", route: "BuyerSoil" },
+            { name: "Articles", bn: "আর্টিকেল", route: "BuyerLearn" },
+            { name: "Videos", bn: "ভিডিও", route: "BuyerVdo" },
+            { name: "Soil Guide", bn: "মাটি নির্দেশিকা", route: "BuyerSoil" },
           ].map((tab, index) => (
             <TouchableOpacity
               key={index}
@@ -69,29 +67,30 @@ export default function BuyerSoil() {
                   activeTab === tab.name && styles.activeTabText,
                 ]}
               >
-                {tab.name}
+                {tab.bn}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        <Text style={styles.fertilizerTitle}>Types of Soil</Text>
+        {/* Soil Types Title */}
+        <Text style={styles.fertilizerTitle}>মাটির ধরন</Text>
 
-        {/* Soil Types */}
+        {/* Soil Types List */}
         {[
           {
-            name: "Loamy Soil",
-            description: "Most fertile, suitable for all types of crops",
+            name: "দোঁআশ মাটি",
+            description: "সবচেয়ে উর্বর, প্রায় সব ফসল চাষের জন্য উপযুক্ত",
             color: "#8FBC8F",
           },
           {
-            name: "Clay Soil",
-            description: "Good water retention, ideal for rice cultivation",
+            name: "এঁটেল মাটি",
+            description: "জল ধারণ ক্ষমতা বেশি, ধান চাষের জন্য আদর্শ",
             color: "#D2B48C",
           },
           {
-            name: "Sandy Soil",
-            description: "Good drainage, suitable for vegetables",
+            name: "বেলে মাটি",
+            description: "নিষ্কাশন ভালো, সবজি চাষের জন্য উপযোগী",
             color: "#F4A460",
           },
         ].map((soil, index) => (
@@ -114,18 +113,19 @@ export default function BuyerSoil() {
           </View>
         ))}
 
-        {/* Fertilizer Section */}
-        <Text style={styles.fertilizerTitle}>Fertilizer Usage Guide</Text>
+        {/* Fertilizer Section Title */}
+        <Text style={styles.fertilizerTitle}>সারের ব্যবহার নির্দেশিকা</Text>
+
         <View style={styles.fertilizerSection}>
           {[
             {
-              name: "Organic Fertilizer",
-              desc: "Animal dung, Compost",
+              name: "জৈব সার",
+              desc: "গোবর, কম্পোস্ট ইত্যাদি",
               image: leafIcon,
             },
             {
-              name: "Chemical Fertilizer",
-              desc: "Urea, TSP, MP",
+              name: "রাসায়নিক সার",
+              desc: "ইউরিয়া, টিএসপি, এমপি",
               image: chemicalIcon,
             },
           ].map((fertilizer, index, arr) => (
@@ -153,6 +153,7 @@ export default function BuyerSoil() {
                 </View>
                 <Text style={styles.fertilizerName}>{fertilizer.name}</Text>
               </View>
+
               <Text style={styles.fertilizerDescription}>
                 {fertilizer.desc}
               </Text>
@@ -184,10 +185,15 @@ export default function BuyerSoil() {
                   </View>
                 )}
               </View>
-              <Text
-                style={[styles.navText, isActive && styles.activeNavText]}
-              >
-                {item.name}
+
+              <Text style={[styles.navText, isActive && styles.activeNavText]}>
+                {item.name === "Home"
+                  ? "হোম"
+                  : item.name === "Browse"
+                  ? "ব্রাউজ"
+                  : item.name === "Cart"
+                  ? "কার্ট"
+                  : "অর্ডার"}
               </Text>
             </TouchableOpacity>
           );
@@ -196,6 +202,7 @@ export default function BuyerSoil() {
     </View>
   );
 }
+
 
 // Styles remain unchanged
 const styles = StyleSheet.create({

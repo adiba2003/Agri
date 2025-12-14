@@ -22,12 +22,12 @@ import helpIcon from "@/assets/help.png";
 import ordersIcon from "@/assets/orders.png";
 
 export default function FAi() {
-  const [activeNav, setActiveNav] = useState("Home");
+  const [activeNav, setActiveNav] = useState("হোম");
   const [messages, setMessages] = useState([
     {
       id: "0",
       sender: "AI",
-      text: "Hello! I am your AI agriculture assistant. Do you have any questions?",
+      text: "হ্যালো! আমি আপনার AI কৃষি সহকারী। আপনার কোনো প্রশ্ন আছে কি?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -51,27 +51,27 @@ export default function FAi() {
   };
 
   const popularQuestions = [
-    { title: "Rice Diseases", description: "Identify and treat common rice plant diseases" },
-    { title: "Fertilizer Usage", description: "Optimal fertilizer application for different crops" },
-    { title: "Winter Vegetables", description: "Best vegetables to grow in winter season" },
-    { title: "Soil Health", description: "Improve and maintain soil fertility" },
-    { title: "Organic Pesticides", description: "Natural pest control methods" },
-    { title: "Irrigation", description: "Efficient water management techniques" },
+    { title: "ধানের রোগ", description: "সাধারণ ধান গাছের রোগ শনাক্ত ও প্রতিকার" },
+    { title: "সার ব্যবহারের নিয়ম", description: "বিভিন্ন ফসলের জন্য উপযুক্ত সার প্রয়োগ নির্দেশনা" },
+    { title: "শীতকালীন সবজি", description: "শীতে কোন সবজিগুলো সবচেয়ে ভালো হয়" },
+    { title: "মাটির স্বাস্থ্য", description: "মাটির উর্বরতা বাড়ানো ও রক্ষণাবেক্ষণ" },
+    { title: "জৈব কীটনাশক", description: "প্রাকৃতিক কীট নিয়ন্ত্রণের কার্যকর উপায়" },
+    { title: "সেচ ব্যবস্থা", description: "কার্যকর পানি ব্যবস্থাপনা পদ্ধতি" },
   ];
 
   return (
     <View style={styles.container}>
 
-
       {/* Scrollable Content */}
       <ScrollView contentContainerStyle={{ padding: 15 }}>
+        
         {/* Header with Robot */}
         <View style={styles.scrollHeaderRow}>
           <Image source={robotImg} style={styles.robotImageHeader} />
           <View style={{ marginLeft: 10 }}>
-            <Text style={styles.scrollHeaderTitle}>AI Agriculture Assistant</Text>
+            <Text style={styles.scrollHeaderTitle}>এআই কৃষি সহকারী</Text>
             <Text style={styles.scrollHeaderSubtitle}>
-              Get instant answers to your farming questions
+              কৃষি বিষয়ক আপনার যেকোনো প্রশ্নের দ্রুত উত্তর পান
             </Text>
           </View>
         </View>
@@ -117,8 +117,9 @@ export default function FAi() {
         {/* Popular Questions */}
         <View style={styles.aiSection}>
           <View style={styles.aiHeader}>
-            <Text style={styles.aiTitle}>Popular Questions</Text>
+            <Text style={styles.aiTitle}>জনপ্রিয় প্রশ্নসমূহ</Text>
           </View>
+
           {popularQuestions.map((question, index) => (
             <TouchableOpacity key={index} style={styles.questionItem}>
               <View style={styles.questionContent}>
@@ -134,22 +135,21 @@ export default function FAi() {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
-              placeholder="Type your question here..."
+              placeholder="এখানে আপনার প্রশ্ন লিখুন..."
               placeholderTextColor="#999"
               multiline
               value={input}
               onChangeText={setInput}
             />
             <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-              <Text style={styles.sendButtonText}>Send</Text>
+              <Text style={styles.sendButtonText}>পাঠান</Text>
             </TouchableOpacity>
           </View>
 
           {/* Note Box */}
           <View style={styles.noteBox}>
             <Text style={styles.noteText}>
-              Note: This AI assistant provides general farming guidance. For
-              specific issues, consult with local agricultural experts.
+              নোট: এই এআই সহকারী সাধারণ কৃষি বিষয়ক নির্দেশনা দেয়। নির্দিষ্ট সমস্যার জন্য স্থানীয় কৃষি বিশেষজ্ঞদের সাথে পরামর্শ করুন।
             </Text>
           </View>
         </View>
@@ -158,11 +158,11 @@ export default function FAi() {
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
-          { name: "Products", image: productsIcon, route: "/FarmerProducts" },
-          { name: "Weather", image: weatherIcon, route: "/Calendar" },
-          { name: "Help", image: helpIcon, route: "/FAi" },
-          { name: "Orders", image: ordersIcon, notification: 15, route: "/FarmerOrders" },
+          { name: "হোম", image: homeIcon, route: "/FarmerDashboard" },
+          { name: "পণ্য", image: productsIcon, route: "/FarmerProducts" },
+          { name: "আবহাওয়া", image: weatherIcon, route: "/Calendar" },
+          { name: "সহায়তা", image: helpIcon, route: "/FAi" },
+          { name: "অর্ডার", image: ordersIcon, notification: 15, route: "/FarmerOrders" },
         ].map((item, index) => {
           const isActive = activeNav === item.name;
           return (
@@ -194,6 +194,7 @@ export default function FAi() {
     </View>
   );
 }
+
 
 // ✅ Styles remain unchanged
 const styles = StyleSheet.create({

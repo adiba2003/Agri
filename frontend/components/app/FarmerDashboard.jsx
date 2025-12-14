@@ -29,21 +29,20 @@ import helpIcon from "@/assets/help.png";
 import ordersIcon from "@/assets/orders.png";
 
 export default function FarmerDashboard() {
-  const [activeNav, setActiveNav] = useState("Home");
+  const [activeNav, setActiveNav] = useState("হোম");
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#4CAF50" />
 
-   
-
       {/* Main Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        
         {/* Screen Title */}
         <View style={{ marginBottom: 20 }}>
-          <Text style={styles.screenTitle}>Farmer Dashboard</Text>
+          <Text style={styles.screenTitle}>কৃষক ড্যাশবোর্ড</Text>
           <Text style={styles.screenSubtitle}>
-            Manage your products and orders
+            আপনার পণ্য ও অর্ডারসমূহ পরিচালনা করুন
           </Text>
         </View>
 
@@ -52,17 +51,17 @@ export default function FarmerDashboard() {
           <View style={styles.statCard}>
             <Image source={orderIcon} style={styles.statIcon} />
             <Text style={styles.statNumber}>8</Text>
-            <Text style={styles.statLabel}>Products</Text>
+            <Text style={styles.statLabel}>পণ্য</Text>
           </View>
           <View style={styles.statCard}>
             <Image source={cartIcon} style={styles.statIcon} />
             <Text style={styles.statNumber}>15</Text>
-            <Text style={styles.statLabel}>New Orders</Text>
+            <Text style={styles.statLabel}>নতুন অর্ডার</Text>
           </View>
           <View style={styles.statCard}>
             <Image source={moneyIcon} style={styles.statIcon} />
-            <Text style={styles.statNumber}>$2.5k</Text>
-            <Text style={styles.statLabel}>This Month</Text>
+            <Text style={styles.statNumber}>৳2.5k</Text>
+            <Text style={styles.statLabel}>এই মাসে</Text>
           </View>
         </View>
 
@@ -70,28 +69,27 @@ export default function FarmerDashboard() {
         <View style={styles.taskCard}>
           <Image source={calendarIcon} style={styles.taskIcon} />
           <View style={styles.taskTextBox}>
-            <Text style={styles.taskTitle}>Today's Farming Tasks</Text>
-            <Text style={styles.taskDetail}>• Harvest paddy (6AM - 8AM)</Text>
-            <Text style={styles.taskDetail}>
-              • Apply fertilizer to tomato plants
-            </Text>
-            <Text style={styles.taskDetail}>• Check weather forecast</Text>
+            <Text style={styles.taskTitle}>আজকের কৃষিকাজ</Text>
+            <Text style={styles.taskDetail}>• ধান কাটা (সকাল ৬টা - ৮টা)</Text>
+            <Text style={styles.taskDetail}>• টমেটো গাছে সার প্রয়োগ</Text>
+            <Text style={styles.taskDetail}>• আবহাওয়ার পূর্বাভাস যাচাই</Text>
             <TouchableOpacity onPress={() => router.push("/Calendar")}>
-              <Text style={styles.viewFullCalendar}>View Full Calendar →</Text>
+              <Text style={styles.viewFullCalendar}>সম্পূর্ণ ক্যালেন্ডার দেখুন →</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Bottom Action Cards */}
         <View style={styles.quickActionsGrid}>
+          
           <TouchableOpacity
             style={styles.actionCard}
             onPress={() => router.push("/FarmerProducts")}
           >
             <Image source={orderIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
-              <Text style={styles.actionTitle}>My Products</Text>
-              <Text style={styles.actionSubtitle}>Manage listings</Text>
+              <Text style={styles.actionTitle}>আমার পণ্য</Text>
+              <Text style={styles.actionSubtitle}>লিস্টিং পরিচালনা করুন</Text>
             </View>
           </TouchableOpacity>
 
@@ -101,8 +99,8 @@ export default function FarmerDashboard() {
           >
             <Image source={cartIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
-              <Text style={styles.actionTitle}>Orders</Text>
-              <Text style={styles.actionSubtitle}>15 pending</Text>
+              <Text style={styles.actionTitle}>অর্ডার</Text>
+              <Text style={styles.actionSubtitle}>১৫টি পেন্ডিং</Text>
             </View>
           </TouchableOpacity>
 
@@ -112,8 +110,8 @@ export default function FarmerDashboard() {
           >
             <Image source={calendarIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
-              <Text style={styles.actionTitle}>Farm Calendar</Text>
-              <Text style={styles.actionSubtitle}>Plan your crops</Text>
+              <Text style={styles.actionTitle}>কৃষি ক্যালেন্ডার</Text>
+              <Text style={styles.actionSubtitle}>ফসল পরিকল্পনা করুন</Text>
             </View>
           </TouchableOpacity>
 
@@ -123,8 +121,8 @@ export default function FarmerDashboard() {
           >
             <Image source={robotIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
-              <Text style={styles.actionTitle}>AI Assistant</Text>
-              <Text style={styles.actionSubtitle}>Ask farming questions</Text>
+              <Text style={styles.actionTitle}>এআই সহকারী</Text>
+              <Text style={styles.actionSubtitle}>কৃষি বিষয়ক প্রশ্ন করুন</Text>
             </View>
           </TouchableOpacity>
 
@@ -134,8 +132,8 @@ export default function FarmerDashboard() {
           >
             <Image source={plusIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
-              <Text style={styles.actionTitle}>Add Product</Text>
-              <Text style={styles.actionSubtitle}>List new items</Text>
+              <Text style={styles.actionTitle}>পণ্য যোগ করুন</Text>
+              <Text style={styles.actionSubtitle}>নতুন আইটেম তালিকাভুক্ত করুন</Text>
             </View>
           </TouchableOpacity>
 
@@ -145,8 +143,8 @@ export default function FarmerDashboard() {
           >
             <Image source={booksIcon} style={styles.actionImage} />
             <View style={styles.actionTextBox}>
-              <Text style={styles.actionTitle}>Learn</Text>
-              <Text style={styles.actionSubtitle}>Farming guides</Text>
+              <Text style={styles.actionTitle}>শিখুন</Text>
+              <Text style={styles.actionSubtitle}>কৃষি গাইডলাইন</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -154,9 +152,9 @@ export default function FarmerDashboard() {
         {/* Recent Orders Section */}
         <View style={styles.recentOrders}>
           <View style={styles.recentHeader}>
-            <Text style={styles.recentTitle}>Recent Orders</Text>
+            <Text style={styles.recentTitle}>সাম্প্রতিক অর্ডার</Text>
             <TouchableOpacity onPress={() => router.push("/FarmerOrders")}>
-              <Text style={styles.viewAll}>View All</Text>
+              <Text style={styles.viewAll}>সব দেখুন</Text>
             </TouchableOpacity>
           </View>
 
@@ -164,11 +162,11 @@ export default function FarmerDashboard() {
           <View style={styles.orderCard}>
             <Image source={riceImg} style={styles.orderIcon} />
             <View style={{ flex: 1 }}>
-              <Text style={styles.orderName}>Premium Basmati Rice - 10kg</Text>
-              <Text style={styles.orderDetails}>Order #1236 • $850</Text>
+              <Text style={styles.orderName}>বাসমতি চাল - ১০ কেজি</Text>
+              <Text style={styles.orderDetails}>অর্ডার #1236 • ৳৮৫০</Text>
             </View>
             <TouchableOpacity style={styles.processBtn}>
-              <Text style={styles.processText}>Process</Text>
+              <Text style={styles.processText}>প্রসেস করুন</Text>
             </TouchableOpacity>
           </View>
 
@@ -176,11 +174,11 @@ export default function FarmerDashboard() {
           <View style={styles.orderCard}>
             <Image source={tomatoImg} style={styles.orderIcon} />
             <View style={{ flex: 1 }}>
-              <Text style={styles.orderName}>Fresh Tomatoes - 5kg</Text>
-              <Text style={styles.orderDetails}>Order #1237 • $300</Text>
+              <Text style={styles.orderName}>টমেটো - ৫ কেজি</Text>
+              <Text style={styles.orderDetails}>অর্ডার #1237 • ৳৩০০</Text>
             </View>
             <TouchableOpacity style={styles.shipBtn}>
-              <Text style={styles.shipText}>Ship</Text>
+              <Text style={styles.shipText}>শিপ করুন</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -189,11 +187,11 @@ export default function FarmerDashboard() {
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
-          { name: "Home", image: homeIcon, route: "/FarmerDashboard" },
-          { name: "Products", image: productsIcon, route: "/FarmerProducts" },
-          { name: "Weather", image: weatherIcon, route: "/Calendar" },
-          { name: "Help", image: helpIcon, route: "/FAi" },
-          { name: "Orders", image: ordersIcon, notification: 15, route: "/FarmerOrders" },
+          { name: "হোম", image: homeIcon, route: "/FarmerDashboard" },
+          { name: "পণ্য", image: productsIcon, route: "/FarmerProducts" },
+          { name: "আবহাওয়া", image: weatherIcon, route: "/FarmerDashboard" },
+          { name: "সহায়তা", image: helpIcon, route: "/FarmerDashboard" },
+          { name: "অর্ডার", image: ordersIcon, notification: 15, route: "/FarmerOrders" },
         ].map((item, index) => {
           const isActive = activeNav === item.name;
           return (
@@ -225,6 +223,7 @@ export default function FarmerDashboard() {
     </View>
   );
 }
+
 
 // ✅ Styles remain unchanged
 const styles = StyleSheet.create({

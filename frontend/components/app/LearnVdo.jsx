@@ -27,21 +27,21 @@ import riceVideo from "@/assets/rice.mp4";
 import pestVideo from "@/assets/pest.mp4";
 
 export default function LearnVdo() {
-  const [activeTab, setActiveTab] = useState("Videos");
-  const [activeNav, setActiveNav] = useState("Learn");
+  const [activeTab, setActiveTab] = useState("ভিডিও");
+  const [activeNav, setActiveNav] = useState("শিখুন");
   const [videoVisible, setVideoVisible] = useState(false);
   const [videoSource, setVideoSource] = useState(null);
 
   const videoRef = useRef(null);
   const [status, setStatus] = useState({});
 
-  // 🔊 FIX: ENABLE SOUND EVEN IN SILENT MODE
+  // 🔊 সাইলেন্ট মোডেও সাউন্ড সক্রিয়
   useEffect(() => {
     if (videoVisible) {
       (async () => {
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: false,
-          playsInSilentModeIOS: true, // SOUND FIX
+          playsInSilentModeIOS: true,
           staysActiveInBackground: false,
           shouldDuckAndroid: true,
         });
@@ -50,40 +50,40 @@ export default function LearnVdo() {
   }, [videoVisible]);
 
   const tabs = [
-    { name: "Articles", route: "/LearnArti" },
-    { name: "Videos", route: "/LearnVdo" },
-    { name: "Soil Guide", route: "/LearnSoil" },
+    { name: "আর্টিকেল", route: "/LearnArti" },
+    { name: "ভিডিও", route: "/LearnVdo" },
+    { name: "মাটি গাইড", route: "/LearnSoil" },
   ];
 
   const videos = [
     {
-      title: "Proper Rice Transplanting Method",
-      desc: "Video Tutorial: How to Transplant Rice Properly.",
-      date: "Dec 12, 2024",
-      time: "15 min",
+      title: "সঠিক ধান রোপণের পদ্ধতি",
+      desc: "ভিডিও টিউটোরিয়াল: ধান কীভাবে সঠিকভাবে রোপণ করবেন।",
+      date: "১২ ডিসেম্বর, ২০২৪",
+      time: "১৫ মিনিট",
       image: waterPump,
       video: riceVideo,
     },
     {
-      title: "Organic Pesticide Preparation",
-      desc: "Method of Making Organic Pesticide with Household Ingredients.",
-      date: "Dec 9, 2024",
-      time: "12 min",
+      title: "জৈব কীটনাশক প্রস্তুতকরণ",
+      desc: "ঘরোয়া উপাদান ব্যবহার করে জৈব কীটনাশক তৈরি করার পদ্ধতি।",
+      date: "৯ ডিসেম্বর, ২০২৪",
+      time: "১২ মিনিট",
       image: waterPump,
       video: pestVideo,
     },
   ];
 
   const bottomNavItems = [
-    { name: "Home", image: homeIcon, route: "/GuestHome" },
-    { name: "Products", image: productsIcon, route: "/browse" },
-    { name: "Learn", image: learnIcon, route: "/LearnArti" },
-    { name: "AI Chat", image: chatIcon, route: "/Ai" },
+    { name: "হোম", image: homeIcon, route: "/GuestHome" },
+    { name: "পণ্য", image: productsIcon, route: "/browse" },
+    { name: "শিখুন", image: learnIcon, route: "/LearnArti" },
+    { name: "এআই চ্যাট", image: chatIcon, route: "/Ai" },
   ];
 
   return (
     <View style={styles.container}>
-      {/* VIDEO PLAYER MODAL */}
+      {/* ভিডিও প্লেয়ার মডাল */}
       <Modal visible={videoVisible} animationType="slide">
         <View style={styles.modalContainer}>
           <Video
@@ -96,7 +96,7 @@ export default function LearnVdo() {
             onPlaybackStatusUpdate={(stat) => setStatus(stat)}
           />
 
-          {/* Custom Controls */}
+          {/* কাস্টম কন্ট্রোলস */}
           <View style={styles.controls}>
             <TouchableOpacity
               style={styles.ctrlBtn}
@@ -107,7 +107,7 @@ export default function LearnVdo() {
                 }
               }}
             >
-              <Text style={styles.ctrlText}>⏪ 10s</Text>
+              <Text style={styles.ctrlText}>⏪ ১০ সেকেন্ড</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -121,7 +121,7 @@ export default function LearnVdo() {
               }}
             >
               <Text style={styles.ctrlText}>
-                {status.isPlaying ? "⏸ Pause" : "▶ Play"}
+                {status.isPlaying ? "⏸ বিরতি" : "▶ চালু"}
               </Text>
             </TouchableOpacity>
 
@@ -134,7 +134,7 @@ export default function LearnVdo() {
                 }
               }}
             >
-              <Text style={styles.ctrlText}>10s ⏩</Text>
+              <Text style={styles.ctrlText}>১০ সেকেন্ড ⏩</Text>
             </TouchableOpacity>
           </View>
 
@@ -142,23 +142,24 @@ export default function LearnVdo() {
             style={styles.closeBtn}
             onPress={() => setVideoVisible(false)}
           >
-            <Text style={styles.closeBtnText}>Close Video</Text>
+            <Text style={styles.closeBtnText}>ভিডিও বন্ধ করুন</Text>
           </TouchableOpacity>
         </View>
       </Modal>
 
-      {/* PAGE CONTENT */}
+      {/* পেজ কন্টেন্ট */}
       <ScrollView style={{ flex: 1 }}>
         <View style={styles.titleSection}>
           <Image source={booksIcon} style={styles.iconImage} />
           <View>
-            <Text style={styles.title}>Learning Center</Text>
+            <Text style={styles.title}>শিক্ষা কেন্দ্র</Text>
             <Text style={styles.subTitleText}>
-              Educational blogs and video tutorials in English
+              শিক্ষামূলক ব্লগ এবং ভিডিও টিউটোরিয়াল 
             </Text>
           </View>
         </View>
 
+        {/* Tabs */}
         <View style={styles.tabContainer}>
           {tabs.map((tab, index) => (
             <TouchableOpacity
@@ -181,7 +182,7 @@ export default function LearnVdo() {
           ))}
         </View>
 
-        {/* Video List */}
+        {/* ভিডিও লিস্ট */}
         <View style={styles.articleContainer}>
           {videos.map((video, index) => (
             <TouchableOpacity
@@ -242,6 +243,7 @@ export default function LearnVdo() {
   );
 }
 
+
 /* ================== STYLES ================== */
 
 const styles = StyleSheet.create({
@@ -249,7 +251,7 @@ const styles = StyleSheet.create({
 
   titleSection: { flexDirection: "row", alignItems: "center", padding: 15 },
   iconImage: { width: 30, height: 30, marginRight: 10 },
-  title: { fontSize: 20, fontWeight: "bold", color: "#333" },
+  title: { fontSize: 20, fontWeight: "bold", color: "#333" ,marginTop:-20},
   subTitleText: { fontSize: 14, color: "#666" },
 
   tabContainer: {
